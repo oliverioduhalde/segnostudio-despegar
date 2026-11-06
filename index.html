@@ -158,8 +158,6 @@ let state = {dest:null, qi:0, ok:0, timer:null, spinning:false, rot:0};
 
 /* ---------- Pantallas ---------- */
 function home(){
-  const won = store.get("dq-voucher");
-  if(won) return voucher(won, true);
   render(`<div class="hero">
     <div class="emoji">✈️</div>
     <h1>¿A dónde soñás pasar esta Navidad?</h1>
@@ -273,7 +271,7 @@ function spin(){
     const p = PREMIOS[i];
     if(p.again){ buzz([40,40,40]); return wheel(true); }
     const v = {amount:p.v, dest:state.dest.n, emoji:state.dest.e, code:makeCode(p.v), date:new Date().toISOString()};
-    store.set("dq-voucher", v); confetti(); buzz([80,50,120]);
+    confetti(); buzz([80,50,120]);
     voucher(v);
   }, 5400);
 }
@@ -292,7 +290,9 @@ function voucher(v, returning){
       <div class="vb"><div style="font-size:2rem">${v.emoji}</div><h2>Pasaje a ${v.dest}</h2>
         <div class="muted">Tu código</div><div class="code">${v.code}</div>
         <div class="fine">Sacale captura a esta pantalla. Válido para la compra de pasajes a ${v.dest}. Sujeto a bases y condiciones de la promoción.</div></div></div>
-    <button class="btn mt" id="share">Compartir</button>`);
+    <button class="btn mt" id="share">Compartir</button>
+    <button class="btn alt mt" id="again">Jugar de nuevo</button>`);
+  $("#again").onclick = ()=>{ $("#pill").textContent="🎄 Navidad"; pickDest(); };
   $("#share").onclick = async ()=>{
     const text = `¡Gané un voucher de USD ${v.amount} para viajar a ${v.dest} en el Quitz navideño de Despegar! ✈️🎄`;
     try{ if(navigator.share) await navigator.share({title:"Despegar Quitz",text,url:location.origin+location.pathname}); else { await navigator.clipboard.writeText(text+" "+location.href); $("#share").textContent="¡Copiado!"; } }catch(e){}
@@ -308,8 +308,7 @@ function confetti(){
   setTimeout(()=>c.innerHTML="",5000);
 }
 
-/* Para pruebas: agregar ?reset a la URL borra el voucher guardado */
-if(location.search.includes("reset")){try{localStorage.removeItem("dq-voucher")}catch(e){}}
+try{localStorage.removeItem("dq-voucher")}catch(e){}
 home();
 </script>
 </body>
