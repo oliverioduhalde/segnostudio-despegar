@@ -100,7 +100,7 @@
     <div class="pill" id="pill">🎄 Navidad</div>
   </div>
   <main id="view" class="screen"></main>
-  <div class="footer">Promoción de ejemplo. Vouchers sujetos a bases y condiciones. · <a href="/qr">Ver QR</a></div>
+  <div class="footer">Promoción de ejemplo. Vouchers sujetos a bases y condiciones. · <span id="qrlink"><a href="/afiche">Ver QR</a></span></div>
 </div>
 <div class="confetti" id="confetti"></div>
 
@@ -257,10 +257,16 @@ function pickPrize(){
   return 0;
 }
 
-function spin(){
+async function spin(){
   if(state.spinning) return; state.spinning = true;
   $("#spin").disabled = true; buzz(20);
-  const i = pickPrize(), seg = 360/PREMIOS.length;
+  let i, serverVoucher = null;
+  if(SECURE){
+    const r = await api("/api/spin", {sid:sec.sid, dest:state.dest.id});
+    if(!r || r.error){ state.spinning=false; return secureMsg("⚠️","Se cortó la sesión","No pudimos confirmar tu jugada. Volvé a escanear el QR del stand."); }
+    i = r.index; serverVoucher = r.voucher || null;
+  } else i = pickPrize();
+  const seg = 360/PREMIOS.length;
   const jitter = (Math.random()-.5)*seg*0.7;
   const target = 360 - (i*seg + seg/2) + jitter;           // ángulo que deja el premio bajo el puntero
   const base = state.rot - (state.rot % 360);
@@ -270,7 +276,9 @@ function spin(){
     state.spinning = false;
     const p = PREMIOS[i];
     if(p.again){ buzz([40,40,40]); return wheel(true); }
-    const v = {amount:p.v, dest:state.dest.n, emoji:state.dest.e, code:makeCode(p.v), date:new Date().toISOString()};
+    const v = serverVoucher ? {...serverVoucher, emoji:state.dest.e}
+      : {amount:p.v, dest:state.dest.n, emoji:state.dest.e, code:makeCode(p.v), date:new Date().toISOString()};
+    if(SECURE){ try{sessionStorage.removeItem("dq-sid"); localStorage.setItem("dq-won", JSON.stringify(v))}catch(e){} }
     confetti(); buzz([80,50,120]);
     voucher(v);
   }, 5400);
@@ -285,17 +293,17 @@ function makeCode(v){
 function voucher(v, returning){
   $("#pill").textContent = `${v.emoji} ${v.dest}`;
   render(`<div class="center"><h1>${returning?"Tu voucher":"¡Ganaste!"}</h1>
-    <p class="lead">${returning?"Ya participaste desde este celular. Este es tu premio:":"Usalo en la compra de tu pasaje."}</p></div>
+    <p class="lead">${returning?"Ya participaste desde este celular. Solo se puede jugar una vez. Este es tu premio:":"Usalo en la compra de tu pasaje."}</p></div>
     <div class="voucher"><div class="vt"><div class="muted" style="color:#5a4a00">VOUCHER</div><div class="amt">USD ${v.amount}</div></div>
       <div class="vb"><div style="font-size:2rem">${v.emoji}</div><h2>Pasaje a ${v.dest}</h2>
         <div class="muted">Tu código</div><div class="code">${v.code}</div>
         <div class="fine">Sacale captura a esta pantalla. Válido para la compra de pasajes a ${v.dest}. Sujeto a bases y condiciones de la promoción.</div></div></div>
     <button class="btn mt" id="share">Compartir</button>
-    <button class="btn alt mt" id="again">Jugar de nuevo</button>`);
-  $("#again").onclick = ()=>{ $("#pill").textContent="🎄 Navidad"; pickDest(); };
+    ${SECURE?"":`<button class="btn alt mt" id="again">Jugar de nuevo</button>`}`);
+  if(!SECURE) $("#again").onclick = ()=>{ $("#pill").textContent="🎄 Navidad"; pickDest(); };
   $("#share").onclick = async ()=>{
     const text = `¡Gané un voucher de USD ${v.amount} para viajar a ${v.dest} en el Quitz navideño de Despegar! ✈️🎄`;
-    try{ if(navigator.share) await navigator.share({title:"Despegar Quitz",text,url:location.origin+location.pathname}); else { await navigator.clipboard.writeText(text+" "+location.href); $("#share").textContent="¡Copiado!"; } }catch(e){}
+    try{ if(navigator.share) await navigator.share({title:"Despegar Quitz",text,url:location.origin+"/"}); else { await navigator.clipboard.writeText(text+" "+location.href); $("#share").textContent="¡Copiado!"; } }catch(e){}
   };
 }
 
@@ -308,8 +316,66 @@ function confetti(){
   setTimeout(()=>c.innerHTML="",5000);
 }
 
+/* ---------- Modo seguro (/qr): pase de un solo uso + una jugada por celular ---------- */
+const SECURE = location.pathname.replace(/\/+$/,"") === "/qr";
+const sec = {sid:null};
+
+async function api(path, data){
+  try{
+    const r = await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data),credentials:"same-origin"});
+    return await r.json();
+  }catch(e){ return null }
+}
+
+async function fingerprint(){
+  const parts = [screen.width+"x"+screen.height, devicePixelRatio, screen.colorDepth,
+    Intl.DateTimeFormat().resolvedOptions().timeZone, navigator.language, (navigator.languages||[]).join(","),
+    navigator.hardwareConcurrency, navigator.deviceMemory, navigator.platform, navigator.maxTouchPoints];
+  try{
+    const c=document.createElement("canvas"); c.width=240; c.height=60; const x=c.getContext("2d");
+    x.textBaseline="top"; x.font="16px Arial"; x.fillStyle="#f60"; x.fillRect(10,10,100,30);
+    x.fillStyle="#069"; x.fillText("despegar ✈️ quitz 🎄",4,18); x.globalCompositeOperation="multiply";
+    x.fillStyle="rgba(85,15,237,.6)"; x.beginPath(); x.arc(60,30,26,0,Math.PI*2); x.fill();
+    parts.push(c.toDataURL());
+  }catch(e){}
+  try{
+    const g=document.createElement("canvas").getContext("webgl"); const d=g.getExtension("WEBGL_debug_renderer_info");
+    parts.push(g.getParameter(d?d.UNMASKED_VENDOR_WEBGL:g.VENDOR), g.getParameter(d?d.UNMASKED_RENDERER_WEBGL:g.RENDERER));
+  }catch(e){}
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(parts.join("||")));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+
+function localId(){
+  try{ let id=localStorage.getItem("dq-lid"); if(!id){ id=crypto.randomUUID(); localStorage.setItem("dq-lid",id); } return id; }catch(e){ return null }
+}
+
+function secureMsg(icon,title,text){
+  render(`<div class="hero"><div class="emoji">${icon}</div><h1>${title}</h1><p class="lead">${text}</p></div>`);
+}
+
+async function secureStart(){
+  $("#qrlink").style.display="none";
+  const params = new URLSearchParams(location.search), t = params.get("t");
+  if(t) history.replaceState(null,"",location.pathname);   // el link ya no sirve para compartir
+  try{ const saved = sessionStorage.getItem("dq-sid"); if(saved && !t){ sec.sid = saved; return home(); } }catch(e){}
+  secureMsg("✈️","Preparando tu juego…","Un segundo.");
+  const r = await api("/api/start", {t, fp: await fingerprint(), lid: localId()});
+  if(!r) return secureMsg("📶","Sin conexión","Revisá tu conexión y volvé a escanear el QR del stand.");
+  if(r.blocked){
+    let v = r.voucher; try{ v = v || JSON.parse(localStorage.getItem("dq-won")) }catch(e){}
+    const D = v && DESTINOS.find(d=>d.id===v.destId || d.n===v.dest);
+    if(v) return voucher({...v, emoji: D ? D.e : "✈️"}, true);
+    return secureMsg("🙅","Ya participaste","Este celular ya jugó. Solo se puede jugar una vez por persona.");
+  }
+  if(r.error==="store") return secureMsg("🛠️","Estamos preparando todo","El juego todavía no está habilitado. Probá en unos minutos.");
+  if(r.error || !r.sid) return secureMsg("📷","Escaneá el QR del stand","Para jugar tenés que escanear el código que se muestra en la pantalla. Cada código sirve una sola vez.");
+  sec.sid = r.sid; try{ sessionStorage.setItem("dq-sid", r.sid) }catch(e){}
+  home();
+}
+
 try{localStorage.removeItem("dq-voucher")}catch(e){}
-home();
+SECURE ? secureStart() : home();
 </script>
 </body>
 </html>

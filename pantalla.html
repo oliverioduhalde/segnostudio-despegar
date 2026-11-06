@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Despegar Quitz · Pantalla</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--brand:#550FED;--sun:#FFC72C;--ink:#1D1340}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Nunito,system-ui,sans-serif;color:#fff;padding:16px;
+    background:var(--brand);background-image:radial-gradient(circle at 20% 0%,#7B3BFF 0,transparent 45%),radial-gradient(circle at 100% 100%,#3A06B0 0,transparent 50%)}
+  .wrap{text-align:center;max-width:720px;width:100%}
+  .logo{font-weight:900;font-size:clamp(2rem,6vw,3.4rem);letter-spacing:-1px}
+  h1{font-size:clamp(1.6rem,4.6vw,2.8rem);margin:6px 0 4px;line-height:1.1}
+  p{margin:0 0 22px;font-weight:700;opacity:.9;font-size:clamp(1rem,2.6vw,1.4rem)}
+  .qrbox{display:inline-block;background:#fff;border-radius:28px;padding:22px;border:8px solid var(--sun);box-shadow:0 20px 50px rgba(0,0,0,.35);position:relative}
+  #qr img,#qr canvas{display:block;width:min(70vw,46vh,440px);height:auto;aspect-ratio:1}
+  #qr.used{filter:blur(6px);opacity:.4;transition:.2s}
+  .bar{height:10px;background:#EFE8FF;border-radius:10px;overflow:hidden;margin-top:14px}
+  .bar i{display:block;height:100%;background:var(--brand);transform-origin:left}
+  .tag{display:inline-block;margin-top:22px;background:var(--sun);color:var(--ink);font-weight:900;padding:10px 20px;border-radius:999px;font-size:clamp(1rem,2.6vw,1.35rem)}
+  .err{background:#fff;color:var(--ink);border-radius:20px;padding:24px;font-weight:700}
+  .fs{position:fixed;bottom:12px;right:12px;background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:10px;padding:8px 12px;font:inherit;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="logo">despegar</div>
+  <h1>🎄 ¿A dónde soñás pasar esta Navidad?</h1>
+  <p>Escaneá con tu celular, respondé 3 preguntas y girá la ruleta.</p>
+  <div class="qrbox"><div id="qr"></div><div class="bar"><i id="bar"></i></div></div>
+  <div><span class="tag">Ganá hasta USD 1000 en tu pasaje ✈️</span></div>
+</div>
+<button class="fs" id="fs">Pantalla completa</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // Pantalla del stand. Uso: /pantalla?k=CLAVE_DEL_STAFF
+  const k = new URLSearchParams(location.search).get("k") || "";
+  const qrEl = document.getElementById("qr"), bar = document.getElementById("bar");
+  const qr = new QRCode(qrEl, {text:location.origin, width:600, height:600, colorDark:"#1D1340", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M});
+  let token = null, rotateTimer = null, pollTimer = null;
+
+  function fail(msg){
+    clearTimeout(rotateTimer); clearInterval(pollTimer);
+    document.getElementById("app").innerHTML = `<div class="err">${msg}</div>`;
+  }
+
+  async function next(){
+    clearTimeout(rotateTimer);
+    try{
+      const r = await fetch(`/api/qr-token?k=${encodeURIComponent(k)}`, {cache:"no-store"});
+      if(r.status===401) return fail("Falta la clave del staff o es incorrecta. Abrí esta página con <b>/pantalla?k=TU_CLAVE</b>.");
+      const d = await r.json();
+      if(d.error==="store") return fail("Falta conectar la base de datos en Vercel.");
+      token = d.token;
+      qr.clear(); qr.makeCode(`${location.origin}/qr?t=${token}`);
+      qrEl.classList.remove("used");
+      const secs = d.rotate || 20;
+      bar.style.transition="none"; bar.style.transform="scaleX(1)";
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{bar.style.transition=`transform ${secs}s linear`; bar.style.transform="scaleX(0)"}));
+      rotateTimer = setTimeout(next, secs*1000);
+    }catch(e){ rotateTimer = setTimeout(next, 3000); }
+  }
+
+  // Si alguien escaneó el código, se cambia al instante.
+  pollTimer = setInterval(async ()=>{
+    if(!token) return;
+    try{
+      const d = await (await fetch(`/api/qr-status?k=${encodeURIComponent(k)}&t=${token}`, {cache:"no-store"})).json();
+      if(d.used){ qrEl.classList.add("used"); token=null; next(); }
+    }catch(e){}
+  }, 1500);
+
+  document.getElementById("fs").onclick = ()=>{ document.documentElement.requestFullscreen?.(); };
+  next();
+</script>
+</body>
+</html>
