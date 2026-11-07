@@ -473,7 +473,7 @@ function startScene(){
     const o = document.createElement("span"); o.className = "obj"; o.innerHTML = html;
     o.style.width = w + "px"; o.style.fontSize = (w/100) + "px"; o.style.top = top + "%";
     o.style.zIndex = front ? 4 : 2; o.style.animationDuration = dur + "s"; o.style.animationDelay = delay + "s";
-    o.addEventListener("animationend", ()=>o.remove()); s.appendChild(o); return o; };
+    o.addEventListener("animationend", e=>{ if(e.target === o) o.remove(); }); s.appendChild(o); return o; };
   const thing = ()=>{ const s = sc(); if(!s) return;
     flyCount++;
     const front = Math.random() < 0.5, dur = 9 + Math.random()*5, top = 4 + Math.random()*50;
@@ -481,14 +481,14 @@ function startScene(){
       // Papá Noel: renos con vuelo propio, regalos cada tanto y, la mitad de las veces, el Grinch persiguiéndolo
       const w = 64 * (0.9 + Math.random()*0.3) * (front ? 1.25 : 0.85);
       const santa = spawn(santaHTML(), w, Math.min(top, 30), dur, front);
-      const gifts = ()=>{ if(!santa || !santa.isConnected) return;
+      // 3 regalos por pasada, al 25 %, 50 % y 75 % del recorrido
+      [0.25, 0.5, 0.75].forEach(f=>sceneTimers.push(setTimeout(()=>{ if(!santa || !santa.isConnected) return;
         const g = document.createElement("i"); g.className = "gift"; g.innerHTML = GIFT; g.style.left = (72 + Math.random()*20) + "%"; g.style.top = "55%";
-        g.addEventListener("animationend", ()=>g.remove()); santa.appendChild(g);
-        sceneTimers.push(setTimeout(gifts, 1500 + Math.random()*2000)); };
-      sceneTimers.push(setTimeout(gifts, 1200 + Math.random()*1500));
+        g.addEventListener("animationend", e=>{ e.stopPropagation(); g.remove(); }); santa.appendChild(g); }, dur*1000*f)));
       if(Math.random() < 0.5){
+        // el Grinch aparece por la derecha, bastante atrás, con su propio vaivén
         const g = OBJS.find(o=>o[0]==="grinch");
-        spawn(`<img src="/obj/grinch.png" alt="">${g[2]}`, w*0.4, Math.min(top, 30) + 5, dur, front, 0.7);
+        spawn(`<span class="part" style="left:0;width:100%;animation-duration:1.1s"><img src="/obj/grinch.png" alt="">${g[2]}</span>`, w*0.4, Math.min(top, 30) + 6, dur, front, 2.6);
       }
     }else{
       const [name, base, fx] = nextObj();
