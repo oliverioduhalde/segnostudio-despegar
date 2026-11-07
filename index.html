@@ -39,9 +39,9 @@
   .scene .sky{position:absolute;inset:0;transition:opacity 8s ease-in-out}
   .scene .sky.day{background:linear-gradient(180deg,#3E8FD9 0%,#7CC5F2 60%,#BFE6FF 100%);opacity:0}
   .scene.day .sky.day{opacity:1}
-  .scene .plane{position:absolute;z-index:3;left:46%;top:50%;width:210px;height:auto;transform:translate(-50%,-50%);animation:fly 5s ease-in-out infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.35))}
+  .scene .plane{position:absolute;z-index:3;left:38%;top:50%;width:147px;height:auto;transform:translate(-50%,-50%);animation:fly 5s ease-in-out infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.35))}
   @keyframes fly{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 2px))}}
-  .scene.sm{height:110px} .scene.sm .plane{width:150px}
+  .scene.sm{height:110px} .scene.sm .plane{width:105px}
   @keyframes pass{to{transform:translateX(-720px)}}
   .scene .cloud{position:absolute;left:100%;width:70px;height:22px;background:rgba(255,255,255,.75);border-radius:20px;animation:pass linear forwards}
   .scene .cloud:before{content:"";position:absolute;left:14px;top:-12px;width:30px;height:30px;background:inherit;border-radius:50%}
