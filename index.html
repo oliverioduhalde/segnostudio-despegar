@@ -59,8 +59,10 @@
   /* portada */
   .hero{display:flex;flex-direction:column;flex:1}
   .hero .grow{flex:1}
-  .hero > .scene{margin:0 -16px;border-radius:18px}
-  .hero h1.one{font-size:clamp(1.05rem,5.6vw,1.45rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* la portada va de borde a borde, como la barra del logo */
+  .screen.edge{padding-left:0;padding-right:0}
+  .hero > .scene{border-radius:18px}
+  .hero h1.one{font-family:Rubik,Arial,sans-serif;font-weight:700;text-align:center;font-size:clamp(1.05rem,5.6vw,1.45rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .steps{display:grid;gap:8px;margin:12px 0 14px}
   .step{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.92rem;font-weight:500}
   .step b{width:26px;height:26px;flex:none;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:.85rem;font-weight:500}
@@ -169,7 +171,7 @@ const view = $("#view");
 const store = {get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const shuffle = a => {a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const buzz = ms => {try{navigator.vibrate && navigator.vibrate(ms)}catch(e){}};
-function render(html){view.classList.remove("screen");void view.offsetWidth;view.classList.add("screen");view.innerHTML=html;window.scrollTo(0,0)}
+function render(html, edge=false){view.classList.remove("screen","edge");void view.offsetWidth;view.classList.add("screen");if(edge) view.classList.add("edge");view.innerHTML=html;window.scrollTo(0,0)}
 
 let state = {dest:null, qi:0, ok:0, timer:null, spinning:false, rot:0};
 
@@ -184,7 +186,7 @@ function home(){
       <div class="step"><b>3</b>Girá la ruleta y ganá</div>
     </div>
     <button class="btn" id="go">Jugar ahora</button>
-  </div>`);
+  </div>`, true);
   startScene(); $("#go").onclick = ()=>{ goFullscreen(); pickDest(); };
 }
 
