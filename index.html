@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#270570">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.svg">
 <title>Despegar Quitz · Navidad</title>
 <meta name="description" content="Elegí tu destino soñado para Navidad, respondé 3 preguntas y girá la ruleta para ganar un voucher.">
@@ -43,11 +47,20 @@
   @keyframes fly{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 2px))}}
   .scene.sm{height:110px} .scene.sm .plane{width:105px}
   @keyframes pass{to{transform:translateX(-720px)}}
+  /* lluvia y nieve suaves, cada tanto */
+  .scene .weather{position:absolute;inset:-30% -10% 0 -10%;z-index:5;pointer-events:none;opacity:0;transition:opacity 4s ease;background-repeat:repeat}
+  .scene .weather.on{opacity:1}
+  .scene .weather.rain{background-image:radial-gradient(1px 9px at 20px 12px,rgba(255,255,255,.55),transparent),radial-gradient(1px 8px at 64px 40px,rgba(255,255,255,.45),transparent),radial-gradient(1px 10px at 100px 70px,rgba(255,255,255,.5),transparent),radial-gradient(1px 7px at 140px 25px,rgba(255,255,255,.4),transparent);background-size:120px 80px;transform:rotate(9deg) scale(1.2);animation:rain .55s linear infinite}
+  @keyframes rain{to{background-position:0 90px}}
+  .scene .weather.snow{background-image:radial-gradient(2.5px 2.5px at 18px 20px,#fff,transparent),radial-gradient(2px 2px at 70px 60px,rgba(255,255,255,.85),transparent),radial-gradient(3px 3px at 120px 30px,#fff,transparent),radial-gradient(2px 2px at 150px 100px,rgba(255,255,255,.8),transparent),radial-gradient(2.5px 2.5px at 45px 110px,#fff,transparent),radial-gradient(2px 2px at 100px 130px,rgba(255,255,255,.8),transparent);background-size:130px 120px;animation:snow 5s linear infinite}
+  @keyframes snow{0%{background-position:0 0}50%{background-position:14px 75px}100%{background-position:0 150px}}
   .scene .cloud{position:absolute;left:100%;width:110px;animation:pass linear forwards;will-change:transform}
   .scene .cloud svg{display:block;width:100%;height:auto}
   /* portada */
   .hero{display:flex;flex-direction:column;flex:1}
   .hero .grow{flex:1}
+  .hero > .scene{margin:0 -16px;border-radius:18px}
+  .hero h1.one{font-size:clamp(1.05rem,5.6vw,1.45rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .steps{display:grid;gap:8px;margin:12px 0 14px}
   .step{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.92rem;font-weight:500}
   .step b{width:26px;height:26px;flex:none;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:.85rem;font-weight:500}
@@ -164,7 +177,7 @@ let state = {dest:null, qi:0, ok:0, timer:null, spinning:false, rot:0};
 function home(){
   render(`<div class="hero">
     ${scene()}
-    <h1>¿Dónde pasarías Navidad?</h1>
+    <h1 class="one">¿Dónde pasarías Navidad?</h1>
     <div class="steps">
       <div class="step"><b>1</b>Elegí tu destino soñado</div>
       <div class="step"><b>2</b>Acertá 3 preguntas fáciles</div>
@@ -172,7 +185,7 @@ function home(){
     </div>
     <button class="btn" id="go">Jugar ahora</button>
   </div>`);
-  startScene(); $("#go").onclick = pickDest;
+  startScene(); $("#go").onclick = ()=>{ goFullscreen(); pickDest(); };
 }
 
 function pickDest(){
@@ -339,7 +352,7 @@ function voucher(v, returning){
 
 /* ---------- Escena: el avión vuela hacia la derecha; el cielo y lo que pasa se mueven en contra ---------- */
 function scene(cls=""){
-  return `<div class="scene ${cls}${sceneDay?" day":""}" id="scene"><div class="sky day"></div><img class="plane" src="/plane.png" alt="" width="760" height="224"></div>`;
+  return `<div class="scene ${cls}${sceneDay?" day":""}" id="scene"><div class="sky day"></div><img class="plane" src="/plane.png" alt="" width="760" height="224"><div class="weather" id="weather"></div></div>`;
 }
 // Nubes con varios lóbulos, sombra suave abajo y brillo arriba
 const CLOUDS = [
@@ -348,6 +361,12 @@ const CLOUDS = [
   `<svg viewBox="0 0 120 50" aria-hidden="true"><path d="M22 44Q6 46 6 34Q6 26 16 26Q12 14 26 14Q30 2 46 8Q58 -4 70 8Q80 2 90 12Q104 10 106 24Q116 24 116 34Q116 44 104 44Z" fill="#fff"/><path d="M22 44Q6 46 6 34Q10 38 22 38H104Q112 38 116 32Q116 44 104 44Z" fill="rgba(60,40,140,.12)"/><path d="M26 16Q36 8 46 14M70 8Q80 4 90 12" stroke="rgba(255,255,255,.9)" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
   `<svg viewBox="0 0 120 50" aria-hidden="true"><path d="M30 44Q14 44 14 34Q14 26 24 26Q26 16 38 16Q44 6 58 10Q66 4 76 10Q88 8 92 20Q104 20 106 30Q110 44 96 44Z" fill="#fff"/><path d="M30 44Q14 44 14 34Q18 38 30 38H96Q104 38 106 34Q110 44 96 44Z" fill="rgba(60,40,140,.12)"/><circle cx="56" cy="24" r="12" fill="rgba(255,255,255,.7)"/></svg>`
 ];
+// Pantalla completa en celulares (Android/Chrome lo permite con un toque; iPhone Safari no, salvo agregando el sitio a la pantalla de inicio)
+function goFullscreen(){
+  const el = document.documentElement;
+  const fn = el.requestFullscreen || el.webkitRequestFullscreen;
+  if(fn && !document.fullscreenElement && matchMedia("(pointer:coarse)").matches){ try{ fn.call(el, {navigationUI:"hide"}).catch?.(()=>{}); }catch(e){} }
+}
 let sceneTimers = [];
 let sceneDay = Math.random() < 0.5;
 function stopScene(){ sceneTimers.forEach(clearTimeout); sceneTimers = []; }
@@ -356,16 +375,29 @@ function startScene(){
   const sc = ()=>$("#scene");
   const cloud = ()=>{ const s = sc(); if(!s) return;
     const c = document.createElement("i"); c.className = "cloud"; c.innerHTML = CLOUDS[Math.floor(Math.random()*CLOUDS.length)];
-    c.style.top = (6 + Math.random()*55) + "%"; c.style.width = Math.round(60 + Math.random()*100) + "px";
-    c.style.animationDuration = (11 + Math.random()*8) + "s";
-    const front = Math.random() < 0.1; // 1 de cada 10 pasa por delante del avión, más transparente
-    c.style.zIndex = front ? 4 : 1; c.style.opacity = front ? (0.25+Math.random()*0.15).toFixed(2) : (0.5+Math.random()*0.5).toFixed(2);
+    c.style.top = (6 + Math.random()*55) + "%";
+    const front = Math.random() < 0.2; // 1 de cada 5 pasa por delante del avión, muy transparente
+    if(front){
+      c.style.width = Math.round(110 + Math.random()*70) + "px"; c.style.animationDuration = (9 + Math.random()*4) + "s";
+      c.style.zIndex = 4; c.style.opacity = (0.14+Math.random()*0.1).toFixed(2);
+    }else{
+      // 3 capas de fondo: lejana (chica, lenta), media y cercana (grande, más rápida), todas al 50 %
+      const L = [{w:[40,70],d:[22,30],z:0},{w:[70,110],d:[15,21],z:1},{w:[110,160],d:[11,15],z:2}][Math.floor(Math.random()*3)];
+      c.style.width = Math.round(L.w[0] + Math.random()*(L.w[1]-L.w[0])) + "px";
+      c.style.animationDuration = (L.d[0] + Math.random()*(L.d[1]-L.d[0])) + "s";
+      c.style.zIndex = L.z; c.style.opacity = "0.5";
+    }
     c.addEventListener("animationend", ()=>c.remove()); s.appendChild(c);
     sceneTimers.push(setTimeout(cloud, 5000 + Math.random()*7000)); };
   const dayNight = ()=>{ const s = sc(); if(!s) return;
     sceneDay = !sceneDay; s.classList.toggle("day", sceneDay);
     sceneTimers.push(setTimeout(dayNight, 33000)); };
-  sceneTimers.push(setTimeout(cloud, 300), setTimeout(dayNight, 33000));
+  const weather = ()=>{ const s = sc(), w = $("#weather"); if(!s || !w) return;
+    const kind = Math.random() < 0.5 ? "rain" : "snow";
+    w.className = "weather " + kind + " on";
+    sceneTimers.push(setTimeout(()=>{ w.classList.remove("on"); }, 12000 + Math.random()*8000));
+    sceneTimers.push(setTimeout(weather, 45000 + Math.random()*45000)); };
+  sceneTimers.push(setTimeout(cloud, 300), setTimeout(dayNight, 33000), setTimeout(weather, 20000 + Math.random()*30000));
 }
 
 function confetti(){

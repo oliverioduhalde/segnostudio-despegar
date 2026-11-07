@@ -1,0 +1,10 @@
+{
+  "name": "Despegar Navidad",
+  "short_name": "Despegar",
+  "start_url": "/",
+  "display": "fullscreen",
+  "background_color": "#270570",
+  "theme_color": "#270570",
+  "lang": "es",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
