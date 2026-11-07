@@ -88,9 +88,12 @@
   .scene .obj .part{position:absolute;top:0;animation:hover ease-in-out infinite alternate}
   .scene .obj .part img{display:block;width:100%;height:auto}
   @keyframes hover{from{transform:translateY(-4%)}to{transform:translateY(5%)}}
-  .scene .gift{position:absolute;width:12%;animation:drop 1.8s ease-in forwards}
-  .scene .gift svg{display:block;width:100%;height:auto}
-  @keyframes drop{0%{transform:translate(0,0) rotate(0);opacity:1}80%{opacity:1}100%{transform:translate(-40%,260%) rotate(140deg);opacity:0}}
+  .scene .gift{position:absolute;z-index:4;animation:giftx 2.6s linear forwards;pointer-events:none}
+  .scene .gift > i{display:block;animation:gifty 2.6s cubic-bezier(.3,0,.8,.4) forwards}
+  .scene .gift svg{display:block;width:100%;height:auto;animation:giftspin 1.6s linear infinite}
+  @keyframes giftx{to{transform:translateX(var(--dx))}}
+  @keyframes gifty{0%{transform:translateY(0)}18%{transform:translateY(-22px)}100%{transform:translateY(240px)}}
+  @keyframes giftspin{to{transform:rotate(360deg)}}
   .scene .cloud{position:absolute;left:100%;width:110px;animation:pass linear forwards;will-change:transform}
   .scene .cloud svg{display:block;width:100%;height:auto}
   /* portada */
@@ -437,7 +440,15 @@ const OBJS = [
   ["ovni",42, FX.blink(24,62,RED)+FX.blink(50,68,WHT,.45)+FX.blink(76,62,GRN,.9)+FX.glow(50,78,30,12,-90)],
   ["copa",12,""]
 ];
-const GIFT = `<svg viewBox="0 0 40 40"><rect x="4" y="14" width="32" height="24" rx="3" fill="#E61A06"/><rect x="2" y="10" width="36" height="8" rx="2" fill="#FF4D3D"/><rect x="17" y="10" width="6" height="28" fill="#FFD23F"/><path d="M20 10C12 2 6 6 12 10M20 10C28 2 34 6 28 10" stroke="#FFD23F" stroke-width="3" fill="none"/></svg>`;
+// Regalos distintos: caja con moño, caja alta, caja redonda, caja a rayas, bolsa, caja con lazo cruzado
+const GIFTS = [
+  `<svg viewBox="0 0 40 40"><rect x="4" y="14" width="32" height="24" rx="3" fill="#E61A06"/><rect x="2" y="10" width="36" height="8" rx="2" fill="#FF4D3D"/><rect x="17" y="10" width="6" height="28" fill="#FFD23F"/><path d="M20 10C12 2 6 6 12 10M20 10C28 2 34 6 28 10" stroke="#FFD23F" stroke-width="3" fill="none"/></svg>`,
+  `<svg viewBox="0 0 40 40"><rect x="9" y="8" width="22" height="30" rx="3" fill="#4300D2"/><rect x="7" y="6" width="26" height="7" rx="2" fill="#7C4DFF"/><rect x="18" y="6" width="4" height="32" fill="#fff"/><path d="M20 6C14 0 10 3 15 6M20 6C26 0 30 3 25 6" stroke="#fff" stroke-width="2.5" fill="none"/></svg>`,
+  `<svg viewBox="0 0 40 40"><ellipse cx="20" cy="30" rx="15" ry="8" fill="#028574"/><rect x="5" y="16" width="30" height="14" fill="#028574"/><ellipse cx="20" cy="16" rx="15" ry="7" fill="#03A88F"/><path d="M5 23h30" stroke="#FFD23F" stroke-width="3"/><circle cx="20" cy="16" r="3" fill="#FFD23F"/></svg>`,
+  `<svg viewBox="0 0 40 40"><rect x="3" y="12" width="34" height="26" rx="3" fill="#fff"/><path d="M3 18h34M3 25h34M3 32h34" stroke="#E61A06" stroke-width="3.5"/><rect x="2" y="9" width="36" height="6" rx="2" fill="#E61A06"/><rect x="17" y="9" width="6" height="29" fill="#028574"/></svg>`,
+  `<svg viewBox="0 0 40 40"><path d="M10 14Q6 34 10 38H30Q34 34 30 14Q20 8 10 14Z" fill="#B5651D"/><path d="M12 14Q20 18 28 14L30 8Q20 2 10 8Z" fill="#8B4513"/><path d="M10 14Q20 18 30 14" stroke="#FFD23F" stroke-width="2.5" fill="none"/></svg>`,
+  `<svg viewBox="0 0 40 40"><rect x="5" y="12" width="30" height="26" rx="4" fill="#FFB000"/><path d="M5 12L35 38M35 12L5 38" stroke="#E61A06" stroke-width="3"/><rect x="3" y="9" width="34" height="6" rx="2" fill="#FFC838"/><circle cx="20" cy="11" r="4" fill="#E61A06"/></svg>`
+];
 function santaHTML(){
   // 3 renos y trineo, cada uno con su propio vaivén
   const parts = [["santa_r1",0,21.78],["santa_r2",21.78,19.93],["santa_r3",41.71,20.39],["santa_sleigh",62.09,37.91]];
@@ -457,13 +468,13 @@ function startScene(){
     c.style.top = (6 + Math.random()*55) + "%";
     const front = Math.random() < 0.2; // 1 de cada 5 pasa por delante del avión, muy transparente
     if(front){
-      c.style.width = Math.round(110 + Math.random()*70) + "px"; c.style.animationDuration = (9 + Math.random()*4) + "s";
+      c.style.width = Math.round(110 + Math.random()*70) + "px"; c.style.animationDuration = ((9 + Math.random()*4) * (1 + Math.random()*0.5)) + "s";
       c.style.zIndex = 4; c.style.opacity = (0.14+Math.random()*0.1).toFixed(2);
     }else{
       // 3 capas de fondo: lejana (chica, lenta), media y cercana (grande, más rápida), todas al 50 %
       const L = [{w:[40,70],d:[22,30],z:0},{w:[70,110],d:[15,21],z:1},{w:[110,160],d:[11,15],z:2}][Math.floor(Math.random()*3)];
       c.style.width = Math.round(L.w[0] + Math.random()*(L.w[1]-L.w[0])) + "px";
-      c.style.animationDuration = (L.d[0] + Math.random()*(L.d[1]-L.d[0])) + "s";
+      c.style.animationDuration = ((L.d[0] + Math.random()*(L.d[1]-L.d[0])) * (1 + Math.random()*0.5)) + "s";
       c.style.zIndex = L.z; c.style.opacity = "0.5";
     }
     c.addEventListener("animationend", ()=>c.remove()); s.appendChild(c);
@@ -476,15 +487,19 @@ function startScene(){
     o.addEventListener("animationend", e=>{ if(e.target === o) o.remove(); }); s.appendChild(o); return o; };
   const thing = ()=>{ const s = sc(); if(!s) return;
     flyCount++;
-    const front = Math.random() < 0.5, dur = 9 + Math.random()*5, top = 4 + Math.random()*50;
+    const front = Math.random() < 0.5, dur = (9 + Math.random()*5) * (1 + Math.random()*0.5), top = 4 + Math.random()*50;
     if(flyCount % 5 === 0){
       // Papá Noel: renos con vuelo propio, regalos cada tanto y, la mitad de las veces, el Grinch persiguiéndolo
       const w = 64 * (0.9 + Math.random()*0.3) * (front ? 1.25 : 0.85);
       const santa = spawn(santaHTML(), w, Math.min(top, 30), dur, front);
       // 3 regalos por pasada, al 25 %, 50 % y 75 % del recorrido
-      [0.25, 0.5, 0.75].forEach(f=>sceneTimers.push(setTimeout(()=>{ if(!santa || !santa.isConnected) return;
-        const g = document.createElement("i"); g.className = "gift"; g.innerHTML = GIFT; g.style.left = (72 + Math.random()*20) + "%"; g.style.top = "55%";
-        g.addEventListener("animationend", e=>{ e.stopPropagation(); g.remove(); }); santa.appendChild(g); }, dur*1000*f)));
+      [0.25, 0.5, 0.75].forEach(f=>sceneTimers.push(setTimeout(()=>{ const s = sc(); if(!s || !santa || !santa.isConnected) return;
+        // el regalo sale del trineo, sigue el avance horizontal y cae con gravedad hasta salir por abajo
+        const sr = santa.getBoundingClientRect(), r = s.getBoundingClientRect();
+        const g = document.createElement("i"); g.className = "gift"; g.innerHTML = `<i>${GIFTS[Math.floor(Math.random()*GIFTS.length)]}</i>`;
+        g.style.left = (sr.left - r.left + sr.width*0.8) + "px"; g.style.top = (sr.top - r.top + sr.height*0.55) + "px"; g.style.width = Math.max(8, Math.round(w*0.13)) + "px";
+        g.style.setProperty("--dx", (-720/dur*2.6*0.9).toFixed(0) + "px");
+        g.addEventListener("animationend", e=>{ if(e.target === g) g.remove(); }); s.appendChild(g); }, dur*1000*f)));
       if(Math.random() < 0.5){
         // el Grinch aparece por la derecha, bastante atrás, con su propio vaivén
         const g = OBJS.find(o=>o[0]==="grinch");
