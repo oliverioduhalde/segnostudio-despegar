@@ -4,24 +4,25 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Despegar Quitz · QR</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Nunito,system-ui,sans-serif;background:#550FED;color:#fff;padding:16px;box-sizing:border-box}
-  .poster{background:#fff;color:#1D1340;border-radius:28px;padding:32px 28px;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.35)}
-  .logo{font-weight:900;font-size:2rem;color:#550FED;letter-spacing:-.5px}
-  h1{font-size:1.7rem;margin:10px 0 6px;line-height:1.15}
-  p{margin:0 0 18px;color:#6B6390;font-weight:700}
-  #qr{display:inline-block;padding:14px;border-radius:18px;border:6px solid #FFC72C}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Rubik,Arial,sans-serif;background:#270570;color:#fff;padding:16px;box-sizing:border-box}
+  .poster{background:#fff;color:#323439;border-radius:24px;padding:32px 28px;max-width:420px;width:100%;text-align:center}
+  .logo{background:#270570;border-radius:12px;padding:12px;display:inline-block}
+  .logo img{height:32px;display:block}
+  h1{font-size:1.6rem;margin:14px 0 6px;line-height:1.15;font-weight:600}
+  p{margin:0 0 18px;color:#72777F}
+  #qr{display:inline-block;padding:14px;border-radius:16px;border:1px solid #DDE1E8}
   #qr img,#qr canvas{display:block;width:240px;height:240px}
-  .url{margin-top:14px;font-size:.85rem;color:#6B6390;word-break:break-all}
-  .tag{display:inline-block;margin-top:16px;background:#FFC72C;color:#1D1340;font-weight:900;padding:8px 16px;border-radius:999px}
+  .url{margin-top:14px;font-size:.85rem;color:#72777F;word-break:break-all}
+  .tag{display:inline-block;margin-top:16px;background:#E61A06;color:#fff;font-weight:500;padding:10px 20px;border-radius:24px}
   @media print{body{background:#fff}.poster{box-shadow:none}}
 </style>
 </head>
 <body>
   <div class="poster">
-    <div class="logo">despegar</div>
-    <h1>🎄 ¿A dónde soñás pasar esta Navidad?</h1>
+    <div class="logo"><img src="https://media.staticontent.com/media/pictures/f7cdda6b-2225-4d5d-9b11-fc1ce4f99a7c" alt="despegar"></div>
+    <h1>¿A dónde soñás pasar esta Navidad?</h1>
     <p>Escaneá, respondé 3 preguntas y girá la ruleta.</p>
     <div id="qr"></div>
     <div class="url" id="url"></div>
@@ -33,7 +34,7 @@
   const forced = new URLSearchParams(location.search).get("url");
   const target = forced || new URL("./", location.href).href;
   document.getElementById("url").textContent = target;
-  new QRCode(document.getElementById("qr"), {text:target, width:480, height:480, colorDark:"#1D1340", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M});
+  new QRCode(document.getElementById("qr"), {text:target, width:480, height:480, colorDark:"#270570", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M});
 </script>
 </body>
 </html>

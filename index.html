@@ -3,101 +3,107 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#550FED">
+<meta name="theme-color" content="#270570">
 <title>Despegar Quitz · Navidad</title>
 <meta name="description" content="Elegí tu destino soñado para Navidad, respondé 3 preguntas y girá la ruleta para ganar un voucher.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --brand:#550FED; --brand-dark:#3A06B0; --brand-soft:#EFE8FF;
-    --sun:#FFC72C; --pink:#FF4D8D; --green:#1DBF73; --sky:#2DB7F5; --orange:#FF8A1F; --red:#F0384A;
-    --ink:#1D1340; --muted:#6B6390; --white:#fff;
+    --top:#270570; --brand:#4300D2; --brand-2:#7C4DFF; --cta:#E61A06; --cta-dark:#C21505; --teal:#028574;
+    --ink:#323439; --muted:#72777F; --line:#DDE1E8; --bg:#F2F4F5; --soft:#EFEAFB; --ok:#028574; --bad:#E61A06; --white:#fff;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%}
-  body{font-family:Nunito,system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--brand);
-    background-image:radial-gradient(circle at 20% 0%,#7B3BFF 0,transparent 45%),radial-gradient(circle at 100% 100%,#3A06B0 0,transparent 50%);
-    min-height:100dvh;display:flex;justify-content:center;overflow-x:hidden}
-  .app{width:100%;max-width:440px;min-height:100dvh;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 18px)}
-  .topbar{display:flex;align-items:center;justify-content:space-between;color:#fff;margin-bottom:14px}
-  .logo{font-weight:900;font-size:1.55rem;letter-spacing:-.5px}
-  .logo small{display:block;font-size:.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.8;margin-top:-4px}
-  .pill{background:rgba(255,255,255,.18);border-radius:999px;padding:6px 12px;font-weight:800;font-size:.85rem}
-  .screen{flex:1;display:flex;flex-direction:column;animation:in .35s ease}
-  @keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  .card{background:#fff;border-radius:24px;padding:22px 18px;box-shadow:0 12px 0 rgba(0,0,0,.15),0 20px 40px rgba(20,0,80,.35)}
-  h1{color:#fff;font-size:2rem;line-height:1.1;margin:8px 0 6px;font-weight:900}
-  h2{margin:0 0 6px;font-size:1.35rem;font-weight:900;line-height:1.2}
-  p.lead{color:#E9E1FF;margin:0 0 18px;font-weight:600}
-  .muted{color:var(--muted);font-weight:600}
-  .btn{display:block;width:100%;border:0;border-radius:16px;padding:16px;font:inherit;font-weight:900;font-size:1.1rem;cursor:pointer;
-    background:var(--sun);color:var(--ink);box-shadow:0 6px 0 #C99600;transition:transform .08s,box-shadow .08s}
-  .btn:active{transform:translateY(4px);box-shadow:0 2px 0 #C99600}
-  .btn.alt{background:#fff;color:var(--brand);box-shadow:0 6px 0 #C9B8FF}
+  body{font-family:Rubik,Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100dvh;display:flex;justify-content:center;overflow-x:hidden}
+  .app{width:100%;max-width:440px;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
+  .topbar{background:var(--top);padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;display:flex;align-items:center;justify-content:space-between}
+  .topbar img{height:28px;width:auto;display:block}
+  .topbar .tag{color:#fff;font-size:.8rem;font-weight:500;opacity:.9}
+  .screen{flex:1;display:flex;flex-direction:column;padding:14px 16px calc(env(safe-area-inset-bottom) + 14px);animation:in .3s ease}
+  @keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 16px}
+  h1{color:var(--ink);font-size:1.45rem;line-height:1.2;margin:12px 0 6px;font-weight:600}
+  h2{margin:0 0 6px;font-size:1.2rem;font-weight:600;line-height:1.2}
+  p.lead{color:var(--muted);margin:0 0 12px;font-size:.95rem;line-height:1.4}
+  .muted{color:var(--muted);font-size:.85rem}
+  .btn{display:block;width:100%;border:0;border-radius:24px;padding:14px;font:inherit;font-weight:500;font-size:1rem;cursor:pointer;background:var(--cta);color:#fff}
+  .btn:active{background:var(--cta-dark)}
+  .btn.alt{background:#fff;color:var(--brand);border:1px solid var(--brand)}
   .btn:disabled{opacity:.6;cursor:default}
-  .mt{margin-top:14px}
-  /* hero */
-  .hero{text-align:center;margin:auto 0}
-  .hero .emoji{font-size:4.2rem;display:inline-block;animation:bob 2.4s ease-in-out infinite}
-  @keyframes bob{50%{transform:translateY(-10px) rotate(-6deg)}}
-  .steps{display:grid;gap:10px;margin:18px 0 22px;text-align:left}
-  .step{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.14);color:#fff;border-radius:16px;padding:12px 14px;font-weight:800}
-  .step b{width:30px;height:30px;flex:none;border-radius:50%;background:var(--sun);color:var(--ink);display:grid;place-items:center}
-  /* destinations */
-  .dests{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .dest{border:0;border-radius:20px;padding:16px 10px 14px;color:#fff;font:inherit;cursor:pointer;text-align:center;box-shadow:0 6px 0 rgba(0,0,0,.2);transition:transform .1s}
-  .dest:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
-  .dest .e{font-size:2.4rem;display:block}
-  .dest .n{font-weight:900;font-size:1.05rem;display:block;margin-top:4px}
-  .dest .c{font-weight:700;font-size:.78rem;opacity:.9}
-  /* question */
-  .qhead{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-  .badge{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:1.8rem;flex:none}
+  .mt{margin-top:10px}
+  /* escena: el avión queda quieto y el fondo pasa de derecha a izquierda */
+  .scene{position:relative;height:150px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#1B0450 0%,#4300D2 60%,#7C4DFF 100%)}
+  .scene .layer{position:absolute;inset:0;background-repeat:repeat-x;background-size:400px 100%;animation:scroll linear infinite}
+  .scene .stars{background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1.5px 1.5px at 90px 70px,#fff,transparent),radial-gradient(1px 1px at 160px 20px,#fff,transparent),radial-gradient(1.5px 1.5px at 230px 55px,#fff,transparent),radial-gradient(1px 1px at 300px 35px,#fff,transparent),radial-gradient(1.5px 1.5px at 350px 80px,#fff,transparent);opacity:.8;animation-duration:40s}
+  .scene .ground{top:auto;height:26px;background:linear-gradient(180deg,#5B2EE6,#8A68F5);animation:none}
+  .scene .plane{position:absolute;left:40%;top:50%;width:120px;height:48px;transform:translate(-50%,-50%);animation:fly 2.8s ease-in-out infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.3))}
+  @keyframes fly{0%,100%{transform:translate(-50%,-50%) rotate(-2deg)}50%{transform:translate(-50%,-62%) rotate(2deg)}}
+  .scene.sm{height:110px} .scene.sm .plane{width:96px;height:38px}
+  @keyframes scroll{to{background-position:-400px 0}}
+  .scene .obj{position:absolute;left:100%;font-size:1.4rem;line-height:1;animation:pass linear forwards;will-change:transform}
+  @keyframes pass{to{transform:translateX(-560px)}}
+  .scene .cloud{position:absolute;left:100%;width:70px;height:22px;background:rgba(255,255,255,.75);border-radius:20px;animation:pass linear forwards}
+  .scene .cloud:before{content:"";position:absolute;left:14px;top:-12px;width:30px;height:30px;background:inherit;border-radius:50%}
+  .scene .cloud:after{content:"";position:absolute;left:36px;top:-8px;width:24px;height:24px;background:inherit;border-radius:50%}
+  /* portada */
+  .hero{display:flex;flex-direction:column;flex:1}
+  .hero .grow{flex:1}
+  .steps{display:grid;gap:8px;margin:12px 0 14px}
+  .step{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.92rem;font-weight:500}
+  .step b{width:26px;height:26px;flex:none;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:.85rem;font-weight:500}
+  /* destinos */
+  .dests{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .dest{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 8px 12px;color:var(--ink);font:inherit;cursor:pointer;text-align:center}
+  .dest:active{border-color:var(--brand);background:var(--soft)}
+  .dest .e{font-size:2.1rem;display:block}
+  .dest .n{font-weight:600;font-size:1rem;display:block;margin-top:4px}
+  .dest .c{font-size:.78rem;color:var(--muted)}
+  /* pregunta */
+  .qhead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.5rem;flex:none;background:var(--soft)}
   .dots{display:flex;gap:6px;margin-left:auto}
-  .dots i{width:12px;height:12px;border-radius:50%;background:#E3DAFF}
-  .dots i.ok{background:var(--green)} .dots i.now{background:var(--brand)}
-  .timerbar{height:8px;background:#EFE8FF;border-radius:8px;overflow:hidden;margin:4px 0 16px}
+  .dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+  .dots i.ok{background:var(--teal)} .dots i.now{background:var(--brand)}
+  .timerbar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:4px 0 14px}
   .timerbar i{display:block;height:100%;background:var(--brand);transform-origin:left}
-  .qtext{font-size:1.25rem;font-weight:900;margin:0 0 16px;line-height:1.3}
-  .opts{display:grid;gap:10px}
-  .opt{border:0;border-radius:14px;padding:15px 14px;font:inherit;font-weight:800;font-size:1rem;text-align:left;cursor:pointer;
-    background:var(--brand-soft);color:var(--ink);box-shadow:0 4px 0 #D3C4FF;transition:transform .08s}
-  .opt:active{transform:translateY(3px)}
-  .opt.ok{background:var(--green);color:#fff;box-shadow:0 4px 0 #128A52}
-  .opt.bad{background:var(--red);color:#fff;box-shadow:0 4px 0 #A81D2C;animation:shake .35s}
-  @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .qtext{font-size:1.1rem;font-weight:600;margin:0 0 14px;line-height:1.3}
+  .opts{display:grid;gap:8px}
+  .opt{border:1px solid var(--line);border-radius:12px;padding:13px 14px;font:inherit;font-size:.98rem;text-align:left;cursor:pointer;background:#fff;color:var(--ink)}
+  .opt:active{border-color:var(--brand);background:var(--soft)}
+  .opt.ok{background:var(--teal);border-color:var(--teal);color:#fff}
+  .opt.bad{background:var(--bad);border-color:var(--bad);color:#fff;animation:shake .3s}
+  @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
   .opt:disabled{cursor:default}
-  .feedback{text-align:center;font-weight:900;font-size:1.1rem;margin-top:14px;min-height:1.4em}
-  /* wheel */
-  .wheelwrap{position:relative;width:min(88vw,360px);aspect-ratio:1;margin:8px auto 18px}
-  .wheel{width:100%;height:100%;border-radius:50%;border:10px solid #fff;box-shadow:0 0 0 6px var(--sun),0 16px 40px rgba(0,0,0,.35);
-    transition:transform 5.2s cubic-bezier(.12,.72,.08,1)}
+  .feedback{text-align:center;font-weight:600;margin-top:12px;min-height:1.3em}
+  /* ruleta */
+  .wheelwrap{position:relative;width:min(78vw,300px);aspect-ratio:1;margin:6px auto 14px}
+  .wheel{width:100%;height:100%;border-radius:50%;border:6px solid #fff;outline:1px solid var(--line);transition:transform 5.2s cubic-bezier(.12,.72,.08,1)}
   .wheel svg{width:100%;height:100%;display:block}
-  .pointer{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;border-top:34px solid var(--sun);filter:drop-shadow(0 4px 2px rgba(0,0,0,.3));z-index:2}
-  .hub{position:absolute;inset:50% auto auto 50%;width:22%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:#fff;
-    display:grid;place-items:center;font-weight:900;color:var(--brand);font-size:.85rem;box-shadow:0 4px 10px rgba(0,0,0,.3);text-align:center;line-height:1}
+  .pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:24px solid var(--cta);z-index:2}
+  .hub{position:absolute;inset:50% auto auto 50%;width:22%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-weight:600;color:var(--brand);font-size:.8rem;text-align:center;line-height:1}
   /* voucher */
-  .voucher{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 20px 40px rgba(20,0,80,.35);position:relative}
-  .voucher .vt{background:var(--sun);padding:18px;text-align:center}
-  .voucher .amt{font-size:3.2rem;font-weight:900;line-height:1;color:var(--ink)}
-  .voucher .vb{padding:18px;text-align:center;border-top:3px dashed #E3DAFF}
-  .code{display:inline-block;margin-top:8px;font-family:ui-monospace,Menlo,monospace;font-weight:800;font-size:1.2rem;letter-spacing:2px;background:var(--brand-soft);color:var(--brand);padding:8px 14px;border-radius:10px}
-  .fine{font-size:.75rem;color:var(--muted);margin-top:12px}
+  .voucher{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .voucher .vt{background:var(--brand);color:#fff;padding:16px;text-align:center}
+  .voucher .vt .muted{color:rgba(255,255,255,.8)}
+  .voucher .amt{font-size:2.6rem;font-weight:700;line-height:1.1}
+  .voucher .vb{padding:16px;text-align:center}
+  .code{display:inline-block;margin-top:6px;font-family:ui-monospace,Menlo,monospace;font-weight:600;font-size:1.1rem;letter-spacing:2px;background:var(--soft);color:var(--brand);padding:8px 14px;border-radius:8px}
+  .fine{font-size:.74rem;color:var(--muted);margin-top:10px;line-height:1.4}
   .center{text-align:center}
   .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
-  .confetti i{position:absolute;top:-20px;width:10px;height:14px;border-radius:2px;animation:fall linear forwards}
+  .confetti i{position:absolute;top:-20px;width:8px;height:12px;border-radius:2px;animation:fall linear forwards}
   @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
-  .footer{color:#D6C9FF;font-size:.72rem;text-align:center;margin-top:16px;font-weight:600}
-  .footer a{color:#fff}
+  .footer{color:var(--muted);font-size:.7rem;text-align:center;padding:0 16px 10px}
+  .footer a{color:var(--brand)}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="topbar">
-    <div class="logo">despegar<small>Quitz navideño</small></div>
-    <div class="pill" id="pill">🎄 Navidad</div>
+    <a href="https://www.despegar.com.ar/" aria-label="Despegar"><img src="https://media.staticontent.com/media/pictures/f7cdda6b-2225-4d5d-9b11-fc1ce4f99a7c" alt="despegar"></a>
+    <span class="tag" id="pill"></span>
   </div>
   <main id="view" class="screen"></main>
   <div class="footer">Promoción de ejemplo. Vouchers sujetos a bases y condiciones. · <span id="qrlink"><a href="/afiche">Ver QR</a></span></div>
@@ -135,14 +141,14 @@ const DESTINOS = [
 
 /* Ruleta: probabilidad inversa al monto. Suma = 100. */
 const PREMIOS = [
-  {v:50,   label:"50",   p:30, col:"#2DB7F5"},
-  {v:200,  label:"200",  p:15, col:"#FF4D8D"},
-  {v:0,    label:"OTRA", p:12, col:"#1D1340", again:true},
-  {v:500,  label:"500",  p:4,  col:"#1DBF73"},
-  {v:100,  label:"100",  p:22, col:"#FF8A1F"},
-  {v:400,  label:"400",  p:6,  col:"#7B3BFF"},
-  {v:1000, label:"1000", p:1,  col:"#F0384A"},
-  {v:300,  label:"300",  p:10, col:"#FFC72C", dark:true},
+  {v:50,   label:"50",   p:30, col:"#7C4DFF"},
+  {v:200,  label:"200",  p:15, col:"#028574"},
+  {v:0,    label:"OTRA", p:12, col:"#323439", again:true},
+  {v:500,  label:"500",  p:4,  col:"#4300D2"},
+  {v:100,  label:"100",  p:22, col:"#00A58E"},
+  {v:400,  label:"400",  p:6,  col:"#270570"},
+  {v:1000, label:"1000", p:1,  col:"#E61A06"},
+  {v:300,  label:"300",  p:10, col:"#DDE1E8", dark:true},
 ];
 const SECONDS = 20;
 
@@ -159,17 +165,18 @@ let state = {dest:null, qi:0, ok:0, timer:null, spinning:false, rot:0};
 /* ---------- Pantallas ---------- */
 function home(){
   render(`<div class="hero">
-    <div class="emoji">✈️</div>
+    ${scene()}
     <h1>¿A dónde soñás pasar esta Navidad?</h1>
-    <p class="lead">Respondé 3 preguntas fáciles y girá la ruleta para ganar un voucher de hasta USD 1000 en tu pasaje.</p>
+    <p class="lead">Respondé 3 preguntas fáciles y girá la ruleta: podés ganar un voucher de hasta USD 1000 para tu pasaje.</p>
     <div class="steps">
       <div class="step"><b>1</b>Elegí tu destino soñado</div>
       <div class="step"><b>2</b>Acertá 3 preguntas fáciles</div>
       <div class="step"><b>3</b>Girá la ruleta y ganá</div>
     </div>
-    <button class="btn" id="go">¡Jugar ahora!</button>
+    <div class="grow"></div>
+    <button class="btn" id="go">Jugar ahora</button>
   </div>`);
-  $("#go").onclick = pickDest;
+  startScene(); $("#go").onclick = pickDest;
 }
 
 function pickDest(){
@@ -217,10 +224,12 @@ function answer(pick){
 }
 
 function fail(){
-  render(`<div class="hero"><div class="emoji">🧳</div>
+  render(`<div class="hero">${scene()}
     <h1>¡Casi!</h1><p class="lead">Para girar la ruleta tenés que acertar las 3 preguntas. ¿Probamos de nuevo?</p>
+    <div class="grow"></div>
     <button class="btn" id="retry">Intentar otra vez</button>
     <button class="btn alt mt" id="other">Cambiar destino</button></div>`);
+  startScene();
   $("#retry").onclick = ()=>{state.qi=0;state.ok=0;state.qs=shuffle(state.dest.qs);question()};
   $("#other").onclick = pickDest;
 }
@@ -235,18 +244,18 @@ function wheelSVG(){
     const mid=a0+seg/2, [tx,ty]=pt(mid,r*0.66);
     const fill = p.dark ? "#1D1340" : "#fff";
     const main = p.again ? "TIRÁ" : p.label, sub = p.again ? "DE NUEVO" : "USD";
-    s += `<g transform="translate(${tx},${ty}) rotate(${mid})"><text text-anchor="middle" fill="${fill}" font-family="Nunito" font-weight="900" font-size="${p.again?12:(p.label.length>3?15:18)}" y="0">${main}</text>
-      <text text-anchor="middle" fill="${p.again?'#FFC72C':fill}" font-family="Nunito" font-weight="900" font-size="${p.again?8:8}" y="10">${sub}</text></g>`;
+    s += `<g transform="translate(${tx},${ty}) rotate(${mid})"><text text-anchor="middle" fill="${fill}" font-family="Rubik" font-weight="900" font-size="${p.again?12:(p.label.length>3?15:18)}" y="0">${main}</text>
+      <text text-anchor="middle" fill="${p.again?'#FF8A6A':fill}" font-family="Rubik" font-weight="900" font-size="${p.again?8:8}" y="10">${sub}</text></g>`;
   });
   return `<svg viewBox="0 0 200 200">${s}</svg>`;
 }
 
 function wheel(again){
   $("#pill").textContent = `${state.dest.e} ${state.dest.n}`;
-  render(`<div class="center"><h1>${again?"¡Tirá de nuevo!":"¡3 de 3! 🎉"}</h1>
+  render(`<div class="center"><h1>${again?"¡Tirá de nuevo!":"¡3 de 3!"}</h1>
     <p class="lead">Girá la ruleta y ganá un voucher para tu pasaje a ${state.dest.n}.</p></div>
     <div class="wheelwrap"><div class="pointer"></div><div class="wheel" id="wheel" style="transform:rotate(${state.rot}deg)">${wheelSVG()}</div><div class="hub">GIRÁ</div></div>
-    <button class="btn" id="spin">¡Girar la ruleta!</button>`);
+    <button class="btn" id="spin">Girar la ruleta</button>`);
   $("#spin").onclick = spin;
   view.querySelector(".hub").onclick = spin;
 }
@@ -292,23 +301,49 @@ function makeCode(v){
 
 function voucher(v, returning){
   $("#pill").textContent = `${v.emoji} ${v.dest}`;
-  render(`<div class="center"><h1>${returning?"Tu voucher":"¡Ganaste!"}</h1>
+  render(`${scene("sm")}<div class="center"><h1>${returning?"Tu voucher":"¡Ganaste!"}</h1>
     <p class="lead">${returning?"Ya participaste desde este celular. Solo se puede jugar una vez. Este es tu premio:":"Usalo en la compra de tu pasaje."}</p></div>
-    <div class="voucher"><div class="vt"><div class="muted" style="color:#5a4a00">VOUCHER</div><div class="amt">USD ${v.amount}</div></div>
+    <div class="voucher"><div class="vt"><div class="muted">VOUCHER</div><div class="amt">USD ${v.amount}</div></div>
       <div class="vb"><div style="font-size:2rem">${v.emoji}</div><h2>Pasaje a ${v.dest}</h2>
         <div class="muted">Tu código</div><div class="code">${v.code}</div>
         <div class="fine">Sacale captura a esta pantalla. Válido para la compra de pasajes a ${v.dest}. Sujeto a bases y condiciones de la promoción.</div></div></div>
     <button class="btn mt" id="share">Compartir</button>
     ${SECURE?"":`<button class="btn alt mt" id="again">Jugar de nuevo</button>`}`);
-  if(!SECURE) $("#again").onclick = ()=>{ $("#pill").textContent="🎄 Navidad"; pickDest(); };
+  startScene();
+  if(!SECURE) $("#again").onclick = ()=>{ $("#pill").textContent=""; pickDest(); };
   $("#share").onclick = async ()=>{
     const text = `¡Gané un voucher de USD ${v.amount} para viajar a ${v.dest} en el Quitz navideño de Despegar! ✈️🎄`;
     try{ if(navigator.share) await navigator.share({title:"Despegar Quitz",text,url:location.origin+"/"}); else { await navigator.clipboard.writeText(text+" "+location.href); $("#share").textContent="¡Copiado!"; } }catch(e){}
   };
 }
 
+/* ---------- Escena: el avión vuela hacia la derecha; el cielo y lo que pasa se mueven en contra ---------- */
+function scene(cls=""){
+  return `<div class="scene ${cls}" id="scene"><div class="layer stars"></div><svg class="plane" viewBox="0 0 120 48" aria-hidden="true"><path d="M8 26 L22 22 L70 20 Q98 19 112 24 Q98 29 70 28 L22 30 Z" fill="#fff"/><path d="M34 22 L52 6 L62 6 L48 21 Z" fill="#E6E9F0"/><path d="M38 28 L54 42 L64 42 L50 28 Z" fill="#DDE1E8"/><path d="M14 22 L22 10 L30 10 L26 22 Z" fill="#E61A06"/><path d="M70 20 Q98 19 112 24 Q98 29 70 28 Z" fill="#4300D2" opacity=".15"/><circle cx="82" cy="24" r="2" fill="#4300D2"/><circle cx="90" cy="24" r="2" fill="#4300D2"/><circle cx="98" cy="24" r="2" fill="#4300D2"/><path d="M40 31 L52 31 L50 36 L42 36 Z" fill="#4300D2"/></svg><div class="layer ground"></div></div>`;
+}
+let sceneTimers = [];
+const PASSERS = ["🐦","🦅","⭐","🛸","🎈","🌙","🪁","🪐","🚁","🎄","⚽","🦖","🦕","🦩","🐉","🎅","🧦","🍕","🐄","🚀","🪂","🦋","🛰️","🎁","🐧","🛶","🧸","🍌","🐙","🎸","🦒","🧙"];
+function stopScene(){ sceneTimers.forEach(clearTimeout); sceneTimers = []; }
+function startScene(){
+  stopScene();
+  const sc = ()=>$("#scene");
+  const cloud = ()=>{ const s = sc(); if(!s) return;
+    const c = document.createElement("i"); c.className = "cloud";
+    c.style.top = (10 + Math.random()*55) + "%"; c.style.transform = `scale(${(0.5+Math.random()*0.8).toFixed(2)})`;
+    c.style.animationDuration = (7 + Math.random()*6) + "s"; c.style.opacity = (0.5+Math.random()*0.5).toFixed(2);
+    c.addEventListener("animationend", ()=>c.remove()); s.appendChild(c);
+    sceneTimers.push(setTimeout(cloud, 1500 + Math.random()*2500)); };
+  const thing = ()=>{ const s = sc(); if(!s) return;
+    const o = document.createElement("span"); o.className = "obj"; o.textContent = PASSERS[Math.floor(Math.random()*PASSERS.length)];
+    o.style.top = (8 + Math.random()*62) + "%"; o.style.fontSize = (1 + Math.random()*1.2) + "rem";
+    o.style.animationDuration = (3 + Math.random()*4) + "s";
+    o.addEventListener("animationend", ()=>o.remove()); s.appendChild(o);
+    sceneTimers.push(setTimeout(thing, 9000 + Math.random()*10000)); };
+  sceneTimers.push(setTimeout(cloud, 300), setTimeout(thing, 2500 + Math.random()*4000));
+}
+
 function confetti(){
-  const c = $("#confetti"), cols=["#FFC72C","#FF4D8D","#2DB7F5","#1DBF73","#fff","#FF8A1F"];
+  const c = $("#confetti"), cols=["#4300D2","#7C4DFF","#028574","#E61A06","#270570","#fff"];
   for(let k=0;k<90;k++){const i=document.createElement("i");
     i.style.left=Math.random()*100+"vw"; i.style.background=cols[k%cols.length];
     i.style.animationDuration=(2+Math.random()*2)+"s"; i.style.animationDelay=Math.random()*.6+"s";
@@ -351,7 +386,7 @@ function localId(){
 }
 
 function secureMsg(icon,title,text){
-  render(`<div class="hero"><div class="emoji">${icon}</div><h1>${title}</h1><p class="lead">${text}</p></div>`);
+  render(`<div class="hero">${scene()}<h1>${icon} ${title}</h1><p class="lead">${text}</p></div>`); startScene();
 }
 
 async function secureStart(){

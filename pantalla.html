@@ -5,30 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Despegar Quitz · Pantalla</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--brand:#550FED;--sun:#FFC72C;--ink:#1D1340}
+  :root{--brand:#4300D2;--top:#270570;--cta:#E61A06;--ink:#323439;--line:#DDE1E8}
   *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Nunito,system-ui,sans-serif;color:#fff;padding:16px;
-    background:var(--brand);background-image:radial-gradient(circle at 20% 0%,#7B3BFF 0,transparent 45%),radial-gradient(circle at 100% 100%,#3A06B0 0,transparent 50%)}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Rubik,Arial,sans-serif;color:#fff;padding:16px;background:linear-gradient(180deg,var(--top),var(--brand))}
   .wrap{text-align:center;max-width:720px;width:100%}
-  .logo{font-weight:900;font-size:clamp(2rem,6vw,3.4rem);letter-spacing:-1px}
-  h1{font-size:clamp(1.6rem,4.6vw,2.8rem);margin:6px 0 4px;line-height:1.1}
-  p{margin:0 0 22px;font-weight:700;opacity:.9;font-size:clamp(1rem,2.6vw,1.4rem)}
-  .qrbox{display:inline-block;background:#fff;border-radius:28px;padding:22px;border:8px solid var(--sun);box-shadow:0 20px 50px rgba(0,0,0,.35);position:relative}
+  .logo img{height:clamp(32px,5vw,56px);width:auto}
+  h1{font-size:clamp(1.5rem,4.2vw,2.6rem);margin:10px 0 4px;line-height:1.15;font-weight:600}
+  p{margin:0 0 22px;font-weight:400;opacity:.9;font-size:clamp(1rem,2.4vw,1.3rem)}
+  .qrbox{display:inline-block;background:#fff;border-radius:24px;padding:22px;position:relative}
   #qr img,#qr canvas{display:block;width:min(70vw,46vh,440px);height:auto;aspect-ratio:1}
   #qr.used{filter:blur(6px);opacity:.4;transition:.2s}
-  .bar{height:10px;background:#EFE8FF;border-radius:10px;overflow:hidden;margin-top:14px}
+  .bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin-top:14px}
   .bar i{display:block;height:100%;background:var(--brand);transform-origin:left}
-  .tag{display:inline-block;margin-top:22px;background:var(--sun);color:var(--ink);font-weight:900;padding:10px 20px;border-radius:999px;font-size:clamp(1rem,2.6vw,1.35rem)}
-  .err{background:#fff;color:var(--ink);border-radius:20px;padding:24px;font-weight:700}
+  .tag{display:inline-block;margin-top:22px;background:var(--cta);color:#fff;font-weight:500;padding:12px 24px;border-radius:24px;font-size:clamp(1rem,2.4vw,1.3rem)}
+  .err{background:#fff;color:var(--ink);border-radius:16px;padding:24px;font-weight:500}
   .fs{position:fixed;bottom:12px;right:12px;background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:10px;padding:8px 12px;font:inherit;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="wrap" id="app">
-  <div class="logo">despegar</div>
-  <h1>🎄 ¿A dónde soñás pasar esta Navidad?</h1>
+  <div class="logo"><img src="https://media.staticontent.com/media/pictures/f7cdda6b-2225-4d5d-9b11-fc1ce4f99a7c" alt="despegar"></div>
+  <h1>¿A dónde soñás pasar esta Navidad?</h1>
   <p>Escaneá con tu celular, respondé 3 preguntas y girá la ruleta.</p>
   <div class="qrbox"><div id="qr"></div><div class="bar"><i id="bar"></i></div></div>
   <div><span class="tag">Ganá hasta USD 1000 en tu pasaje ✈️</span></div>
@@ -39,7 +38,7 @@
   // Pantalla del stand. Uso: /pantalla?k=CLAVE_DEL_STAFF
   const k = new URLSearchParams(location.search).get("k") || "";
   const qrEl = document.getElementById("qr"), bar = document.getElementById("bar");
-  const qr = new QRCode(qrEl, {text:location.origin, width:600, height:600, colorDark:"#1D1340", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M});
+  const qr = new QRCode(qrEl, {text:location.origin, width:600, height:600, colorDark:"#270570", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M});
   let token = null, rotateTimer = null, pollTimer = null;
 
   function fail(msg){
