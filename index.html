@@ -353,9 +353,11 @@ function startScene(){
   const cloud = ()=>{ const s = sc(); if(!s) return;
     const c = document.createElement("i"); c.className = "cloud";
     c.style.top = (10 + Math.random()*55) + "%"; c.style.transform = `scale(${(0.5+Math.random()*0.8).toFixed(2)})`;
-    c.style.animationDuration = (11 + Math.random()*8) + "s"; c.style.opacity = (0.5+Math.random()*0.5).toFixed(2);
+    c.style.animationDuration = (11 + Math.random()*8) + "s";
+    const front = Math.random() < 0.1; // 1 de cada 10 pasa por delante del avión, más transparente
+    c.style.zIndex = front ? 4 : 1; c.style.opacity = front ? (0.25+Math.random()*0.15).toFixed(2) : (0.5+Math.random()*0.5).toFixed(2);
     c.addEventListener("animationend", ()=>c.remove()); s.appendChild(c);
-    sceneTimers.push(setTimeout(cloud, 2500 + Math.random()*3500)); };
+    sceneTimers.push(setTimeout(cloud, 5000 + Math.random()*7000)); };
   const dayNight = ()=>{ const s = sc(); if(!s) return;
     sceneDay = !sceneDay; s.classList.toggle("day", sceneDay);
     sceneTimers.push(setTimeout(dayNight, 33000)); };
