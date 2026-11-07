@@ -164,14 +164,12 @@ let state = {dest:null, qi:0, ok:0, timer:null, spinning:false, rot:0};
 function home(){
   render(`<div class="hero">
     ${scene()}
-    <h1>¿A dónde soñás pasar esta Navidad?</h1>
-    <p class="lead">Respondé 3 preguntas fáciles y girá la ruleta: podés ganar un voucher de hasta USD 1000 para tu pasaje.</p>
+    <h1>¿Dónde pasarías Navidad?</h1>
     <div class="steps">
       <div class="step"><b>1</b>Elegí tu destino soñado</div>
       <div class="step"><b>2</b>Acertá 3 preguntas fáciles</div>
       <div class="step"><b>3</b>Girá la ruleta y ganá</div>
     </div>
-    <div class="grow"></div>
     <button class="btn" id="go">Jugar ahora</button>
   </div>`);
   startScene(); $("#go").onclick = pickDest;
