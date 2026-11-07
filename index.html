@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#270570">
+<link rel="icon" href="/favicon.svg">
 <title>Despegar Quitz · Navidad</title>
 <meta name="description" content="Elegí tu destino soñado para Navidad, respondé 3 preguntas y girá la ruleta para ganar un voucher.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +19,7 @@
   html,body{margin:0;height:100%}
   body{font-family:Rubik,Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100dvh;display:flex;justify-content:center;overflow-x:hidden}
   .app{width:100%;max-width:440px;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
-  .topbar{background:var(--top);padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;display:flex;align-items:center;justify-content:space-between}
+  .topbar{background:var(--top);border-radius:0 0 18px 18px;padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;display:flex;align-items:center;justify-content:space-between}
   .topbar img{height:28px;width:auto;display:block}
   .topbar .tag{color:#fff;font-size:.8rem;font-weight:500;opacity:.9}
   .screen{flex:1;display:flex;flex-direction:column;padding:14px 16px calc(env(safe-area-inset-bottom) + 14px);animation:in .3s ease}
@@ -35,15 +36,25 @@
   .mt{margin-top:10px}
   /* escena: el avión queda quieto y el fondo pasa de derecha a izquierda */
   .scene{position:relative;height:150px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#1B0450 0%,#4300D2 60%,#7C4DFF 100%)}
+  .scene .sky{position:absolute;inset:0;transition:opacity 4s ease}
+  .scene .sky.day{background:linear-gradient(180deg,#4FA3E3 0%,#8ED0F5 60%,#C9ECFF 100%);opacity:0}
+  .scene.day .sky.day{opacity:1}
+  .scene.day .stars{opacity:0}
+  .scene .stars{transition:opacity 4s ease}
+  .scene .sun,.scene .moon{position:absolute;right:14%;top:16%;font-size:1.7rem;line-height:1;transition:opacity 3s ease,transform 4s ease;transform:translateY(16px);opacity:0}
+  .scene.day .sun{opacity:1;transform:none}
+  .scene:not(.day) .moon{opacity:1;transform:none}
+  .scene .ground{transition:background 4s ease}
+  .scene.day .ground{background:linear-gradient(180deg,#6BC8A0,#9BDFBF)}
   .scene .layer{position:absolute;inset:0;background-repeat:repeat-x;background-size:400px 100%;animation:scroll linear infinite}
   .scene .stars{background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1.5px 1.5px at 90px 70px,#fff,transparent),radial-gradient(1px 1px at 160px 20px,#fff,transparent),radial-gradient(1.5px 1.5px at 230px 55px,#fff,transparent),radial-gradient(1px 1px at 300px 35px,#fff,transparent),radial-gradient(1.5px 1.5px at 350px 80px,#fff,transparent);opacity:.8;animation-duration:40s}
   .scene .ground{top:auto;height:26px;background:linear-gradient(180deg,#5B2EE6,#8A68F5);animation:none}
-  .scene .plane{position:absolute;left:40%;top:50%;width:120px;height:48px;transform:translate(-50%,-50%);animation:fly 2.8s ease-in-out infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.3))}
-  @keyframes fly{0%,100%{transform:translate(-50%,-50%) rotate(-2deg)}50%{transform:translate(-50%,-62%) rotate(2deg)}}
-  .scene.sm{height:110px} .scene.sm .plane{width:96px;height:38px}
+  .scene .plane{position:absolute;left:42%;top:50%;width:150px;height:52px;transform:translate(-50%,-50%);animation:fly 4s ease-in-out infinite;filter:drop-shadow(0 5px 5px rgba(0,0,0,.3))}
+  @keyframes fly{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 2px))}}
+  .scene.sm{height:110px} .scene.sm .plane{width:116px;height:40px}
   @keyframes scroll{to{background-position:-400px 0}}
-  .scene .obj{position:absolute;left:100%;font-size:1.4rem;line-height:1;animation:pass linear forwards;will-change:transform}
-  @keyframes pass{to{transform:translateX(-560px)}}
+  .scene .obj{position:absolute;left:100%;font-size:1.4rem;line-height:1;white-space:nowrap;animation:pass linear forwards;will-change:transform}
+  @keyframes pass{to{transform:translateX(-640px)}}
   .scene .cloud{position:absolute;left:100%;width:70px;height:22px;background:rgba(255,255,255,.75);border-radius:20px;animation:pass linear forwards}
   .scene .cloud:before{content:"";position:absolute;left:14px;top:-12px;width:30px;height:30px;background:inherit;border-radius:50%}
   .scene .cloud:after{content:"";position:absolute;left:36px;top:-8px;width:24px;height:24px;background:inherit;border-radius:50%}
@@ -79,7 +90,7 @@
   .feedback{text-align:center;font-weight:600;margin-top:12px;min-height:1.3em}
   /* ruleta */
   .wheelwrap{position:relative;width:min(78vw,300px);aspect-ratio:1;margin:6px auto 14px}
-  .wheel{width:100%;height:100%;border-radius:50%;border:6px solid #fff;outline:1px solid var(--line);transition:transform 5.2s cubic-bezier(.12,.72,.08,1)}
+  .wheel{width:100%;height:100%;border-radius:50%;border:6px solid #fff;outline:1px solid var(--line);will-change:transform}
   .wheel svg{width:100%;height:100%;display:block}
   .pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:24px solid var(--cta);z-index:2}
   .hub{position:absolute;inset:50% auto auto 50%;width:22%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-weight:600;color:var(--brand);font-size:.8rem;text-align:center;line-height:1}
@@ -102,7 +113,7 @@
 <body>
 <div class="app">
   <div class="topbar">
-    <a href="https://www.despegar.com.ar/" aria-label="Despegar"><img src="https://media.staticontent.com/media/pictures/f7cdda6b-2225-4d5d-9b11-fc1ce4f99a7c" alt="despegar"></a>
+    <a href="https://www.despegar.com.ar/" aria-label="Despegar"><img src="/logo.svg" alt="despegar" width="148" height="32"></a>
     <span class="tag" id="pill"></span>
   </div>
   <main id="view" class="screen"></main>
@@ -141,14 +152,14 @@ const DESTINOS = [
 
 /* Ruleta: probabilidad inversa al monto. Suma = 100. */
 const PREMIOS = [
-  {v:50,   label:"50",   p:30, col:"#7C4DFF"},
-  {v:200,  label:"200",  p:15, col:"#028574"},
-  {v:0,    label:"OTRA", p:12, col:"#323439", again:true},
-  {v:500,  label:"500",  p:4,  col:"#4300D2"},
-  {v:100,  label:"100",  p:22, col:"#00A58E"},
-  {v:400,  label:"400",  p:6,  col:"#270570"},
-  {v:1000, label:"1000", p:1,  col:"#E61A06"},
-  {v:300,  label:"300",  p:10, col:"#DDE1E8", dark:true},
+  {v:50,   label:"50",   p:400,  col:"#7C4DFF"},
+  {v:200,  label:"200",  p:25,   col:"#028574"},
+  {v:0,    label:"OTRA", p:60,   col:"#323439", again:true},
+  {v:500,  label:"500",  p:4,    col:"#4300D2"},
+  {v:100,  label:"100",  p:100,  col:"#00A58E"},
+  {v:400,  label:"400",  p:6.25, col:"#270570"},
+  {v:1000, label:"1000", p:1,    col:"#E61A06"},
+  {v:300,  label:"300",  p:11.1, col:"#DDE1E8", dark:true},
 ];
 const SECONDS = 20;
 
@@ -261,7 +272,8 @@ function wheel(again){
 }
 
 function pickPrize(){
-  let x = Math.random()*100;
+  const total = PREMIOS.reduce((a,p)=>a+p.p,0);
+  let x = Math.random()*total;
   for(let i=0;i<PREMIOS.length;i++){ if((x-=PREMIOS[i].p) < 0) return i; }
   return 0;
 }
@@ -275,13 +287,7 @@ async function spin(){
     if(!r || r.error){ state.spinning=false; return secureMsg("⚠️","Se cortó la sesión","No pudimos confirmar tu jugada. Volvé a escanear el QR del stand."); }
     i = r.index; serverVoucher = r.voucher || null;
   } else i = pickPrize();
-  const seg = 360/PREMIOS.length;
-  const jitter = (Math.random()-.5)*seg*0.7;
-  const target = 360 - (i*seg + seg/2) + jitter;           // ángulo que deja el premio bajo el puntero
-  const base = state.rot - (state.rot % 360);
-  state.rot = base + 360*6 + ((target%360)+360)%360;
-  $("#wheel").style.transform = `rotate(${state.rot}deg)`;
-  setTimeout(()=>{
+  animateWheel(i, ()=>{
     state.spinning = false;
     const p = PREMIOS[i];
     if(p.again){ buzz([40,40,40]); return wheel(true); }
@@ -290,7 +296,36 @@ async function spin(){
     if(SECURE){ try{sessionStorage.removeItem("dq-sid"); localStorage.setItem("dq-won", JSON.stringify(v))}catch(e){} }
     confetti(); buzz([80,50,120]);
     voucher(v);
-  }, 5400);
+  });
+}
+
+/* La ruleta frena con inercia: amaga con el premio vecino más alto y se balancea hasta quedar en el sorteado. */
+function animateWheel(i, done){
+  const n = PREMIOS.length, seg = 360/n;
+  const prev = (i-1+n)%n, next = (i+1)%n;
+  const val = k => PREMIOS[k].again ? 250 : PREMIOS[k].v;
+  const teaseNext = val(next) > val(prev);                 // vecino con el que amaga
+  const b = teaseNext ? (i+1)*seg : i*seg;                 // ángulo del borde con ese vecino
+  const sgn = teaseNext ? 1 : -1;                          // hacia dónde queda el vecino
+  const a = [ b + sgn*seg*0.38, b - sgn*seg*0.55, b + sgn*seg*0.16, b - sgn*seg*0.42, b + sgn*seg*0.04, b - sgn*seg*(0.25+Math.random()*0.35) ];
+  const durs = [4300, 900, 800, 700, 650, 900];
+  const base = state.rot - (state.rot % 360);
+  const rot1 = base + 360*7 + ((((360 - a[0]) % 360) + 360) % 360);
+  const rots = a.map(x => rot1 - (x - a[0]));
+  const el = $("#wheel"), start = state.rot;
+  const easeOut = t => 1 - Math.pow(1-t, 3), easeIO = t => t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+  let k = 0, t0 = performance.now(), from = start;
+  function frame(now){
+    const t = Math.min(1, (now - t0)/durs[k]);
+    const e = k===0 ? easeOut(t) : easeIO(t);
+    const r = from + (rots[k]-from)*e;
+    el.style.transform = `rotate(${r}deg)`;
+    if(t < 1) return requestAnimationFrame(frame);
+    from = rots[k]; k++; t0 = now; buzz(12);
+    if(k < rots.length) return requestAnimationFrame(frame);
+    state.rot = rots[rots.length-1]; setTimeout(done, 250);
+  }
+  requestAnimationFrame(frame);
 }
 
 function makeCode(v){
@@ -319,9 +354,10 @@ function voucher(v, returning){
 
 /* ---------- Escena: el avión vuela hacia la derecha; el cielo y lo que pasa se mueven en contra ---------- */
 function scene(cls=""){
-  return `<div class="scene ${cls}" id="scene"><div class="layer stars"></div><svg class="plane" viewBox="0 0 120 48" aria-hidden="true"><path d="M8 26 L22 22 L70 20 Q98 19 112 24 Q98 29 70 28 L22 30 Z" fill="#fff"/><path d="M34 22 L52 6 L62 6 L48 21 Z" fill="#E6E9F0"/><path d="M38 28 L54 42 L64 42 L50 28 Z" fill="#DDE1E8"/><path d="M14 22 L22 10 L30 10 L26 22 Z" fill="#E61A06"/><path d="M70 20 Q98 19 112 24 Q98 29 70 28 Z" fill="#4300D2" opacity=".15"/><circle cx="82" cy="24" r="2" fill="#4300D2"/><circle cx="90" cy="24" r="2" fill="#4300D2"/><circle cx="98" cy="24" r="2" fill="#4300D2"/><path d="M40 31 L52 31 L50 36 L42 36 Z" fill="#4300D2"/></svg><div class="layer ground"></div></div>`;
+  return `<div class="scene ${cls}${sceneDay?" day":""}" id="scene"><div class="sky day"></div><div class="layer stars"></div><span class="sun">☀️</span><span class="moon">🌙</span><svg class="plane" viewBox="0 0 160 56" aria-hidden="true"><path d="M6 36 L18 42 L36 44 L124 42 Q150 40 158 33 Q150 28 132 27 L96 25 L40 25 Q22 26 6 36 Z" fill="#fff"/><path d="M36 25 Q44 14 70 14 L92 16 Q96 20 90 25 Z" fill="#F2F4F5"/><path d="M24 30 L30 10 L42 10 L38 30 Z" fill="#4300D2"/><path d="M8 36 L2 44 L18 44 L22 40 Z" fill="#DDE1E8"/><path d="M58 34 L34 52 L52 52 L86 36 Z" fill="#DDE1E8"/><ellipse cx="50" cy="46" rx="8" ry="4.5" fill="#4300D2"/><ellipse cx="68" cy="41" rx="8" ry="4.5" fill="#4300D2"/><circle cx="52" cy="20" r="1.6" fill="#4300D2"/><circle cx="60" cy="20" r="1.6" fill="#4300D2"/><circle cx="68" cy="20" r="1.6" fill="#4300D2"/><circle cx="76" cy="20" r="1.6" fill="#4300D2"/><circle cx="100" cy="32" r="1.6" fill="#4300D2"/><circle cx="108" cy="32" r="1.6" fill="#4300D2"/><circle cx="116" cy="32" r="1.6" fill="#4300D2"/><circle cx="124" cy="32" r="1.6" fill="#4300D2"/><circle cx="132" cy="32" r="1.6" fill="#4300D2"/><path d="M140 29 Q152 30 156 33 Q150 36 140 36 Z" fill="#DDE1E8"/></svg><div class="layer ground"></div></div>`;
 }
 let sceneTimers = [];
+let sceneDay = Math.random() < 0.5;
 const PASSERS = ["🐦","🦅","⭐","🛸","🎈","🌙","🪁","🪐","🚁","🎄","⚽","🦖","🦕","🦩","🐉","🎅","🧦","🍕","🐄","🚀","🪂","🦋","🛰️","🎁","🐧","🛶","🧸","🍌","🐙","🎸","🦒","🧙"];
 function stopScene(){ sceneTimers.forEach(clearTimeout); sceneTimers = []; }
 function startScene(){
@@ -339,7 +375,15 @@ function startScene(){
     o.style.animationDuration = (3 + Math.random()*4) + "s";
     o.addEventListener("animationend", ()=>o.remove()); s.appendChild(o);
     sceneTimers.push(setTimeout(thing, 9000 + Math.random()*10000)); };
-  sceneTimers.push(setTimeout(cloud, 300), setTimeout(thing, 2500 + Math.random()*4000));
+  const santa = ()=>{ const s = sc(); if(!s) return;
+    const o = document.createElement("span"); o.className = "obj"; o.textContent = "🦌🦌🛷🎅";
+    o.style.top = (6 + Math.random()*30) + "%"; o.style.fontSize = "1.3rem"; o.style.animationDuration = "6s";
+    o.addEventListener("animationend", ()=>o.remove()); s.appendChild(o);
+    sceneTimers.push(setTimeout(santa, 25000 + Math.random()*20000)); };
+  const dayNight = ()=>{ const s = sc(); if(!s) return;
+    sceneDay = !sceneDay; s.classList.toggle("day", sceneDay);
+    sceneTimers.push(setTimeout(dayNight, 20000 + Math.random()*15000)); };
+  sceneTimers.push(setTimeout(cloud, 300), setTimeout(thing, 2500 + Math.random()*4000), setTimeout(santa, 8000 + Math.random()*12000), setTimeout(dayNight, 15000 + Math.random()*10000));
 }
 
 function confetti(){
