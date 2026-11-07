@@ -43,9 +43,8 @@
   @keyframes fly{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 2px))}}
   .scene.sm{height:110px} .scene.sm .plane{width:105px}
   @keyframes pass{to{transform:translateX(-720px)}}
-  .scene .cloud{position:absolute;left:100%;width:70px;height:22px;background:rgba(255,255,255,.75);border-radius:20px;animation:pass linear forwards}
-  .scene .cloud:before{content:"";position:absolute;left:14px;top:-12px;width:30px;height:30px;background:inherit;border-radius:50%}
-  .scene .cloud:after{content:"";position:absolute;left:36px;top:-8px;width:24px;height:24px;background:inherit;border-radius:50%}
+  .scene .cloud{position:absolute;left:100%;width:110px;animation:pass linear forwards;will-change:transform}
+  .scene .cloud svg{display:block;width:100%;height:auto}
   /* portada */
   .hero{display:flex;flex-direction:column;flex:1}
   .hero .grow{flex:1}
@@ -344,6 +343,13 @@ function voucher(v, returning){
 function scene(cls=""){
   return `<div class="scene ${cls}${sceneDay?" day":""}" id="scene"><div class="sky day"></div><img class="plane" src="/plane.png" alt="" width="760" height="224"></div>`;
 }
+// Nubes con varios lóbulos, sombra suave abajo y brillo arriba
+const CLOUDS = [
+  `<svg viewBox="0 0 120 50" aria-hidden="true"><path d="M18 44Q4 44 4 33Q4 23 15 22Q14 10 28 8Q36 0 48 6Q56 -2 68 6Q82 4 86 16Q100 12 106 24Q118 26 116 36Q114 44 102 44Z" fill="#fff"/><path d="M18 44Q4 44 4 33Q6 38 18 38H102Q112 38 116 34Q114 44 102 44Z" fill="rgba(60,40,140,.12)"/><path d="M30 12Q40 4 50 10Q58 4 68 10" stroke="rgba(255,255,255,.9)" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+  `<svg viewBox="0 0 120 50" aria-hidden="true"><path d="M14 44Q2 42 4 32Q6 24 16 24Q18 12 32 12Q38 2 52 6Q62 0 72 8Q86 6 90 18Q104 16 110 28Q120 32 114 42Q110 46 100 44Z" fill="#fff"/><path d="M14 44Q2 42 4 32Q10 38 24 38H98Q110 38 114 36Q116 44 100 44Z" fill="rgba(60,40,140,.12)"/><circle cx="40" cy="26" r="12" fill="rgba(255,255,255,.7)"/><circle cx="76" cy="24" r="14" fill="rgba(255,255,255,.7)"/></svg>`,
+  `<svg viewBox="0 0 120 50" aria-hidden="true"><path d="M22 44Q6 46 6 34Q6 26 16 26Q12 14 26 14Q30 2 46 8Q58 -4 70 8Q80 2 90 12Q104 10 106 24Q116 24 116 34Q116 44 104 44Z" fill="#fff"/><path d="M22 44Q6 46 6 34Q10 38 22 38H104Q112 38 116 32Q116 44 104 44Z" fill="rgba(60,40,140,.12)"/><path d="M26 16Q36 8 46 14M70 8Q80 4 90 12" stroke="rgba(255,255,255,.9)" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+  `<svg viewBox="0 0 120 50" aria-hidden="true"><path d="M30 44Q14 44 14 34Q14 26 24 26Q26 16 38 16Q44 6 58 10Q66 4 76 10Q88 8 92 20Q104 20 106 30Q110 44 96 44Z" fill="#fff"/><path d="M30 44Q14 44 14 34Q18 38 30 38H96Q104 38 106 34Q110 44 96 44Z" fill="rgba(60,40,140,.12)"/><circle cx="56" cy="24" r="12" fill="rgba(255,255,255,.7)"/></svg>`
+];
 let sceneTimers = [];
 let sceneDay = Math.random() < 0.5;
 function stopScene(){ sceneTimers.forEach(clearTimeout); sceneTimers = []; }
@@ -351,8 +357,8 @@ function startScene(){
   stopScene();
   const sc = ()=>$("#scene");
   const cloud = ()=>{ const s = sc(); if(!s) return;
-    const c = document.createElement("i"); c.className = "cloud";
-    c.style.top = (10 + Math.random()*55) + "%"; c.style.transform = `scale(${(0.5+Math.random()*0.8).toFixed(2)})`;
+    const c = document.createElement("i"); c.className = "cloud"; c.innerHTML = CLOUDS[Math.floor(Math.random()*CLOUDS.length)];
+    c.style.top = (6 + Math.random()*55) + "%"; c.style.width = Math.round(60 + Math.random()*100) + "px";
     c.style.animationDuration = (11 + Math.random()*8) + "s";
     const front = Math.random() < 0.1; // 1 de cada 10 pasa por delante del avión, más transparente
     c.style.zIndex = front ? 4 : 1; c.style.opacity = front ? (0.25+Math.random()*0.15).toFixed(2) : (0.5+Math.random()*0.5).toFixed(2);
