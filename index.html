@@ -64,7 +64,7 @@
   @keyframes flick{from{transform:rotate(var(--r,0deg)) scale(1,1)}to{transform:rotate(var(--r,0deg)) scale(1.3,.8)}}
   .fx .glow{right:0;top:calc(var(--h)*-.5);width:var(--s);height:var(--h);border-radius:50%;background:radial-gradient(ellipse at 90% 50%,#DFF9FF 0%,#4FC3FF 35%,rgba(79,195,255,0) 72%);transform-origin:100% 50%;transform:rotate(var(--r,0deg));animation:pulse .45s ease-in-out infinite alternate}
   @keyframes pulse{from{opacity:.7;transform:rotate(var(--r,0deg)) scale(.9,1)}to{opacity:1;transform:rotate(var(--r,0deg)) scale(1.15,1.05)}}
-  .fx .blink{width:var(--s);height:var(--s);margin:calc(var(--s)*-.5);border-radius:50%;background:var(--c);box-shadow:0 0 calc(var(--s)*.9) var(--c);animation:blink 1.4s steps(1) infinite;animation-delay:var(--d,0s)}
+  .fx .blink{width:max(var(--s),3px);height:max(var(--s),3px);margin:calc(max(var(--s),3px)*-.5);border-radius:50%;background:var(--c);box-shadow:0 0 calc(var(--s)*.9) var(--c);animation:blink 1.4s steps(1) infinite;animation-delay:var(--d,0s)}
   @keyframes blink{0%,18%{opacity:1}19%,100%{opacity:.12}}
   .fx .prop{width:var(--s);height:var(--s);margin:calc(var(--s)*-.5);transform:scaleX(var(--k,.22))}
   .fx .prop svg{width:100%;height:100%;display:block}
@@ -405,25 +405,25 @@ const FX = {
 };
 const RED="#FF3B3B", GRN="#3BFF7A", WHT="#FFFFFF";
 const OBJS = [
-  ["xwing",120, FX.flame(12,30,18)+FX.flame(12,64,18)],
-  ["tie",90,""], ["enterprise",120, FX.glow(97,10,10,8,180)+FX.glow(37,88,10,8,180)], ["falcon",110, FX.glow(97,55,12,40,180)], ["discovery",120,""],
-  ["hubble",110, FX.blink(12,62,RED)+FX.blink(86,38,GRN,.5)+FX.blink(50,18,WHT,1)],
-  ["gansos",110,""], ["boba",90, FX.flame(50,82,20,-90)], ["superman",110,""], ["et",90,""], ["frisbee",70,""], ["pelota",55,""],
-  ["dron",90, FX.rotor(10,18,26)+FX.rotor(90,18,26)+FX.rotor(38,6,22)+FX.rotor(62,6,22)],
-  ["colibri",70,""], ["pegaso",110,""], ["ardilla",100,""], ["nazca",110,""], ["voyager",90,""],
-  ["webb",100, FX.blink(72,18,RED)+FX.blink(22,72,GRN,.7)],
-  ["iss",130, FX.blink(4,46,RED)+FX.blink(96,46,GRN,.5)+FX.blink(50,32,WHT,1)],
-  ["grinch",110, FX.prop(4,50,30,.25)], ["helicoptero",110, FX.rotor(47,17,70)+FX.prop(94,50,14,.2)], ["globo",70,""], ["avionpapel",90,""], ["parapente",90,""], ["wingsuit",100,""],
-  ["saturn",50, FX.flame(50,99,40,-90)],
-  ["acrobatico",110, FX.prop(5,47,30,.25)], ["ciguena",90,""], ["plusultra",130, FX.prop(16,20,22,.3)], ["spirit",110, FX.prop(6,50,28,.25)],
-  ["aladelta",110,""], ["wright",130, FX.prop(44,52,22,.25)],
-  ["sputnik",70, FX.blink(44,42,RED)+FX.blink(56,52,WHT,.6)], ["pterodactilo",100,""],
-  ["globo2",70,""], ["planeador",130,""], ["falcon2",110, FX.glow(92,52,12,40,180)],
-  ["destroyer",150, FX.glow(97,62,12,26,180)+FX.glow(96,54,8,10,180)+FX.glow(96,72,8,10,180)],
-  ["wright2",130, FX.prop(60,50,22,.25)], ["delorean",120, FX.flame(98,84,30,180)+FX.flame(96,92,20,180)],
-  ["parapente2",90,""], ["saturn2",130, FX.flame(100,50,26,180)],
-  ["ovni",110, FX.blink(24,62,RED)+FX.blink(50,68,WHT,.45)+FX.blink(76,62,GRN,.9)+FX.glow(50,78,30,12,-90)],
-  ["copa",50,""]
+  ["xwing",28, FX.flame(12,30,18)+FX.flame(12,64,18)],
+  ["tie",20,""], ["enterprise",190, FX.glow(97,10,10,8,180)+FX.glow(37,88,10,8,180)], ["falcon",74, FX.glow(97,55,12,40,180)], ["discovery",150,""],
+  ["hubble",30, FX.blink(12,62,RED)+FX.blink(86,38,GRN,.5)+FX.blink(50,18,WHT,1)],
+  ["gansos",30,""], ["boba",18, FX.flame(50,82,20,-90)], ["superman",18,""], ["et",18,""], ["frisbee",12,""], ["pelota",12,""],
+  ["dron",12, FX.rotor(10,18,26)+FX.rotor(90,18,26)+FX.rotor(38,6,22)+FX.rotor(62,6,22)],
+  ["colibri",10,""], ["pegaso",20,""], ["ardilla",12,""], ["nazca",60,""], ["voyager",16,""],
+  ["webb",44, FX.blink(72,18,RED)+FX.blink(22,72,GRN,.7)],
+  ["iss",170, FX.blink(4,46,RED)+FX.blink(96,46,GRN,.5)+FX.blink(50,32,WHT,1)],
+  ["grinch",20, FX.prop(4,50,30,.25)], ["helicoptero",28, FX.rotor(47,17,70)+FX.prop(94,50,14,.2)], ["globo",40,""], ["avionpapel",12,""], ["parapente",22,""], ["wingsuit",18,""],
+  ["saturn",30, FX.flame(50,99,40,-90)],
+  ["acrobatico",18, FX.prop(5,47,30,.25)], ["ciguena",14,""], ["plusultra",46, FX.prop(16,20,22,.3)], ["spirit",30, FX.prop(6,50,28,.25)],
+  ["aladelta",22,""], ["wright",26, FX.prop(44,52,22,.25)],
+  ["sputnik",12, FX.blink(44,42,RED)+FX.blink(56,52,WHT,.6)], ["pterodactilo",22,""],
+  ["globo2",40,""], ["planeador",32,""], ["falcon2",74, FX.glow(92,52,12,40,180)],
+  ["destroyer",240, FX.glow(97,62,12,26,180)+FX.glow(96,54,8,10,180)+FX.glow(96,72,8,10,180)],
+  ["wright2",26, FX.prop(60,50,22,.25)], ["delorean",16, FX.flame(98,84,30,180)+FX.flame(96,92,20,180)],
+  ["parapente2",22,""], ["saturn2",200, FX.flame(100,50,26,180)],
+  ["ovni",42, FX.blink(24,62,RED)+FX.blink(50,68,WHT,.45)+FX.blink(76,62,GRN,.9)+FX.glow(50,78,30,12,-90)],
+  ["copa",12,""]
 ];
 const GIFT = `<svg viewBox="0 0 40 40"><rect x="4" y="14" width="32" height="24" rx="3" fill="#E61A06"/><rect x="2" y="10" width="36" height="8" rx="2" fill="#FF4D3D"/><rect x="17" y="10" width="6" height="28" fill="#FFD23F"/><path d="M20 10C12 2 6 6 12 10M20 10C28 2 34 6 28 10" stroke="#FFD23F" stroke-width="3" fill="none"/></svg>`;
 function santaHTML(){
@@ -437,6 +437,7 @@ function bag(arr){ let b = []; return ()=>{ if(!b.length) b = arr.slice().sort((
 const nextObj = bag(OBJS.filter(o=>o[0]!=="grinch"));
 function startScene(){
   stopScene();
+  ["santa_r1","santa_r2","santa_r3","santa_sleigh","grinch"].forEach(n=>{ const i = new Image(); i.src = `/obj/${n}.png`; });
   const sc = ()=>$("#scene");
   const cloud = ()=>{ const s = sc(); if(!s) return;
     const c = document.createElement("i"); c.className = "cloud"; c.innerHTML = CLOUDS[Math.floor(Math.random()*CLOUDS.length)];
@@ -465,7 +466,7 @@ function startScene(){
     const front = Math.random() < 0.5, dur = 9 + Math.random()*5, top = 4 + Math.random()*50;
     if(flyCount % 5 === 0){
       // Papá Noel: renos con vuelo propio, regalos cada tanto y, la mitad de las veces, el Grinch persiguiéndolo
-      const w = 150 * (0.9 + Math.random()*0.4);
+      const w = 64 * (0.9 + Math.random()*0.3) * (front ? 1.25 : 0.85);
       const santa = spawn(santaHTML(), w, Math.min(top, 30), dur, front);
       const gifts = ()=>{ if(!santa || !santa.isConnected) return;
         const g = document.createElement("i"); g.className = "gift"; g.innerHTML = GIFT; g.style.left = (72 + Math.random()*20) + "%"; g.style.top = "55%";
@@ -474,16 +475,16 @@ function startScene(){
       sceneTimers.push(setTimeout(gifts, 1200 + Math.random()*1500));
       if(Math.random() < 0.5){
         const g = OBJS.find(o=>o[0]==="grinch");
-        spawn(`<img src="/obj/grinch.png" alt="">${g[2]}`, w*0.75, Math.min(top, 30) + 14, dur, front, 1.1);
+        spawn(`<img src="/obj/grinch.png" alt="">${g[2]}`, w*0.4, Math.min(top, 30) + 5, dur, front, 0.7);
       }
     }else{
       const [name, base, fx] = nextObj();
-      const w = Math.round(base * (0.6 + Math.random()*0.7));
+      const w = Math.max(10, Math.round(base * (0.8 + Math.random()*0.4) * (front ? 1.25 : 0.85)));
       const img = new Image(); img.src = `/obj/${name}.png`;
       const go = ()=>spawn(`<img src="/obj/${name}.png" alt="">${fx}`, w, top, dur, front);
       if(img.complete) go(); else { img.onload = go; img.onerror = ()=>{}; }
     }
-    sceneTimers.push(setTimeout(thing, 5000 + Math.random()*2000)); };
+    sceneTimers.push(setTimeout(thing, 10000 + Math.random()*5000)); };
   const dayNight = ()=>{ const s = sc(); if(!s) return;
     sceneDay = !sceneDay; s.classList.toggle("day", sceneDay);
     sceneTimers.push(setTimeout(dayNight, 33000)); };
@@ -492,7 +493,7 @@ function startScene(){
     w.className = "weather " + kind + " on";
     sceneTimers.push(setTimeout(()=>{ w.classList.remove("on"); }, 12000 + Math.random()*8000));
     sceneTimers.push(setTimeout(weather, 45000 + Math.random()*45000)); };
-  sceneTimers.push(setTimeout(cloud, 300), setTimeout(thing, 2500), setTimeout(dayNight, 33000), setTimeout(weather, 20000 + Math.random()*30000));
+  sceneTimers.push(setTimeout(cloud, 300), setTimeout(thing, 4000), setTimeout(dayNight, 33000), setTimeout(weather, 20000 + Math.random()*30000));
 }
 
 function confetti(){
