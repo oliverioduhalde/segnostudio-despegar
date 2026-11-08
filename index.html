@@ -573,7 +573,7 @@ function startScene(){
     // cada gota y cada copo con su propia velocidad, tamaño, retraso y vaivén
     const n = kind === "rain" ? 110 : 60, R = Math.random;
     w.innerHTML = Array.from({length:n}, ()=>{
-      const d = kind === "rain" ? (0.55 + R()*0.9) : (3.5 + R()*6);
+      const d = kind === "rain" ? (0.85 + R()*1.2) : (3.5 + R()*6);
       const sz = kind === "rain" ? (6 + R()*10) + "px" : (1.5 + R()*2.5) + "px";
       return `<i style="--x:${(R()*100).toFixed(1)}%;--d:${d.toFixed(2)}s;--dl:${(-R()*d).toFixed(2)}s;--s:${sz};--o:${(0.35 + R()*0.6).toFixed(2)};--sw:${(8 + R()*22).toFixed(0)}px"></i>`; }).join("");
     w.className = "weather " + kind + " on";
