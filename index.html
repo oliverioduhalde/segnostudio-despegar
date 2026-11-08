@@ -111,7 +111,7 @@
   .scene .balloons .bal{animation:balsway 2.6s ease-in-out infinite alternate}
   .scene .obj .kick{display:block;animation:parab linear forwards}
   .scene .obj .ball{display:block;animation:ballspin 1.1s linear infinite}
-  @keyframes parab{0%{transform:translateY(40px)}12.5%{transform:translateY(-5px)}25%{transform:translateY(-27px)}37.5%{transform:translateY(-44px)}50%{transform:translateY(-50px)}62.5%{transform:translateY(-44px)}75%{transform:translateY(-27px)}87.5%{transform:translateY(-5px)}100%{transform:translateY(40px)}}
+  @keyframes parab{0%{transform:translateY(20px)}12.5%{transform:translateY(-2px)}25%{transform:translateY(-13px)}37.5%{transform:translateY(-22px)}50%{transform:translateY(-25px)}62.5%{transform:translateY(-22px)}75%{transform:translateY(-13px)}87.5%{transform:translateY(-2px)}100%{transform:translateY(20px)}}
   @keyframes ballspin{to{transform:rotate(-360deg)}}
   @keyframes balsway{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
   .scene .obj .stunt{display:block;position:relative;transform-origin:50% 50%;animation:pirueta 7s ease-in-out infinite}
@@ -465,7 +465,7 @@ const WINGS = {
 const OBJS = [
   ["plusultra",46, FX.prop(16,17,26,.28)], ["spirit",30, FX.prop(7,50,42,.2)],
   ["xwing",34, FX.flame(72,37,13,180)+FX.flame(72,62,13,180)],
-  ["tie",20,""], ["enterprise",70, FX.glow(99,11,10,7,180)+FX.glow(99,43,10,7,180)], ["falcon",50, FX.glow(97,55,12,40,180)],
+  ["tie",20,""], ["enterprise",70, FX.glow(99,11,10,7,180)+FX.glow(99,43,10,7,180)], ["falcon",50,""],
   ["hubble",34, FX.blink(62,6,RED)+FX.blink(44,93,GRN,.5)+FX.blink(50,40,WHT,1)],
   ["gansos",30,""], ["boba",18, FX.flame(98,52,22,180)], ["superman",18,""], ["et",18,""], ["pelota",12,""],
   ["dron",12, FX.rotor(12,7,30)+FX.rotor(86,7,30)],
@@ -477,7 +477,7 @@ const OBJS = [
   ["acrobatico",18, FX.prop(5,47,30,.25)], ["ciguena",14,""],
   ["aladelta",22,""], ["wright",26, FX.prop(44,52,22,.25)],
   ["sputnik",32, FX.blink(99,2,RED)+FX.blink(99,29,RED,1.1)+FX.blink(99,72,RED,2.2)+FX.blink(92,97,RED,3.3)+FX.blink(9,50,WHT,.8)], ["pterodactilo",44,""],
-  ["globo2",40,""], ["planeador",32,""],
+  ["planeador",32,""],
   ["destroyer",80, FX.glow(98,63,12,22,180)+FX.glow(97,53,8,8,180)+FX.glow(97,73,8,8,180)],
   ["wright2",26, FX.prop(60,50,22,.25)], ["delorean",16, FX.flame(98,84,30,180)+FX.flame(96,92,20,180)],
   ["parapente2",22,""], ["saturn2",200, FX.flame(99,43,20,180)+FX.flame(99,57,20,180)],
@@ -569,15 +569,15 @@ function startScene(){
           const xw = OBJS.find(o=>o[0]==="xwing"), wx = Math.round(xw[1]*1.2*(front ? 1.25 : 0.85));
           const x = spawn(`<span class="part" style="left:0;width:100%;animation-duration:1.4s"><img src="/obj/xwing.png" alt="">${xw[2]}</span>`, wx, top + 4, dur*0.92, front, 3.2); // más distancia
           const fire = ()=>{ const s = sc(); if(!s || !x || !x.isConnected) return;
-            const xr = x.getBoundingClientRect(), r = s.getBoundingClientRect();
+            const xr = (x.querySelector("img") || x).getBoundingClientRect(), r = s.getBoundingClientRect();
             if(xr.right < r.left) return;
             // una ráfaga: los 4 cañones de las alas disparan sucesivamente
-            const tips = [[0.10,0.07],[0.62,0.04],[0.14,0.88],[0.58,0.95]];
-            tips.forEach((t,k)=>sceneTimers.push(setTimeout(()=>{ const xr2 = x.getBoundingClientRect(); if(!x.isConnected) return;
+            const tips = [[0.17,0.10],[0.65,0.06],[0.18,0.86],[0.66,0.92]];
+            tips.forEach((t,k)=>sceneTimers.push(setTimeout(()=>{ if(!x.isConnected) return; const xi = x.querySelector("img"), xr2 = (xi || x).getBoundingClientRect();
               const l = document.createElement("i"); l.className = "laser";
               l.style.left = (xr2.left - r.left + xr2.width*t[0] - 12) + "px"; l.style.top = (xr2.top - r.top + xr2.height*t[1]) + "px";
-              l.addEventListener("animationend", ()=>l.remove()); s.appendChild(l); }, k*140)));
-            sceneTimers.push(setTimeout(fire, 1100 + Math.random()*700)); };
+              l.addEventListener("animationend", ()=>l.remove()); s.appendChild(l); }, k*230)));
+            sceneTimers.push(setTimeout(fire, 2800 + Math.random()*1700)); };
           sceneTimers.push(setTimeout(fire, 2600));
         } };
       if(img.complete) go(); else { img.onload = go; img.onerror = ()=>{}; }
