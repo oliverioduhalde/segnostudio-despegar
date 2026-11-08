@@ -105,8 +105,8 @@
   .scene .obj .part img.wing{position:absolute;left:0;top:0;width:100%;animation:flap ease-in-out infinite alternate}
   @keyframes flap{from{transform:scaleY(1) rotate(0)}to{transform:scaleY(.28) rotate(-4deg)}}
   .scene .obj .part img.front{position:relative;z-index:1}
-  .scene .obj .stunt{display:block;position:relative;transform-origin:50% 50%;animation:pirueta 6s ease-in-out infinite}
-  @keyframes pirueta{0%,20%{transform:rotate(0) rotateX(0)}42%{transform:rotate(-360deg) rotateX(0) translateY(-6px)}50%,62%{transform:rotate(-360deg) rotateX(0)}80%{transform:rotate(-360deg) rotateX(360deg)}100%{transform:rotate(-360deg) rotateX(360deg)}}
+  .scene .obj .stunt{display:block;position:relative;transform-origin:50% 50%;animation:pirueta 7s ease-in-out infinite}
+  @keyframes pirueta{0%,12%{transform:rotate(0) translateY(0)}24%{transform:rotate(-180deg) translateY(-22px)}36%{transform:rotate(-360deg) translateY(0)}44%{transform:rotate(-360deg) translateY(0)}56%{transform:rotate(-540deg) translateY(-22px)}68%{transform:rotate(-720deg) translateY(0)}100%{transform:rotate(-720deg) translateY(0)}} /* dos loops, campana grande */
   .scene .obj .part img.wing.back{z-index:0}
   @keyframes capa{0%{transform:skewY(-7deg) scaleY(.9)}50%{transform:skewY(2deg) scaleY(1.04) scaleX(1.03)}100%{transform:skewY(6deg) scaleY(1.08)}}
   .scene .obj .part img{display:block;width:100%;height:auto}
