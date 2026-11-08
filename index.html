@@ -556,10 +556,13 @@ function startScene(){
           const fire = ()=>{ const s = sc(); if(!s || !x || !x.isConnected) return;
             const xr = x.getBoundingClientRect(), r = s.getBoundingClientRect();
             if(xr.right < r.left) return;
-            [0, 1].forEach(k=>{ const l = document.createElement("i"); l.className = "laser";
-              l.style.left = (xr.left - r.left + 2) + "px"; l.style.top = (xr.top - r.top + xr.height*(k ? 0.68 : 0.3)) + "px";
-              l.addEventListener("animationend", ()=>l.remove()); s.appendChild(l); });
-            sceneTimers.push(setTimeout(fire, 650 + Math.random()*500)); };
+            // una ráfaga: los 4 cañones de las alas disparan sucesivamente
+            const tips = [[0.10,0.07],[0.62,0.04],[0.14,0.88],[0.58,0.95]];
+            tips.forEach((t,k)=>sceneTimers.push(setTimeout(()=>{ const xr2 = x.getBoundingClientRect(); if(!x.isConnected) return;
+              const l = document.createElement("i"); l.className = "laser";
+              l.style.left = (xr2.left - r.left + xr2.width*t[0] - 12) + "px"; l.style.top = (xr2.top - r.top + xr2.height*t[1]) + "px";
+              l.addEventListener("animationend", ()=>l.remove()); s.appendChild(l); }, k*140)));
+            sceneTimers.push(setTimeout(fire, 1100 + Math.random()*700)); };
           sceneTimers.push(setTimeout(fire, 2600));
         } };
       if(img.complete) go(); else { img.onload = go; img.onerror = ()=>{}; }
