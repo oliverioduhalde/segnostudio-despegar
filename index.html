@@ -39,7 +39,7 @@
   .btn:disabled{opacity:.6;cursor:default}
   .mt{margin-top:10px}
   /* escena: el avión queda quieto, las nubes pasan y el cielo cambia de día a noche en degradé */
-  .scene{position:relative;isolation:isolate;height:150px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#120338 0%,#2A0A8C 55%,#5B2EE6 100%)}
+  .scene{position:relative;isolation:isolate;height:150px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#07011C 0%,#160650 55%,#3618A6 100%)}
   .scene .sky{position:absolute;inset:0;z-index:-1;transition:opacity 8s ease-in-out} /* sol y luna siempre detrás de todo */
   .scene .sky.day{background:linear-gradient(180deg,#3E8FD9 0%,#7CC5F2 60%,#BFE6FF 100%);opacity:0}
   .scene.day .sky.day{opacity:1}
@@ -50,6 +50,9 @@
   @keyframes dusk{0%,50%{opacity:0}100%{opacity:1}}
   .scene .moon{position:absolute;left:78%;top:20%;width:36px;height:36px;transform:translate(-50%,-50%);filter:drop-shadow(0 0 5px rgba(255,244,207,.7)) drop-shadow(0 0 14px rgba(255,240,200,.35));animation:moonarc 33s linear forwards}
   @keyframes moonarc{0%{left:78%;top:20%}100%{left:82%;top:30%}}
+  /* nunca juntos: el sol se apaga del todo y recién después aparece la luna (y al revés) */
+  .scene .sun{transition:opacity 2s ease 6s} .scene:not(.day) .sun{opacity:0;transition-delay:0s}
+  .scene .moon{transition:opacity 3s ease 6s} .scene.day .moon{opacity:0;transition:opacity 1.5s ease 0s}
   .scene .moon svg{width:100%;height:100%;display:block}
   .scene .moon .ph{display:none}
   .scene .moon.p1 .ph1,.scene .moon.p2 .ph2,.scene .moon.p3 .ph3{display:block}
@@ -105,6 +108,8 @@
   .scene .obj .part img.wing{position:absolute;left:0;top:0;width:100%;animation:flap ease-in-out infinite alternate}
   @keyframes flap{from{transform:scaleY(1) rotate(0)}to{transform:scaleY(.28) rotate(-4deg)}}
   .scene .obj .part img.front{position:relative;z-index:1}
+  .scene .balloons .bal{animation:balsway 2.6s ease-in-out infinite alternate}
+  @keyframes balsway{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
   .scene .obj .stunt{display:block;position:relative;transform-origin:50% 50%;animation:pirueta 7s ease-in-out infinite}
   @keyframes pirueta{0%,12%{transform:rotate(0) translateY(0)}24%{transform:rotate(-180deg) translateY(-22px)}36%{transform:rotate(-360deg) translateY(0)}44%{transform:rotate(-360deg) translateY(0)}56%{transform:rotate(-540deg) translateY(-22px)}68%{transform:rotate(-720deg) translateY(0)}100%{transform:rotate(-720deg) translateY(0)}} /* dos loops, campana grande */
   .scene .obj .part img.wing.back{z-index:0}
@@ -444,6 +449,9 @@ const FX = {
   rotor:(x,y,s)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="rotor" style="--s:${s}em"></span></i>`
 };
 const RED="#FF3B3B", GRN="#3BFF7A", WHT="#FFFFFF";
+// la Copa del Mundo colgada de tres globos argentinos: 78, 86 y 22
+const BAL = (cx,cy,fill,txt,tc,d)=>`<g class="bal" style="animation-delay:${d}s;transform-origin:${cx}px ${cy+34}px"><path d="M${cx} ${cy+33}L${cx-4} ${cy+39}L${cx+4} ${cy+39}Z" fill="${fill}" stroke="#4a6a90" stroke-width="1"/><ellipse cx="${cx}" cy="${cy}" rx="27" ry="33" fill="${fill}" stroke="#4a6a90" stroke-width="1.5"/><ellipse cx="${cx-9}" cy="${cy-12}" rx="7" ry="10" fill="#fff" fill-opacity=".45"/><text x="${cx}" y="${cy+9}" text-anchor="middle" font-family="Rubik,Arial,sans-serif" font-weight="800" font-size="26" fill="${tc}">${txt}</text></g>`;
+const COPA_HTML = ()=>`<svg class="balloons" viewBox="0 0 200 150" style="display:block;width:100%;overflow:visible"><g fill="none" stroke="#5b7fa8" stroke-width="1.6"><path d="M48 84Q70 120 100 150"/><path d="M100 70Q100 110 100 150"/><path d="M152 84Q130 120 100 150"/></g>${BAL(48,45,"#74ACDF","78","#fff",0)}${BAL(100,36,"#FFFFFF","86","#2F6FB2",-0.9)}${BAL(152,45,"#74ACDF","22","#fff",-1.7)}</svg><img src="/obj/copa.png" alt="" style="position:absolute;left:34%;top:100%;width:32%">`;
 // alas que aletean: [pivotes en % por ala, duración del aleteo en s]
 const WINGS = {
   gansos:[[[44,34],[28,53],[15,56],[72,49],[42,81],[67,83],[92,85]], .42],
@@ -470,7 +478,7 @@ const OBJS = [
   ["wright2",26, FX.prop(60,50,22,.25)], ["delorean",16, FX.flame(98,84,30,180)+FX.flame(96,92,20,180)],
   ["parapente2",22,""], ["saturn2",200, FX.flame(99,43,20,180)+FX.flame(99,57,20,180)],
   ["ovni",42, FX.blink(24,62,RED)+FX.blink(50,68,WHT,.45)+FX.blink(76,62,GRN,.9)],
-  ["copa",12,""]
+  ["copa",40,""]
 ];
 // Regalos distintos: caja con moño, caja alta, caja redonda, caja a rayas, bolsa, caja con lazo cruzado
 const GIFTS = [
@@ -548,7 +556,7 @@ function startScene(){
       const wg = WINGS[name];
       const wo = wg && wg[2] || {};
       const body = wg ? `<img src="/obj/${name}_body.png" alt="" class="${wo.back ? "front" : ""}">` + wg[0].map((p,i)=>`<img class="wing${wo.back ? " back" : ""}" src="/obj/${name}_w${i+1}.png" alt="" style="transform-origin:${p[0]}% ${p[1]}%;animation-name:${wo.anim || "flap"};animation-duration:${wg[1]}s;animation-delay:-${(Math.random()*wg[1]).toFixed(2)}s">`).join("") : `<img src="/obj/${name}.png" alt="">`;
-      const inner = name === "acrobatico" ? `<span class="stunt">${body}${fx}</span>` : body + fx; // el acrobático hace piruetas
+      const inner = name === "acrobatico" ? `<span class="stunt">${body}${fx}</span>` : name === "copa" ? COPA_HTML() : body + fx; // el acrobático hace piruetas
       const go = ()=>{ spawn(`<span class="part" style="left:0;width:100%;animation-duration:${(1.6+Math.random()*1.8).toFixed(2)}s">${inner}</span>`, w, top, dur, front);
         if(name === "tie"){
           // el X-Wing lo persigue: sale más atrás, un poco más rápido, y dispara láseres
