@@ -109,6 +109,10 @@
   @keyframes flap{from{transform:scaleY(1) rotate(0)}to{transform:scaleY(.28) rotate(-4deg)}}
   .scene .obj .part img.front{position:relative;z-index:1}
   .scene .balloons .bal{animation:balsway 2.6s ease-in-out infinite alternate}
+  .scene .obj .kick{display:block;animation:parab linear forwards}
+  .scene .obj .ball{display:block;animation:ballspin 1.1s linear infinite}
+  @keyframes parab{0%{transform:translateY(40px)}12.5%{transform:translateY(-5px)}25%{transform:translateY(-27px)}37.5%{transform:translateY(-44px)}50%{transform:translateY(-50px)}62.5%{transform:translateY(-44px)}75%{transform:translateY(-27px)}87.5%{transform:translateY(-5px)}100%{transform:translateY(40px)}}
+  @keyframes ballspin{to{transform:rotate(-360deg)}}
   @keyframes balsway{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
   .scene .obj .stunt{display:block;position:relative;transform-origin:50% 50%;animation:pirueta 7s ease-in-out infinite}
   @keyframes pirueta{0%,12%{transform:rotate(0) translateY(0)}24%{transform:rotate(-180deg) translateY(-22px)}36%{transform:rotate(-360deg) translateY(0)}44%{transform:rotate(-360deg) translateY(0)}56%{transform:rotate(-540deg) translateY(-22px)}68%{transform:rotate(-720deg) translateY(0)}100%{transform:rotate(-720deg) translateY(0)}} /* dos loops, campana grande */
@@ -461,7 +465,7 @@ const WINGS = {
 const OBJS = [
   ["plusultra",46, FX.prop(16,17,26,.28)], ["spirit",30, FX.prop(7,50,42,.2)],
   ["xwing",34, FX.flame(72,37,13,180)+FX.flame(72,62,13,180)],
-  ["tie",20,""], ["enterprise",70, FX.glow(99,11,10,7,180)+FX.glow(99,43,10,7,180)], ["falcon",74, FX.glow(97,55,12,40,180)],
+  ["tie",20,""], ["enterprise",70, FX.glow(99,11,10,7,180)+FX.glow(99,43,10,7,180)], ["falcon",50, FX.glow(97,55,12,40,180)],
   ["hubble",34, FX.blink(62,6,RED)+FX.blink(44,93,GRN,.5)+FX.blink(50,40,WHT,1)],
   ["gansos",30,""], ["boba",18, FX.flame(98,52,22,180)], ["superman",18,""], ["et",18,""], ["pelota",12,""],
   ["dron",12, FX.rotor(12,7,30)+FX.rotor(86,7,30)],
@@ -556,7 +560,8 @@ function startScene(){
       const wg = WINGS[name];
       const wo = wg && wg[2] || {};
       const body = wg ? `<img src="/obj/${name}_body.png" alt="" class="${wo.back ? "front" : ""}">` + wg[0].map((p,i)=>`<img class="wing${wo.back ? " back" : ""}" src="/obj/${name}_w${i+1}.png" alt="" style="transform-origin:${p[0]}% ${p[1]}%;animation-name:${wo.anim || "flap"};animation-duration:${wg[1]}s;animation-delay:-${(Math.random()*wg[1]).toFixed(2)}s">`).join("") : `<img src="/obj/${name}.png" alt="">`;
-      const inner = name === "acrobatico" ? `<span class="stunt">${body}${fx}</span>` : name === "copa" ? COPA_HTML() : body + fx; // el acrobático hace piruetas
+      const inner = name === "acrobatico" ? `<span class="stunt">${body}${fx}</span>` : name === "copa" ? COPA_HTML()
+        : name === "pelota" ? `<span class="kick" style="animation-duration:${dur}s"><span class="ball">${body}</span></span>` : body + fx; // acrobático: piruetas; pelota: pateada, gira y hace parábola
       const go = ()=>{ spawn(`<span class="part" style="left:0;width:100%;animation-duration:${(1.6+Math.random()*1.8).toFixed(2)}s">${inner}</span>`, w, top, dur, front);
         if(name === "tie"){
           // el X-Wing lo persigue: sale más atrás, un poco más rápido, y dispara láseres
