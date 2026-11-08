@@ -520,7 +520,7 @@ function startScene(){
     o.addEventListener("animationend", e=>{ if(e.target === o) o.remove(); }); s.appendChild(o); return o; };
   const thing = ()=>{ const s = sc(); if(!s) return;
     flyCount++;
-    const front = Math.random() < 0.5, dur = (9 + Math.random()*5) * (1 + Math.random()*0.5), top = 4 + Math.random()*50;
+    const front = Math.random() < 0.5, dur = (9 + Math.random()*5) * (1 + Math.random()*0.5); let top = 4 + Math.random()*50;
     if(flyCount % 5 === 0){
       // Papá Noel: renos con vuelo propio, regalos cada tanto y, el 80 % de las veces, el Grinch persiguiéndolo
       const w = 64 * (0.9 + Math.random()*0.3) * (front ? 1.25 : 0.85);
@@ -541,6 +541,7 @@ function startScene(){
       }
     }else{
       const [name, base, fx] = nextObj();
+      if(name === "saturn" || name === "saturn2") top = Math.random() < 0.5 ? 2 + Math.random()*8 : 70 + Math.random()*8; // el Saturno V nunca a la altura del avión
       const w = Math.max(12, Math.round((base < 30 ? base*1.2 : base) * (0.8 + Math.random()*0.4) * (front ? 1.25 : 0.85))); // los chicos, un 20 % más
       const img = new Image(); img.src = `/obj/${name}.png`;
       // todo tiene un vaivén sutil, nada pasa recto
