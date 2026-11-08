@@ -69,22 +69,14 @@
   .scene.sm{height:110px} .scene.sm .plane{width:105px}
   @keyframes pass{to{transform:translateX(-720px)}}
   /* lluvia y nieve suaves, cada tanto */
-  .scene .weather{position:absolute;inset:-30% -10% 0 -10%;z-index:5;pointer-events:none;opacity:0;transition:opacity 4s ease}
+  .scene .weather{position:absolute;inset:-12% -10% 0 -10%;z-index:5;pointer-events:none;opacity:0;transition:opacity 4s ease;overflow:hidden}
   .scene .weather.on{opacity:1}
-  .scene .weather .wl{position:absolute;inset:0;background-repeat:repeat}
-  .scene .weather.rain .wl{background-image:radial-gradient(1px 9px at 20px 12px,rgba(255,255,255,.55),transparent),radial-gradient(1px 8px at 64px 40px,rgba(255,255,255,.45),transparent),radial-gradient(1px 10px at 100px 70px,rgba(255,255,255,.5),transparent),radial-gradient(1px 7px at 140px 25px,rgba(255,255,255,.4),transparent);background-size:120px 80px}
-  .scene .weather.rain{transform:rotate(9deg) scale(1.2)}
-  .scene .weather.rain .l1{animation:rainA .42s linear infinite;opacity:.95}
-  .scene .weather.rain .l2{background-size:170px 120px;animation:rainB .7s linear infinite;opacity:.6}
-  .scene .weather.rain .l3{background-size:230px 160px;animation:rainC 1.05s linear infinite;opacity:.35}
-  @keyframes rainA{to{background-position:0 80px}} @keyframes rainB{to{background-position:0 120px}} @keyframes rainC{to{background-position:0 160px}}
-  .scene .weather.snow .wl{background-image:radial-gradient(2.5px 2.5px at 18px 20px,#fff,transparent),radial-gradient(2px 2px at 70px 60px,rgba(255,255,255,.85),transparent),radial-gradient(3px 3px at 120px 30px,#fff,transparent),radial-gradient(2px 2px at 150px 100px,rgba(255,255,255,.8),transparent),radial-gradient(2.5px 2.5px at 45px 110px,#fff,transparent),radial-gradient(2px 2px at 100px 130px,rgba(255,255,255,.8),transparent);background-size:130px 120px}
-  .scene .weather.snow .l1{animation:snowA 4s linear infinite}
-  .scene .weather.snow .l2{background-size:190px 170px;animation:snowB 7.5s linear infinite;opacity:.7}
-  .scene .weather.snow .l3{background-size:90px 80px;animation:snowC 11s linear infinite;opacity:.45;filter:blur(.4px)}
-  @keyframes snowA{0%{background-position:0 0}50%{background-position:16px 120px}100%{background-position:0 240px}}
-  @keyframes snowB{0%{background-position:0 0}50%{background-position:-22px 170px}100%{background-position:0 340px}}
-  @keyframes snowC{0%{background-position:0 0}50%{background-position:10px 80px}100%{background-position:0 160px}}
+  .scene .weather.rain{transform:rotate(7deg) scale(1.15)}
+  .scene .weather i{position:absolute;top:-6%;left:var(--x);opacity:var(--o);animation-timing-function:linear;animation-iteration-count:infinite;animation-duration:var(--d);animation-delay:var(--dl)}
+  .scene .weather.rain i{width:1px;height:var(--s);border-radius:1px;background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,.75));animation-name:drop}
+  .scene .weather.snow i{width:var(--s);height:var(--s);border-radius:50%;background:#fff;box-shadow:0 0 2px rgba(255,255,255,.6);animation-name:flake}
+  @keyframes drop{to{transform:translateY(120vh) translateY(140px)}}
+  @keyframes flake{0%{transform:translate(0,0)}25%{transform:translate(var(--sw),30vh) translateY(40px)}50%{transform:translate(calc(var(--sw)*-.6),60vh) translateY(80px)}75%{transform:translate(var(--sw),90vh) translateY(120px)}100%{transform:translate(0,120vh) translateY(160px)}}
   /* objetos que pasan volando (sprites del usuario) con efectos animados */
   .scene .obj{position:absolute;left:100%;animation:pass linear forwards;will-change:transform;line-height:0}
   .scene .obj > img{display:block;width:100%;height:auto}
@@ -109,6 +101,8 @@
   @keyframes flap{from{transform:scaleY(1) rotate(0)}to{transform:scaleY(.28) rotate(-4deg)}}
   .scene .obj .part img{display:block;width:100%;height:auto}
   @keyframes hover{from{transform:translateY(-4%)}to{transform:translateY(5%)}}
+  .scene .laser{position:absolute;z-index:4;width:14px;height:2px;border-radius:2px;background:#FF3B3B;box-shadow:0 0 4px #FF5A5A;animation:laser .55s linear forwards;pointer-events:none}
+  @keyframes laser{to{transform:translateX(-240px);opacity:.15}}
   .scene .gift{position:absolute;z-index:4;animation:giftx 2.6s linear forwards;pointer-events:none}
   .scene .gift > i{display:block;animation:gifty 2.6s cubic-bezier(.3,0,.8,.4) forwards}
   .scene .gift svg{display:block;width:100%;height:auto;animation:giftspin 1.6s linear infinite}
@@ -415,7 +409,7 @@ function voucher(v, returning){
 
 /* ---------- Escena: el avión vuela hacia la derecha; el cielo y lo que pasa se mueven en contra ---------- */
 function scene(cls=""){
-  return `<div class="scene ${cls}${sceneDay?" day":""}" id="scene"><div class="sky day"><span class="sun"></span></div><div class="starswrap"><span class="moon p2" id="moon"><svg viewBox="-20 -20 40 40"><circle r="14" fill="#FFF4CF"/><circle r="4" cx="-4" cy="-3" fill="#EFE2B8" opacity=".5"/><circle r="2.5" cx="5" cy="4" fill="#EFE2B8" opacity=".5"/><circle r="1.6" cx="2" cy="-7" fill="#EFE2B8" opacity=".5"/><circle class="sh" r="14.6" fill="#141A4A"/><circle r="14" fill="none" stroke="#FFF4CF" stroke-opacity=".45" stroke-width=".7"/></svg></span><div class="layer stars"></div><div class="layer stars b"></div><span class="belen"><svg viewBox="-20 -20 40 52"><defs><radialGradient id="bg1"><stop offset="0" stop-color="#FFF6D0" stop-opacity=".9"/><stop offset="1" stop-color="#FFF6D0" stop-opacity="0"/></radialGradient><linearGradient id="bt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF3C4" stop-opacity=".9"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></linearGradient></defs><circle r="13" fill="url(#bg1)"/><circle r="9" fill="none" stroke="#FFF3C4" stroke-opacity=".35" stroke-width=".8"/><path d="M-1.6 4L0 30L1.6 4Z" fill="url(#bt)"/><path d="M0 -18L2.4 -2.4L12 0L2.4 2.4L0 12L-2.4 2.4L-12 0L-2.4 -2.4Z" fill="#FFE9A3"/><path d="M0 -18L2.4 -2.4L12 0L2.4 2.4L0 12L-2.4 2.4L-12 0L-2.4 -2.4Z" fill="#FFF3C4"/><path d="M-7.5 -7.5L-1.4 -1.4L0 0L-1.4 1.4L-7.5 7.5L-1.4 1.4L0 0L1.4 -1.4Z M7.5 -7.5L1.4 -1.4L0 0L1.4 1.4L7.5 7.5L1.4 1.4L0 0L-1.4 1.4Z" fill="#FFF3C4" fill-opacity=".85"/><path d="M0 -8L1 -1L8 0L1 1L0 8L-1 1L-8 0L-1 -1Z" fill="#fff"/><g fill="#FFF3C4"><path class="tw" d="M-14 -11L-13.3 -9.3L-11.6 -8.6L-13.3 -7.9L-14 -6.2L-14.7 -7.9L-16.4 -8.6L-14.7 -9.3Z"/><path class="tw" d="M13 -13L13.6 -11.6L15 -11L13.6 -10.4L13 -9L12.4 -10.4L11 -11L12.4 -11.6Z"/><path class="tw" d="M12 9L12.5 10.2L13.7 10.7L12.5 11.2L12 12.4L11.5 11.2L10.3 10.7L11.5 10.2Z"/></g></svg></span></div><img class="plane" src="/plane.png" alt="" width="760" height="224"><div class="weather" id="weather"><div class="wl l1"></div><div class="wl l2"></div><div class="wl l3"></div></div></div>`;
+  return `<div class="scene ${cls}${sceneDay?" day":""}" id="scene"><div class="sky day"><span class="sun"></span></div><div class="starswrap"><span class="moon p2" id="moon"><svg viewBox="-20 -20 40 40"><circle r="14" fill="#FFF4CF"/><circle r="4" cx="-4" cy="-3" fill="#EFE2B8" opacity=".5"/><circle r="2.5" cx="5" cy="4" fill="#EFE2B8" opacity=".5"/><circle r="1.6" cx="2" cy="-7" fill="#EFE2B8" opacity=".5"/><circle class="sh" r="14.6" fill="#141A4A"/><circle r="14" fill="none" stroke="#FFF4CF" stroke-opacity=".45" stroke-width=".7"/></svg></span><div class="layer stars"></div><div class="layer stars b"></div><span class="belen"><svg viewBox="-20 -20 40 52"><defs><radialGradient id="bg1"><stop offset="0" stop-color="#FFF6D0" stop-opacity=".9"/><stop offset="1" stop-color="#FFF6D0" stop-opacity="0"/></radialGradient><linearGradient id="bt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF3C4" stop-opacity=".9"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></linearGradient></defs><circle r="13" fill="url(#bg1)"/><circle r="9" fill="none" stroke="#FFF3C4" stroke-opacity=".35" stroke-width=".8"/><path d="M-1.6 4L0 30L1.6 4Z" fill="url(#bt)"/><path d="M0 -18L2.4 -2.4L12 0L2.4 2.4L0 12L-2.4 2.4L-12 0L-2.4 -2.4Z" fill="#FFE9A3"/><path d="M0 -18L2.4 -2.4L12 0L2.4 2.4L0 12L-2.4 2.4L-12 0L-2.4 -2.4Z" fill="#FFF3C4"/><path d="M-7.5 -7.5L-1.4 -1.4L0 0L-1.4 1.4L-7.5 7.5L-1.4 1.4L0 0L1.4 -1.4Z M7.5 -7.5L1.4 -1.4L0 0L1.4 1.4L7.5 7.5L1.4 1.4L0 0L-1.4 1.4Z" fill="#FFF3C4" fill-opacity=".85"/><path d="M0 -8L1 -1L8 0L1 1L0 8L-1 1L-8 0L-1 -1Z" fill="#fff"/><g fill="#FFF3C4"><path class="tw" d="M-14 -11L-13.3 -9.3L-11.6 -8.6L-13.3 -7.9L-14 -6.2L-14.7 -7.9L-16.4 -8.6L-14.7 -9.3Z"/><path class="tw" d="M13 -13L13.6 -11.6L15 -11L13.6 -10.4L13 -9L12.4 -10.4L11 -11L12.4 -11.6Z"/><path class="tw" d="M12 9L12.5 10.2L13.7 10.7L12.5 11.2L12 12.4L11.5 11.2L10.3 10.7L11.5 10.2Z"/></g></svg></span></div><img class="plane" src="/plane.png" alt="" width="760" height="224"><div class="weather" id="weather"></div></div>`;
 }
 // Nubes con varios lóbulos, sombra suave abajo y brillo arriba
 const CLOUDS = [
@@ -484,7 +478,7 @@ let sceneDay = Math.random() < 0.5;
 function stopScene(){ sceneTimers.forEach(clearTimeout); sceneTimers = []; }
 // round robin: siempre el mismo orden, uno tras otro
 function bag(arr){ let i = 0; return ()=>arr[i++ % arr.length]; }
-const nextObj = bag(OBJS.filter(o=>o[0]!=="grinch"));
+const nextObj = bag(OBJS.filter(o=>o[0]!=="grinch" && o[0]!=="xwing")); // el X-Wing solo aparece persiguiendo al TIE
 function startScene(){
   stopScene();
   if(!sceneDay && Math.random() < 0.5) sceneTimers.push(setTimeout(()=>{ const s = sc(); if(s && !sceneDay){ const f = document.createElement("i"); f.className = "fugaz"; f.style.left = (30 + Math.random()*60) + "%"; f.style.top = (8 + Math.random()*30) + "%"; f.addEventListener("animationend", ()=>f.remove()); s.querySelector(".starswrap").appendChild(f); } }, 5000 + Math.random()*15000));
@@ -540,7 +534,20 @@ function startScene(){
       // todo tiene un vaivén sutil, nada pasa recto
       const wg = WINGS[name];
       const body = wg ? `<img src="/obj/${name}_body.png" alt="">` + wg[0].map((p,i)=>`<img class="wing" src="/obj/${name}_w${i+1}.png" alt="" style="transform-origin:${p[0]}% ${p[1]}%;animation-duration:${wg[1]}s;animation-delay:-${(Math.random()*wg[1]).toFixed(2)}s">`).join("") : `<img src="/obj/${name}.png" alt="">`;
-      const go = ()=>spawn(`<span class="part" style="left:0;width:100%;animation-duration:${(1.6+Math.random()*1.8).toFixed(2)}s">${body}${fx}</span>`, w, top, dur, front);
+      const go = ()=>{ spawn(`<span class="part" style="left:0;width:100%;animation-duration:${(1.6+Math.random()*1.8).toFixed(2)}s">${body}${fx}</span>`, w, top, dur, front);
+        if(name === "tie"){
+          // el X-Wing lo persigue: sale más atrás, un poco más rápido, y dispara láseres
+          const xw = OBJS.find(o=>o[0]==="xwing"), wx = Math.round(xw[1]*1.2*(front ? 1.25 : 0.85));
+          const x = spawn(`<span class="part" style="left:0;width:100%;animation-duration:1.4s"><img src="/obj/xwing.png" alt="">${xw[2]}</span>`, wx, top + 4, dur*0.9, front, 1.6);
+          const fire = ()=>{ const s = sc(); if(!s || !x || !x.isConnected) return;
+            const xr = x.getBoundingClientRect(), r = s.getBoundingClientRect();
+            if(xr.right < r.left) return;
+            [0, 1].forEach(k=>{ const l = document.createElement("i"); l.className = "laser";
+              l.style.left = (xr.left - r.left + 2) + "px"; l.style.top = (xr.top - r.top + xr.height*(k ? 0.68 : 0.3)) + "px";
+              l.addEventListener("animationend", ()=>l.remove()); s.appendChild(l); });
+            sceneTimers.push(setTimeout(fire, 650 + Math.random()*500)); };
+          sceneTimers.push(setTimeout(fire, 2600));
+        } };
       if(img.complete) go(); else { img.onload = go; img.onerror = ()=>{}; }
     }
     sceneTimers.push(setTimeout(thing, 12000 + Math.random()*6000)); };
@@ -554,8 +561,14 @@ function startScene(){
     sceneTimers.push(setTimeout(dayNight, 33000)); };
   const weather = ()=>{ const s = sc(), w = $("#weather"); if(!s || !w) return;
     const kind = Math.random() < 0.5 ? "rain" : "snow";
+    // cada gota y cada copo con su propia velocidad, tamaño, retraso y vaivén
+    const n = kind === "rain" ? 110 : 60, R = Math.random;
+    w.innerHTML = Array.from({length:n}, ()=>{
+      const d = kind === "rain" ? (0.55 + R()*0.9) : (3.5 + R()*6);
+      const sz = kind === "rain" ? (6 + R()*10) + "px" : (1.5 + R()*2.5) + "px";
+      return `<i style="--x:${(R()*100).toFixed(1)}%;--d:${d.toFixed(2)}s;--dl:${(-R()*d).toFixed(2)}s;--s:${sz};--o:${(0.35 + R()*0.6).toFixed(2)};--sw:${(8 + R()*22).toFixed(0)}px"></i>`; }).join("");
     w.className = "weather " + kind + " on";
-    sceneTimers.push(setTimeout(()=>{ w.classList.remove("on"); }, 12000 + Math.random()*8000));
+    sceneTimers.push(setTimeout(()=>{ w.classList.remove("on"); sceneTimers.push(setTimeout(()=>{ if(!w.classList.contains("on")) w.innerHTML = ""; }, 4500)); }, 12000 + Math.random()*8000));
     sceneTimers.push(setTimeout(weather, 45000 + Math.random()*45000)); };
   sceneTimers.push(setTimeout(cloud, 300), setTimeout(thing, 4000), setTimeout(dayNight, 33000), setTimeout(weather, 20000 + Math.random()*30000));
 }
