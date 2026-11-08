@@ -100,6 +100,8 @@
   .scene .obj .part img.wing{position:absolute;left:0;top:0;width:100%;animation:flap ease-in-out infinite alternate}
   @keyframes flap{from{transform:scaleY(1) rotate(0)}to{transform:scaleY(.28) rotate(-4deg)}}
   .scene .obj .part img.front{position:relative;z-index:1}
+  .scene .obj .stunt{display:block;position:relative;transform-origin:50% 50%;animation:pirueta 6s ease-in-out infinite}
+  @keyframes pirueta{0%,20%{transform:rotate(0) rotateX(0)}42%{transform:rotate(-360deg) rotateX(0) translateY(-6px)}50%,62%{transform:rotate(-360deg) rotateX(0)}80%{transform:rotate(-360deg) rotateX(360deg)}100%{transform:rotate(-360deg) rotateX(360deg)}}
   .scene .obj .part img.wing.back{z-index:0}
   @keyframes capa{0%{transform:skewY(-7deg) scaleY(.9)}50%{transform:skewY(2deg) scaleY(1.04) scaleX(1.03)}100%{transform:skewY(6deg) scaleY(1.08)}}
   .scene .obj .part img{display:block;width:100%;height:auto}
@@ -444,8 +446,9 @@ const WINGS = {
   superman:[[[52,36]], .55, {back:true, anim:"capa"}] // la capa flamea por detrás del cuerpo
 };
 const OBJS = [
+  ["plusultra",46, FX.prop(16,20,22,.3)], ["spirit",30, FX.prop(6,50,28,.25)],
   ["xwing",34, FX.flame(72,37,13,180)+FX.flame(72,62,13,180)],
-  ["tie",20,""], ["enterprise",95, FX.glow(99,11,10,7,180)+FX.glow(99,43,10,7,180)], ["falcon",74, FX.glow(99,50,12,30,180)],
+  ["tie",20,""], ["enterprise",70, FX.glow(99,11,10,7,180)+FX.glow(99,43,10,7,180)], ["falcon",60, FX.glow(99,50,10,34,180)],
   ["hubble",30, FX.blink(36,3,RED)+FX.blink(36,97,GRN,.5)+FX.blink(90,48,WHT,1)],
   ["gansos",30,""], ["boba",18, FX.flame(98,52,22,180)], ["superman",18,""], ["et",18,""], ["pelota",12,""],
   ["dron",12, FX.rotor(12,7,30)+FX.rotor(86,7,30)],
@@ -454,7 +457,7 @@ const OBJS = [
   ["iss",170, FX.blink(3,30,RED)+FX.blink(97,30,GRN,.5)+FX.blink(50,42,WHT,1)],
   ["grinch",20, FX.prop(4,50,30,.25)], ["helicoptero",28, FX.rotor(47,17,70)+FX.prop(94,50,14,.2)], ["globo",40,""], ["avionpapel",12,""], ["parapente",22,""], ["wingsuit",18,""],
   ["saturn",70, FX.flame(99,50,40,180)],
-  ["acrobatico",18, FX.prop(5,47,30,.25)], ["ciguena",14,""], ["plusultra",46, FX.prop(16,20,22,.3)], ["spirit",30, FX.prop(6,50,28,.25)],
+  ["acrobatico",18, FX.prop(5,47,30,.25)], ["ciguena",14,""],
   ["aladelta",22,""], ["wright",26, FX.prop(44,52,22,.25)],
   ["sputnik",24, FX.blink(44,42,RED)+FX.blink(56,52,WHT,.6)], ["pterodactilo",22,""],
   ["globo2",40,""], ["planeador",32,""],
@@ -481,7 +484,7 @@ function santaHTML(){
 let sceneDay = Math.random() < 0.5;
 function stopScene(){ sceneTimers.forEach(clearTimeout); sceneTimers = []; }
 // round robin: siempre el mismo orden, uno tras otro
-function bag(arr){ let i = 0; return ()=>arr[i++ % arr.length]; }
+function bag(arr){ const a = arr.slice(); for(let k = a.length-1; k > 0; k--){ const j = Math.floor(Math.random()*(k+1)); [a[k],a[j]] = [a[j],a[k]]; } let i = 0; return ()=>a[i++ % a.length]; } // round robin, en orden barajado al cargar
 const nextObj = bag(OBJS.filter(o=>o[0]!=="grinch" && o[0]!=="xwing")); // el X-Wing solo aparece persiguiendo al TIE
 function startScene(){
   stopScene();
@@ -539,7 +542,8 @@ function startScene(){
       const wg = WINGS[name];
       const wo = wg && wg[2] || {};
       const body = wg ? `<img src="/obj/${name}_body.png" alt="" class="${wo.back ? "front" : ""}">` + wg[0].map((p,i)=>`<img class="wing${wo.back ? " back" : ""}" src="/obj/${name}_w${i+1}.png" alt="" style="transform-origin:${p[0]}% ${p[1]}%;animation-name:${wo.anim || "flap"};animation-duration:${wg[1]}s;animation-delay:-${(Math.random()*wg[1]).toFixed(2)}s">`).join("") : `<img src="/obj/${name}.png" alt="">`;
-      const go = ()=>{ spawn(`<span class="part" style="left:0;width:100%;animation-duration:${(1.6+Math.random()*1.8).toFixed(2)}s">${body}${fx}</span>`, w, top, dur, front);
+      const inner = name === "acrobatico" ? `<span class="stunt">${body}${fx}</span>` : body + fx; // el acrobático hace piruetas
+      const go = ()=>{ spawn(`<span class="part" style="left:0;width:100%;animation-duration:${(1.6+Math.random()*1.8).toFixed(2)}s">${inner}</span>`, w, top, dur, front);
         if(name === "tie"){
           // el X-Wing lo persigue: sale más atrás, un poco más rápido, y dispara láseres
           const xw = OBJS.find(o=>o[0]==="xwing"), wx = Math.round(xw[1]*1.2*(front ? 1.25 : 0.85));
