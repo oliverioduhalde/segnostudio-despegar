@@ -99,6 +99,9 @@
   .scene .obj .part{position:absolute;top:0;animation:hover ease-in-out infinite alternate}
   .scene .obj .part img.wing{position:absolute;left:0;top:0;width:100%;animation:flap ease-in-out infinite alternate}
   @keyframes flap{from{transform:scaleY(1) rotate(0)}to{transform:scaleY(.28) rotate(-4deg)}}
+  .scene .obj .part img.front{position:relative;z-index:1}
+  .scene .obj .part img.wing.back{z-index:0}
+  @keyframes capa{0%{transform:skewY(-7deg) scaleY(.9)}50%{transform:skewY(2deg) scaleY(1.04) scaleX(1.03)}100%{transform:skewY(6deg) scaleY(1.08)}}
   .scene .obj .part img{display:block;width:100%;height:auto}
   @keyframes hover{from{transform:translateY(-4%)}to{transform:translateY(5%)}}
   .scene .laser{position:absolute;z-index:4;width:14px;height:2px;border-radius:2px;background:#FF3B3B;box-shadow:0 0 4px #FF5A5A;animation:laser .55s linear forwards;pointer-events:none}
@@ -437,13 +440,14 @@ const RED="#FF3B3B", GRN="#3BFF7A", WHT="#FFFFFF";
 // alas que aletean: [pivotes en % por ala, duración del aleteo en s]
 const WINGS = {
   gansos:[[[44,34],[28,53],[15,56],[72,49],[42,81],[67,83],[92,85]], .42],
-  ciguena:[[[62,48]], .75], pterodactilo:[[[48,58],[57,54]], 1.1], pegaso:[[[60,49]], .85], colibri:[[[56,47]], .07]
+  ciguena:[[[62,48]], .75], pterodactilo:[[[48,58],[57,54]], 1.1], pegaso:[[[60,49]], .85], colibri:[[[56,47]], .07],
+  superman:[[[52,36]], .55, {back:true, anim:"capa"}] // la capa flamea por detrás del cuerpo
 };
 const OBJS = [
   ["xwing",28, FX.flame(96,30,16,180)+FX.flame(96,70,16,180)],
   ["tie",20,""], ["enterprise",95, FX.glow(98,22,10,8,180)+FX.glow(76,84,8,6,180)], ["falcon",74, FX.glow(99,50,12,30,180)],
   ["hubble",30, FX.blink(36,3,RED)+FX.blink(36,97,GRN,.5)+FX.blink(90,48,WHT,1)],
-  ["gansos",30,""], ["boba",18, FX.flame(98,52,22,180)], ["superman",18,""], ["et",18,""], ["frisbee",12,""], ["pelota",12,""],
+  ["gansos",30,""], ["boba",18, FX.flame(98,52,22,180)], ["superman",18,""], ["et",18,""], ["pelota",12,""],
   ["dron",12, FX.rotor(12,7,30)+FX.rotor(86,7,30)],
   ["colibri",10,""], ["pegaso",20,""], ["ardilla",12,""], ["nazca",60,""], ["voyager",16,""],
   ["webb",44, FX.blink(50,4,RED)+FX.blink(8,80,GRN,.7)+FX.blink(95,80,WHT,1.3)],
@@ -513,9 +517,9 @@ function startScene(){
       // Papá Noel: renos con vuelo propio, regalos cada tanto y, 1 de cada 5 veces, el Grinch persiguiéndolo
       const w = 64 * (0.9 + Math.random()*0.3) * (front ? 1.25 : 0.85);
       const santa = spawn(santaHTML(), w, Math.min(top, 30), dur, front);
-      // 3 regalos por pasada, de a tres (una ráfaga a mitad del recorrido)
-      const gf = 0.4 + Math.random()*0.2;
-      [gf, gf + 0.18/dur, gf + 0.36/dur].forEach((f,gi)=>sceneTimers.push(setTimeout(()=>{ const s = sc(); if(!s || !santa || !santa.isConnected) return;
+      // dos ráfagas de 3 regalos por pasada
+      const gf1 = 0.26 + Math.random()*0.1, gf2 = 0.58 + Math.random()*0.1;
+      [gf1, gf1 + 0.18/dur, gf1 + 0.36/dur, gf2, gf2 + 0.18/dur, gf2 + 0.36/dur].forEach((f,gi0)=>sceneTimers.push(setTimeout(()=>{ const gi = gi0 % 3; const s = sc(); if(!s || !santa || !santa.isConnected) return;
         // el regalo sale del trineo, sigue el avance horizontal y cae con gravedad hasta salir por abajo
         const sr = santa.getBoundingClientRect(), r = s.getBoundingClientRect();
         const g = document.createElement("i"); g.className = "gift"; g.innerHTML = `<i>${GIFTS[Math.floor(Math.random()*GIFTS.length)]}</i>`;
@@ -533,12 +537,13 @@ function startScene(){
       const img = new Image(); img.src = `/obj/${name}.png`;
       // todo tiene un vaivén sutil, nada pasa recto
       const wg = WINGS[name];
-      const body = wg ? `<img src="/obj/${name}_body.png" alt="">` + wg[0].map((p,i)=>`<img class="wing" src="/obj/${name}_w${i+1}.png" alt="" style="transform-origin:${p[0]}% ${p[1]}%;animation-duration:${wg[1]}s;animation-delay:-${(Math.random()*wg[1]).toFixed(2)}s">`).join("") : `<img src="/obj/${name}.png" alt="">`;
+      const wo = wg && wg[2] || {};
+      const body = wg ? `<img src="/obj/${name}_body.png" alt="" class="${wo.back ? "front" : ""}">` + wg[0].map((p,i)=>`<img class="wing${wo.back ? " back" : ""}" src="/obj/${name}_w${i+1}.png" alt="" style="transform-origin:${p[0]}% ${p[1]}%;animation-name:${wo.anim || "flap"};animation-duration:${wg[1]}s;animation-delay:-${(Math.random()*wg[1]).toFixed(2)}s">`).join("") : `<img src="/obj/${name}.png" alt="">`;
       const go = ()=>{ spawn(`<span class="part" style="left:0;width:100%;animation-duration:${(1.6+Math.random()*1.8).toFixed(2)}s">${body}${fx}</span>`, w, top, dur, front);
         if(name === "tie"){
           // el X-Wing lo persigue: sale más atrás, un poco más rápido, y dispara láseres
           const xw = OBJS.find(o=>o[0]==="xwing"), wx = Math.round(xw[1]*1.2*(front ? 1.25 : 0.85));
-          const x = spawn(`<span class="part" style="left:0;width:100%;animation-duration:1.4s"><img src="/obj/xwing.png" alt="">${xw[2]}</span>`, wx, top + 4, dur*0.9, front, 1.6);
+          const x = spawn(`<span class="part" style="left:0;width:100%;animation-duration:1.4s"><img src="/obj/xwing.png" alt="">${xw[2]}</span>`, wx, top + 4, dur*0.92, front, 3.2); // más distancia
           const fire = ()=>{ const s = sc(); if(!s || !x || !x.isConnected) return;
             const xr = x.getBoundingClientRect(), r = s.getBoundingClientRect();
             if(xr.right < r.left) return;
