@@ -158,12 +158,12 @@
   .step{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.92rem;font-weight:500}
   .step b{width:26px;height:26px;flex:none;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:.85rem;font-weight:500}
   /* destinos */
-  .dests{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .dest{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 8px 12px;color:var(--ink);font:inherit;cursor:pointer;text-align:center}
+  .dests{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .dest{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 4px 8px;color:var(--ink);font:inherit;cursor:pointer;text-align:center}
   .dest:active{border-color:var(--brand);background:var(--soft)}
-  .dest .e{font-size:2.1rem;display:block}
-  .dest .n{font-weight:600;font-size:1rem;display:block;margin-top:4px}
-  .dest .c{font-size:.78rem;color:var(--muted)}
+  .dest .e{font-size:1.7rem;display:block}
+  .dest .n{font-weight:600;font-size:.84rem;line-height:1.1;display:block;margin-top:3px}
+  .dest .c{font-size:.7rem;color:var(--muted)}
   /* pregunta */
   .qhead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
   .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.5rem;flex:none;background:var(--soft)}
@@ -233,7 +233,7 @@ const DESTINOS = [
     {q:"¿En qué país está Madrid?", o:["España","Italia","Portugal","Francia"], a:0},
     {q:"¿Cuál es la plaza más famosa del centro, donde se toman las uvas en Año Nuevo?", o:["Puerta del Sol","Times Square","Plaza San Marcos","Trafalgar"], a:0},
     {q:"¿Cómo se llama el famoso museo de arte de Madrid?", o:["Museo del Prado","Louvre","MoMA","Museo Británico"], a:0}]},
-  {id:"cancun", n:"Cancún", c:"México", e:"🌴", col:"#F0384A", qs:[
+  {id:"cancun", n:"Cancún", c:"México", e:"🏝️", col:"#F0384A", qs:[
     {q:"¿En qué país está Cancún?", o:["México","Cuba","Colombia","Perú"], a:0},
     {q:"¿Qué mar baña sus playas?", o:["Mar Caribe","Mar Mediterráneo","Mar del Norte","Mar Muerto"], a:0},
     {q:"¿Qué civilización antigua dejó ruinas cerca, como Chichén Itzá?", o:["Maya","Inca","Romana","Egipcia"], a:0}]},
@@ -241,6 +241,30 @@ const DESTINOS = [
     {q:"¿Cuál es el monumento más famoso de París?", o:["La Torre Eiffel","El Coliseo","La Torre de Pisa","El Big Ben"], a:0},
     {q:"¿Qué río atraviesa París?", o:["El Sena","El Támesis","El Danubio","El Paraná"], a:0},
     {q:"¿En qué museo está la Mona Lisa?", o:["El Louvre","El Prado","El Vaticano","El Guggenheim"], a:0}]},
+  {id:"iguazu", n:"Cataratas del Iguazú", c:"Argentina", e:"🌊", col:"#0FA3B1", qs:[
+    {q:"¿En qué provincia están las Cataratas del Iguazú?", o:["Misiones","Corrientes","Chaco","Formosa"], a:0},
+    {q:"¿Cómo se llama el salto más famoso de las Cataratas?", o:["Garganta del Diablo","Salto Ángel","Salto Grande","Cola de Caballo"], a:0},
+    {q:"¿Con qué país comparte Argentina las Cataratas?", o:["Brasil","Chile","Bolivia","Perú"], a:0}]},
+  {id:"mendoza", n:"Mendoza", c:"Argentina", e:"🍷", col:"#8E3B9A", qs:[
+    {q:"¿Por qué bebida es famosa Mendoza?", o:["El vino","La sidra","El mate cocido","La cerveza"], a:0},
+    {q:"¿Cuál es la montaña más alta de América, que está en Mendoza?", o:["Aconcagua","Everest","Lanín","Cerro Catedral"], a:0},
+    {q:"¿Cómo se llama la fiesta mendocina de la uva?", o:["Fiesta de la Vendimia","Carnaval","Fiesta del Sol","Oktoberfest"], a:0}]},
+  {id:"salta", n:"Salta", c:"Argentina", e:"🚂", col:"#E0702B", qs:[
+    {q:"¿Cómo le dicen a Salta?", o:["Salta la Linda","Salta la Fría","Salta la Grande","Salta la Vieja"], a:0},
+    {q:"¿Cómo se llama el famoso tren turístico de Salta?", o:["Tren a las Nubes","Tren Bala","Tren de la Costa","Orient Express"], a:0},
+    {q:"¿Cuál de estas comidas es típica de Salta?", o:["Empanadas salteñas","Sushi","Pizza napolitana","Paella"], a:0}]},
+  {id:"ushuaia", n:"Ushuaia", c:"Argentina", e:"🐧", col:"#3D5AFE", qs:[
+    {q:"¿Cómo se conoce a Ushuaia?", o:["La ciudad del fin del mundo","La ciudad eterna","La ciudad luz","La gran manzana"], a:0},
+    {q:"¿En qué provincia está Ushuaia?", o:["Tierra del Fuego","Santa Cruz","Chubut","Neuquén"], a:0},
+    {q:"¿Qué animal se puede ver en la Isla Martillo, cerca de Ushuaia?", o:["Pingüinos","Camellos","Jirafas","Canguros"], a:0}]},
+  {id:"roma", n:"Roma", c:"Italia", e:"🏛️", col:"#C62828", qs:[
+    {q:"¿En qué país está Roma?", o:["Italia","Grecia","España","Francia"], a:0},
+    {q:"¿Cómo se llama el gran anfiteatro antiguo de Roma?", o:["El Coliseo","El Partenón","El Big Ben","La Alhambra"], a:0},
+    {q:"¿A qué fuente se tira una moneda para volver a Roma?", o:["Fontana di Trevi","Fuente de Cibeles","Fuente de las Nereidas","Fuente Mágica"], a:0}]},
+  {id:"miami", n:"Miami", c:"Estados Unidos", e:"🌴", col:"#00B8D4", qs:[
+    {q:"¿En qué estado de Estados Unidos está Miami?", o:["Florida","California","Texas","Nueva York"], a:0},
+    {q:"¿Cuál es la playa más famosa de Miami?", o:["South Beach","Copacabana","Bondi Beach","Playa Grande"], a:0},
+    {q:"¿Qué idioma, además del inglés, se habla muchísimo en Miami?", o:["Español","Alemán","Japonés","Ruso"], a:0}]},
 ];
 
 /* Ruleta: probabilidad inversa al monto. Suma = 100. */
@@ -318,6 +342,7 @@ function answer(pick){
   $("#fb").textContent = right ? "¡Correcto! 🎉" : (pick<0 ? "⏰ ¡Se acabó el tiempo!" : "Uy, esa no era 😅");
   $("#fb").style.color = right ? "var(--green)" : "var(--red)";
   buzz(right?30:[60,40,60]);
+  if(right) confetti(50); // confeti en cada respuesta correcta
   setTimeout(()=>{
     if(!right) return fail();
     state.ok++; state.qi++;
@@ -691,13 +716,14 @@ function startScene(){
   sceneTimers.push(setTimeout(cloud, 300), setTimeout(thing, 4000), setTimeout(monument, 1500), setTimeout(dayNight, 33000), setTimeout(weather, 20000 + Math.random()*30000));
 }
 
-function confetti(){
-  const c = $("#confetti"), cols=["#4300D2","#7C4DFF","#028574","#E61A06","#270570","#fff"];
-  for(let k=0;k<90;k++){const i=document.createElement("i");
+function confetti(n=90){
+  const c = $("#confetti"), cols=["#4300D2","#7C4DFF","#028574","#E61A06","#270570","#FFD23F","#fff"];
+  c.innerHTML="";
+  for(let k=0;k<n;k++){const i=document.createElement("i");
     i.style.left=Math.random()*100+"vw"; i.style.background=cols[k%cols.length];
     i.style.animationDuration=(2+Math.random()*2)+"s"; i.style.animationDelay=Math.random()*.6+"s";
     c.appendChild(i);}
-  setTimeout(()=>c.innerHTML="",5000);
+  setTimeout(()=>{ if(c.children.length===n) c.innerHTML=""; },5000);
 }
 
 /* ---------- Modo seguro (/qr): pase de un solo uso + una jugada por celular ---------- */
