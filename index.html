@@ -181,12 +181,28 @@
   @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
   .opt:disabled{cursor:default}
   .feedback{text-align:center;font-weight:600;margin-top:12px;min-height:1.3em}
-  /* ruleta */
-  .wheelwrap{position:relative;width:min(78vw,300px);aspect-ratio:1;margin:6px auto 14px}
-  .wheel{width:100%;height:100%;border-radius:50%;border:6px solid #fff;outline:1px solid var(--line);will-change:transform}
-  .wheel svg{width:100%;height:100%;display:block}
-  .pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:24px solid var(--cta);z-index:2}
-  .hub{position:absolute;inset:50% auto auto 50%;width:22%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-weight:600;color:var(--brand);font-size:.8rem;text-align:center;line-height:1}
+  /* ruleta casino navideña */
+  .wheelpanel{position:relative;background:radial-gradient(circle at 50% 30%,#2A0C6E,#0B0426 75%);border-radius:20px;padding:26px 10px 18px;margin:6px 0 14px;overflow:hidden}
+  .wheelwrap{position:relative;width:min(74vw,290px);aspect-ratio:1;margin:0 auto;filter:drop-shadow(0 14px 22px rgba(0,0,0,.55))}
+  .wheel{width:100%;height:100%;will-change:transform}
+  .wheel svg{width:100%;height:100%;display:block;overflow:visible}
+  .pointer{position:absolute;left:50%;top:-12px;transform:translateX(-50%);z-index:4;width:46px;height:56px;transform-origin:50% 14px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+  .hub{position:absolute;inset:50% auto auto 50%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:3;
+    background:radial-gradient(circle at 35% 30%,#7A3BFF,#4300D2 55%,#270570 100%);box-shadow:0 0 0 3px #FFE28A,0 0 0 6px #B8860B,0 0 22px 4px rgba(124,77,255,.9),inset 0 -6px 14px rgba(0,0,0,.45),inset 0 6px 10px rgba(255,255,255,.25)}
+  .hub img{width:76%;height:auto;filter:drop-shadow(0 0 4px rgba(255,255,255,.6))}
+  .hat{position:absolute;left:36%;top:27.5%;z-index:4;width:15%;pointer-events:none;transform:rotate(-22deg)}
+  .deco{position:absolute;z-index:5;font-size:1.7rem;pointer-events:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
+  .wheelpanel .snowbg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .wheelpanel .snowbg i{position:absolute;top:-8px;width:4px;height:4px;border-radius:50%;background:#fff;opacity:.6;animation:psnow linear infinite}
+  @keyframes psnow{to{transform:translateY(420px)}}
+  .bulb{animation:xmas 2s steps(1) infinite}
+  .b1{animation-delay:-.5s}.b2{animation-delay:-1s}.b3{animation-delay:-1.5s}
+  @keyframes xmas{0%{fill:#FF2D2D;filter:drop-shadow(0 0 4px #FF2D2D)}25%{fill:#2BFF5C;filter:drop-shadow(0 0 4px #2BFF5C)}50%{fill:#FFD23F;filter:drop-shadow(0 0 4px #FFD23F)}75%{fill:#FFFFFF;filter:drop-shadow(0 0 5px #FFFFFF)}}
+  .spinning .bulb{animation-duration:.5s}
+  .tension .bulb{animation:tension .25s steps(1) infinite}
+  @keyframes tension{0%{fill:#FF2D2D;filter:drop-shadow(0 0 6px #FF2D2D)}50%{fill:#FFFFFF;filter:drop-shadow(0 0 8px #fff)}}
+  .spinning .neon{animation:neonpulse .5s ease-in-out infinite alternate}
+  @keyframes neonpulse{from{opacity:.7}to{opacity:1}}
   /* voucher */
   .voucher{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
   .voucher .vt{background:var(--brand);color:#fff;padding:16px;text-align:center}
@@ -361,27 +377,44 @@ function fail(){
   $("#other").onclick = pickDest;
 }
 
+/* Ruleta de 12 gajos: los 8 premios + 50, 100, 200 y "tirá de nuevo" repetidos (el sorteo sigue siendo sobre PREMIOS). 12 colores sin repetir. */
+const WHEEL_ORDER=[0,4,2,3,1,6,0,5,4,7,2,1];
+const WHEEL_COLS=["#C8102E","#1DBF73","#5A10E8","#FFD23F","#FF2D55","#00B8D4","#FF8A00","#7C4DFF","#2BFF5C","#FFFFFF","#FF3CAC","#2979FF"];
+const WHEEL_DARK=new Set(["#FFD23F","#2BFF5C","#FFFFFF"]);
+const WHEEL_N = WHEEL_ORDER.length, WHEEL_SEG = 360/WHEEL_N;
 function wheelSVG(){
-  const n = PREMIOS.length, r = 100, seg = 360/n;
-  const pt = (deg,rad)=>{const a=(deg-90)*Math.PI/180;return [r+rad*Math.cos(a), r+rad*Math.sin(a)]};
-  let s = "";
-  PREMIOS.forEach((p,i)=>{
-    const a0=i*seg, a1=a0+seg, [x0,y0]=pt(a0,r), [x1,y1]=pt(a1,r);
-    s += `<path d="M${r},${r} L${x0},${y0} A${r},${r} 0 0 1 ${x1},${y1} Z" fill="${p.col}" stroke="#fff" stroke-width="1.5"/>`;
-    const mid=a0+seg/2, [tx,ty]=pt(mid,r*0.66);
-    const fill = p.dark ? "#1D1340" : "#fff";
-    const main = p.again ? "TIRÁ" : p.label, sub = p.again ? "DE NUEVO" : "USD";
-    s += `<g transform="translate(${tx},${ty}) rotate(${mid})"><text text-anchor="middle" fill="${fill}" font-family="Rubik" font-weight="900" font-size="${p.again?12:(p.label.length>3?15:18)}" y="0">${main}</text>
-      <text text-anchor="middle" fill="${p.again?'#FF8A6A':fill}" font-family="Rubik" font-weight="900" font-size="${p.again?8:8}" y="10">${sub}</text></g>`;
-  });
-  return `<svg viewBox="0 0 200 200">${s}</svg>`;
+  const R=100, seg=WHEEL_SEG;
+  const pt=(deg,rad)=>{const a=(deg-90)*Math.PI/180;return [R+rad*Math.cos(a), R+rad*Math.sin(a)]};
+  const SEGS=WHEEL_ORDER.map((pi,i)=>({...PREMIOS[pi], col:WHEEL_COLS[i], dark:WHEEL_DARK.has(WHEEL_COLS[i])}));
+  let defs=`<defs>${SEGS.map((x,i)=>`<radialGradient id="g${i}" cx="50%" cy="50%" r="52%"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".55" stop-color="${x.col}"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></radialGradient>`).join("")}
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4C2"/><stop offset=".45" stop-color="#E0B23A"/><stop offset=".55" stop-color="#9A7016"/><stop offset="1" stop-color="#5E4208"/></linearGradient>
+    <linearGradient id="gold2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF4C2"/><stop offset=".5" stop-color="#D4A12B"/><stop offset="1" stop-color="#6E4D0C"/></linearGradient>
+    <radialGradient id="gloss" cx="50%" cy="22%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <filter id="neon" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+  let body=""; SEGS.forEach((x,i)=>{ const a0=i*seg,a1=a0+seg,[x0,y0]=pt(a0,R),[x1,y1]=pt(a1,R),mid=a0+seg/2,[tx,ty]=pt(mid,R*.72);
+    body+=`<path d="M${R},${R} L${x0},${y0} A${R},${R} 0 0 1 ${x1},${y1} Z" fill="url(#g${i})"/>`;
+    body+=`<path class="neon" d="M${R},${R} L${x0},${y0}" stroke="${x.col==="#FFFFFF"?"#FFD23F":x.col}" stroke-width="1.8" filter="url(#neon)" opacity=".95"/>`;
+    const fill=x.dark?"#1D1340":"#fff", sub=x.dark?"#4300D2":"#FFE28A";
+    body+=`<g transform="translate(${tx},${ty}) rotate(${mid})"><text text-anchor="middle" fill="${fill}" font-family="Rubik" font-weight="900" font-size="${x.again?10:(x.label.length>3?14.5:19)}" y="2" style="paint-order:stroke;stroke:rgba(0,0,0,.4);stroke-width:2px">${x.again?"TIRÁ":x.label}</text><text text-anchor="middle" fill="${sub}" font-family="Rubik" font-weight="900" font-size="6.5" y="11">${x.again?"DE NUEVO":"USD"}</text></g>`; });
+  const rim=`<circle cx="100" cy="100" r="100" fill="url(#gloss)" pointer-events="none"/>
+    <circle cx="100" cy="100" r="104" fill="none" stroke="url(#gold)" stroke-width="13"/>
+    <circle cx="100" cy="100" r="97.5" fill="none" stroke="url(#gold2)" stroke-width="2"/>
+    <circle cx="100" cy="100" r="110.5" fill="none" stroke="#4B3407" stroke-width="1.2"/>
+    ${Array.from({length:24},(_,k)=>{const [x,y]=pt(k*15,104);return `<circle class="bulb b${k%4}" cx="${x}" cy="${y}" r="2.8"/><circle cx="${x}" cy="${y}" r="3.6" fill="none" stroke="#5E4208" stroke-width=".6"/>`}).join("")}
+    ${Array.from({length:12},(_,k)=>{const [x,y]=pt(k*30,97.5);return `<circle cx="${x}" cy="${y}" r="1.6" fill="#FFF4C2" stroke="#8E6A14" stroke-width=".5"/>`}).join("")}`;
+  return `<svg viewBox="-12 -12 224 224">${defs}${body}${rim}</svg>`;
 }
+const POINTER_SVG=`<svg viewBox="0 0 50 60"><defs><linearGradient id="ruby" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF5A6A"/><stop offset=".5" stop-color="#C8102E"/><stop offset="1" stop-color="#6E0012"/></linearGradient><pattern id="cane" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)"><rect width="8" height="8" fill="#fff"/><rect width="4" height="8" fill="#E61A06"/></pattern></defs><path d="M25 58 L5 16 Q25 -2 45 16 Z" fill="url(#cane)" stroke="#FFE28A" stroke-width="3"/><circle cx="25" cy="14" r="7" fill="url(#ruby)" stroke="#FFE28A" stroke-width="2"/><ellipse cx="22" cy="11" rx="2.5" ry="3" fill="#fff" opacity=".5"/></svg>`;
+const HAT_SVG=`<svg class="hat" viewBox="0 0 60 50"><path d="M6 44 Q14 10 40 6 Q50 4 56 12 L22 40 Z" fill="#E61A06"/><path d="M4 46 L24 40 Q30 42 28 48 Q18 52 4 46Z" fill="#fff"/><circle cx="56" cy="11" r="6" fill="#fff"/></svg>`;
+const panelSnow=()=>Array.from({length:30},()=>`<i style="left:${(Math.random()*100).toFixed(1)}%;animation-duration:${(7+Math.random()*9).toFixed(1)}s;animation-delay:${(-Math.random()*16).toFixed(1)}s;opacity:${(.25+Math.random()*.5).toFixed(2)}"></i>`).join("");
 
 function wheel(again){
   $("#pill").textContent = `${state.dest.e} ${state.dest.n}`;
   render(`<div class="center"><h1>${again?"¡Tirá de nuevo!":"¡3 de 3!"}</h1>
     <p class="lead">Girá la ruleta y ganá un voucher para tu pasaje a ${state.dest.n}.</p></div>
-    <div class="wheelwrap"><div class="pointer"></div><div class="wheel" id="wheel" style="transform:rotate(${state.rot}deg)">${wheelSVG()}</div><div class="hub">GIRÁ</div></div>
+    <div class="wheelpanel" id="wheelpanel"><div class="snowbg">${panelSnow()}</div>
+      <div class="wheelwrap"><span class="deco" style="left:-12px;top:-8px">🎄</span><span class="deco" style="right:-12px;top:-8px">🎄</span><span class="deco" style="left:-14px;bottom:6px;font-size:1.4rem">🎁</span><span class="deco" style="right:-14px;bottom:6px;font-size:1.4rem">🔔</span>
+        <div class="pointer" id="pointer">${POINTER_SVG}</div><div class="wheel" id="wheel" style="transform:rotate(${state.rot}deg)">${wheelSVG()}</div><div class="hub"><img src="/logo.svg" alt="despegar"></div>${HAT_SVG}</div></div>
     <button class="btn" id="spin">Girar la ruleta</button>`);
   $("#spin").onclick = spin;
   view.querySelector(".hub").onclick = spin;
@@ -415,31 +448,27 @@ async function spin(){
   });
 }
 
-/* La ruleta frena con inercia: amaga con el premio vecino más alto y se balancea hasta quedar en el sorteado. */
+/* La ruleta frena con tensión: gira largo, se pasa casi un gajo, retrocede despacio y se asienta en el premio. El puntero se dobla en cada pin y suena un clic. */
+let wheelAC = null;
+function wheelClick(){ try{ wheelAC = wheelAC || new (window.AudioContext||window.webkitAudioContext)(); const o=wheelAC.createOscillator(), g=wheelAC.createGain(); o.type="square"; o.frequency.value=1800; g.gain.setValueAtTime(.2,wheelAC.currentTime); g.gain.exponentialRampToValueAtTime(.001,wheelAC.currentTime+.03); o.connect(g); g.connect(wheelAC.destination); o.start(); o.stop(wheelAC.currentTime+.03);}catch(e){} }
 function animateWheel(i, done){
-  const n = PREMIOS.length, seg = 360/n;
-  const prev = (i-1+n)%n, next = (i+1)%n;
-  const val = k => PREMIOS[k].again ? 250 : PREMIOS[k].v;
-  const teaseNext = val(next) > val(prev);                 // vecino con el que amaga
-  const b = teaseNext ? (i+1)*seg : i*seg;                 // ángulo del borde con ese vecino
-  const sgn = teaseNext ? 1 : -1;                          // hacia dónde queda el vecino
-  const a = [ b + sgn*seg*0.38, b - sgn*seg*0.55, b + sgn*seg*0.16, b - sgn*seg*0.42, b + sgn*seg*0.04, b - sgn*seg*(0.25+Math.random()*0.35) ];
-  const durs = [4300, 900, 800, 700, 650, 900];
-  const base = state.rot - (state.rot % 360);
-  const rot1 = base + 360*7 + ((((360 - a[0]) % 360) + 360) % 360);
-  const rots = a.map(x => rot1 - (x - a[0]));
-  const el = $("#wheel"), start = state.rot;
-  const easeOut = t => 1 - Math.pow(1-t, 3), easeIO = t => t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
-  let k = 0, t0 = performance.now(), from = start;
-  function frame(now){
-    const t = Math.min(1, (now - t0)/durs[k]);
-    const e = k===0 ? easeOut(t) : easeIO(t);
-    const r = from + (rots[k]-from)*e;
-    el.style.transform = `rotate(${r}deg)`;
-    if(t < 1) return requestAnimationFrame(frame);
-    from = rots[k]; k++; t0 = now; buzz(12);
-    if(k < rots.length) return requestAnimationFrame(frame);
-    state.rot = rots[rots.length-1]; setTimeout(done, 250);
+  const seg = WHEEL_SEG, cands = WHEEL_ORDER.map((p,k)=>p===i?k:-1).filter(k=>k>=0), idx = cands[Math.floor(Math.random()*cands.length)]; // gajo del premio sorteado
+  const el = $("#wheel"), ptr = $("#pointer"), panel = $("#wheelpanel"), start = state.rot;
+  const final = start + 360*5 + ((360 - (idx*seg + seg/2) - (start%360) + 720)%360) + (Math.random()-.5)*seg*.5;
+  const over = seg*(0.9+Math.random()*0.5);
+  const T1=5200, T2=2300, T3=900; let lastPeg = Math.floor(start/seg); const t0 = performance.now();
+  panel.classList.add("spinning");
+  const setRot = r=>{ el.style.transform = `rotate(${r}deg)`;
+    const peg = Math.floor(r/seg); if(peg !== lastPeg){ wheelClick(); buzz(8); lastPeg = peg; }
+    const frac = ((r%seg)+seg)%seg/seg, bend = -22*Math.max(0, 1-frac*4); if(ptr) ptr.style.transform = `translateX(-50%) rotate(${bend}deg)`; };
+  function frame(now){ const t = now-t0; let r;
+    if(t < T1){ const k=t/T1, e=1-Math.pow(1-k,3.2); r = start+(final+over-start)*e; }
+    else if(t < T1+T2){ const k=(t-T1)/T2, e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; r = final+over-(over*1.18)*e; panel.classList.add("tension"); panel.classList.remove("spinning"); }
+    else if(t < T1+T2+T3){ const k=(t-T1-T2)/T3, e=1-Math.pow(1-k,2); r = final-over*.18+(over*.18)*e; }
+    else r = final;
+    setRot(r);
+    if(t < T1+T2+T3+100) return requestAnimationFrame(frame);
+    panel.classList.remove("tension","spinning"); state.rot = final; setTimeout(done, 250);
   }
   requestAnimationFrame(frame);
 }
