@@ -39,7 +39,7 @@
   .btn:disabled{opacity:.6;cursor:default}
   .mt{margin-top:10px}
   /* escena: el avión queda quieto, las nubes pasan y el cielo cambia de día a noche en degradé */
-  .scene{position:relative;isolation:isolate;height:150px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#07011C 0%,#160650 55%,#3618A6 100%)}
+  .scene{position:relative;isolation:isolate;height:188px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#07011C 0%,#160650 55%,#3618A6 100%)}
   .scene .sky{position:absolute;inset:0;z-index:-1;transition:opacity 8s ease-in-out} /* sol y luna siempre detrás de todo */
   .scene .sky.day{background:linear-gradient(180deg,#3E8FD9 0%,#7CC5F2 60%,#BFE6FF 100%);opacity:0}
   .scene.day .sky.day{opacity:1}
@@ -534,10 +534,10 @@ function startScene(){
     const name = nextMon(), m = document.createElement("span"); m.className = "mon";
     const img = new Image(); img.src = `/obj/mon_${name}.png`;
     const go = ()=>{ if(!sc()) return;
-      const ar = img.naturalWidth/img.naturalHeight || 1, h = Math.round(190 + Math.random()*50), wdt = Math.min(Math.round(ar*h), 440); // alto en px; los anchos se topan en 440 y la imagen se alarga en vertical
+      const ar = img.naturalWidth/img.naturalHeight || 1, h = Math.round(130 + Math.random()*30), wdt = Math.min(Math.round(ar*h), 300); // alto en px; los anchos se topan en 300 y la imagen se alarga en vertical
       const vis = 0.38 + Math.random()*0.12; // se ve solo la parte de arriba (38–50 %)
       const dur = (9 + Math.random()*5) * (1 + Math.random()*0.5) * 4 * 1200/720 / 1.3; // 4 veces más lento que los objetos, +30 % de velocidad
-      m.style.height = h + "px"; m.style.width = wdt + "px"; m.style.top = (150 - h*vis) + "px"; m.style.animationDuration = dur + "s";
+      m.style.height = h + "px"; m.style.width = wdt + "px"; m.style.top = (s.clientHeight - h*vis) + "px"; m.style.animationDuration = dur + "s";
       m.appendChild(img); m.addEventListener("animationend", ()=>m.remove()); s.appendChild(m);
       sceneTimers.push(setTimeout(monument, dur*1000*0.42 + Math.random()*6000)); };
     if(img.complete && img.naturalWidth) go(); else { img.onload = go; img.onerror = ()=>sceneTimers.push(setTimeout(monument, 8000)); } };
@@ -549,7 +549,7 @@ function startScene(){
     o.addEventListener("animationend", e=>{ if(e.target === o) o.remove(); }); s.appendChild(o); return o; };
   const thing = ()=>{ const s = sc(); if(!s) return;
     flyCount++;
-    const front = Math.random() < 0.5, dur = (9 + Math.random()*5) * (1 + Math.random()*0.5); let top = 4 + Math.random()*50;
+    const front = Math.random() < 0.5, dur = (9 + Math.random()*5) * (1 + Math.random()*0.5); let top = 4 + Math.random()*40;
     if(flyCount % 5 === 0){
       // Papá Noel: renos con vuelo propio, regalos cada tanto y, el 80 % de las veces, el Grinch persiguiéndolo
       const w = 64 * (0.9 + Math.random()*0.3) * (front ? 1.25 : 0.85);
@@ -570,8 +570,7 @@ function startScene(){
       }
     }else{
       const [name, base, fx] = nextObj();
-      if(name === "saturn" || name === "saturn2") top = Math.random() < 0.5 ? 2 + Math.random()*8 : 70 + Math.random()*8; // el Saturno V nunca a la altura del avión
-      if(name === "iss") top = 36 + Math.random()*8; // la ISS siempre a la mitad
+      const SPACE = ["saturn","saturn2","iss","xwing","tie","enterprise","falcon","destroyer","boba","ovni","voyager","hubble","webb","sputnik"]; // naves y cohetes: siempre por arriba del avión
       const w = Math.max(12, Math.round((base < 30 ? base*1.2 : base) * (0.8 + Math.random()*0.4) * (front ? 1.25 : 0.85))); // los chicos, un 20 % más
       const img = new Image(); img.src = `/obj/${name}.png`;
       // todo tiene un vaivén sutil, nada pasa recto
@@ -580,7 +579,10 @@ function startScene(){
       const body = wg ? `<img src="/obj/${name}_body.png" alt="" class="${wo.back ? "front" : ""}">` + wg[0].map((p,i)=>`<img class="wing${wo.back ? " back" : ""}" src="/obj/${name}_w${i+1}.png" alt="" style="transform-origin:${p[0]}% ${p[1]}%;animation-name:${wo.anim || "flap"};animation-duration:${wg[1]}s;animation-delay:-${(Math.random()*wg[1]).toFixed(2)}s">`).join("") : `<img src="/obj/${name}.png" alt="">`;
       const inner = name === "acrobatico" ? `<span class="stunt">${body}${fx}</span>` : name === "copa" ? COPA_HTML()
         : name === "pelota" ? `<span class="kick" style="animation-duration:${dur}s"><span class="ball">${body}</span></span>` : body + fx; // acrobático: piruetas; pelota: pateada, gira y hace parábola
-      const go = ()=>{ spawn(`<span class="part" style="left:0;width:100%;animation-duration:${(1.6+Math.random()*1.8).toFixed(2)}s">${inner}</span>`, w, top, dur, front);
+      const go = ()=>{ const sh = (sc() || {clientHeight:188}).clientHeight, hp = (w / (img.naturalWidth/img.naturalHeight || 2)) / sh * 100; // alto del objeto en % de la escena
+        if(SPACE.includes(name)) top = 2 + Math.random()*Math.max(0, 34 - hp); // termina antes del 36 %, donde empieza el avión
+        top = Math.min(top, 75 - hp); // nada vuela por debajo de los 3/4 de la escena
+        spawn(`<span class="part" style="left:0;width:100%;animation-duration:${(1.6+Math.random()*1.8).toFixed(2)}s">${inner}</span>`, w, top, dur, front);
         if(name === "tie"){
           // el X-Wing lo persigue: sale más atrás, un poco más rápido, y dispara láseres
           const xw = OBJS.find(o=>o[0]==="xwing"), wx = Math.round(xw[1]*1.2*(front ? 1.25 : 0.85));
