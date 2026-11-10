@@ -94,6 +94,11 @@
   .scene .mon .lamp{position:absolute;left:51%;top:11%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#FFF4C2;box-shadow:0 0 10px 4px rgba(255,236,160,.9)}
   .scene .mon .beam{position:absolute;left:51%;top:11%;width:320px;height:60px;margin-top:-30px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(255,244,190,.9),rgba(255,244,190,.4) 55%,rgba(255,244,190,0));clip-path:polygon(0 47%,100% 0,100% 100%,0 53%);animation:beam 4s linear infinite;mix-blend-mode:screen}
   @keyframes beam{to{transform:rotate(-360deg)}}
+  /* aliento de dragón: fuego o hielo, una bocanada cada ~7 s */
+  .scene .breath{position:absolute;right:0;top:0;width:var(--l);height:calc(var(--l)*.42);transform:translate(0,-50%);transform-origin:100% 50%;clip-path:polygon(100% 42%,100% 58%,55% 85%,0 100%,0 0,55% 15%);opacity:0;animation:breath 7s ease-in-out infinite;animation-delay:var(--d);pointer-events:none}
+  .scene .breath.fire{background:linear-gradient(270deg,#FFF3A0 0%,#FFB020 25%,#FF5A12 60%,rgba(220,40,10,0) 100%);filter:drop-shadow(0 0 3px rgba(255,120,0,.8))}
+  .scene .breath.ice{background:linear-gradient(270deg,#FFFFFF 0%,#BFEFFF 25%,#6FC8FF 60%,rgba(120,200,255,0) 100%);filter:drop-shadow(0 0 3px rgba(150,220,255,.9))}
+  @keyframes breath{0%,62%{opacity:0;transform:translate(0,-50%) scaleX(.2)}66%{opacity:1;transform:translate(0,-50%) scaleX(.9) scaleY(.8)}72%{opacity:1;transform:translate(0,-50%) scaleX(1.05) scaleY(1.1)}78%{opacity:1;transform:translate(0,-50%) scaleX(.95) scaleY(.9)}84%{opacity:.9;transform:translate(0,-50%) scaleX(1)}90%,100%{opacity:0;transform:translate(0,-50%) scaleX(.3)}}
   /* objetos que pasan volando (sprites del usuario) con efectos animados */
   .scene .obj{position:absolute;left:100%;animation:pass linear forwards;will-change:transform;line-height:0}
   .scene .obj > img{display:block;width:100%;height:auto}
@@ -460,6 +465,7 @@ let sceneTimers = [];
 const FX = {
   flame:(x,y,s,r=0)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="flame" style="--s:${s}em;--r:${r}deg"><svg viewBox="0 0 100 50"><path d="M100 8Q58 -2 6 25Q58 52 100 42Z" fill="#FF7A1A"/><path d="M100 17Q70 10 32 25Q70 40 100 33Z" fill="#FFD23F"/></svg></span></i>`,
   glow:(x,y,s,h,r=0)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="glow" style="--s:${s}em;--h:${h}em;--r:${r}deg"></span></i>`,
+  breath:(x,y,len,kind,d=0)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="breath ${kind}" style="--l:${len}em;--d:${d}s"></span></i>`, // fuego / hielo que sale de la boca cada tanto
   blink:(x,y,c,d=0,s=4)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="blink" style="--s:${s}em;--c:${c};--d:${d}s"></span></i>`,
   prop:(x,y,s,k=.22)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="prop" style="--s:${s}em;--k:${k}"><svg viewBox="-50 -50 100 100"><circle r="48" fill="rgba(140,140,150,.22)"/><g class="spin"><rect x="-5" y="-48" width="10" height="96" rx="5" fill="#3F3F47"/><rect x="-48" y="-5" width="96" height="10" rx="5" fill="#3F3F47"/></g></svg></span></i>`,
   rotor:(x,y,s)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="rotor" style="--s:${s}em"></span></i>`
@@ -472,7 +478,7 @@ const COPA_HTML = ()=>`<svg class="balloons" viewBox="0 0 200 150" style="displa
 const WINGS = {
   gansos:[[[44,34],[28,53],[15,56],[72,49],[42,81],[67,83],[92,85]], .42],
   ciguena:[[[62,48]], .75], pterodactilo:[[[48,58],[57,54]], 1.1], pegaso:[[[60,49]], .85], colibri:[[[56,47]], .07],
-  superman:[[[52,36]], .55, {back:true, anim:"capa"}] // la capa flamea por detrás del cuerpo
+  superman:[[[52,36]], .55, {back:true, anim:"capa"}], fenix:[[[36,52]], .5], dragon:[[[33,52]], .95], hielo:[[[36,55]], .95] // la capa flamea por detrás del cuerpo
 };
 const OBJS = [
   ["plusultra",46, FX.prop(16,17,26,.28)], ["spirit",30, FX.prop(7,50,42,.2)],
@@ -486,7 +492,7 @@ const OBJS = [
   ["iss",85, FX.blink(3,30,RED,0,2.5)+FX.blink(22,30,"#FFD23F",.7,2.5)+FX.blink(40,42,"#4FA3FF",1.4,2.5)+FX.blink(50,38,WHT,2.1,2.5)+FX.blink(60,42,"#FF6BD6",2.8,2.5)+FX.blink(78,30,"#FFD23F",3.5,2.5)+FX.blink(97,30,GRN,.5,2.5)],
   ["grinch",20, FX.prop(8,50,46,.22)], ["helicoptero",28, FX.rotor(47,17,70)+FX.prop(94,50,14,.2)], ["globo",40,""], ["avionpapel",12,""], ["parapente",22,""], ["wingsuit",18,""],
   ["saturn",70, FX.flame(99,34,24,180)+FX.flame(99,73,24,180)],
-  ["acrobatico",18, FX.prop(5,47,30,.25)], ["ciguena",14,""],
+  ["acrobatico",18, FX.prop(5,47,30,.25)], ["fenix",52,""], ["dragon",54, FX.breath(3,43,60,"fire")], ["hielo",54, FX.breath(2,47,60,"ice",2.5)], ["ciguena",14,""],
   ["aladelta",22,""], ["wright",26, FX.prop(44,52,22,.25)],
   ["sputnik",32, FX.blink(99,2,RED)+FX.blink(99,29,RED,1.1)+FX.blink(99,72,RED,2.2)+FX.blink(92,97,RED,3.3)+FX.blink(9,50,WHT,.8)], ["pterodactilo",44,""],
   ["planeador",32,""],
