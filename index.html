@@ -89,6 +89,11 @@
   .scene .mon{position:absolute;left:100%;z-index:2;animation:passmon linear forwards;will-change:transform;line-height:0;pointer-events:none}
   .scene .mon img{display:block;height:100%;width:100%}
   @keyframes passmon{to{transform:translateX(-1200px)}}
+  .scene .mon .flag{position:absolute;left:63%;top:0;width:12.5%;height:auto;transform-origin:0 50%;animation:flagwave 1.1s ease-in-out infinite}
+  @keyframes flagwave{0%,100%{transform:skewY(-6deg) scaleX(1)}50%{transform:skewY(6deg) scaleX(.93)}}
+  .scene .mon .lamp{position:absolute;left:51%;top:11%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#FFF4C2;box-shadow:0 0 10px 4px rgba(255,236,160,.9)}
+  .scene .mon .beam{position:absolute;left:51%;top:11%;width:320px;height:60px;margin-top:-30px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(255,244,190,.9),rgba(255,244,190,.4) 55%,rgba(255,244,190,0));clip-path:polygon(0 47%,100% 0,100% 100%,0 53%);animation:beam 4s linear infinite;mix-blend-mode:screen}
+  @keyframes beam{to{transform:rotate(-360deg)}}
   /* objetos que pasan volando (sprites del usuario) con efectos animados */
   .scene .obj{position:absolute;left:100%;animation:pass linear forwards;will-change:transform;line-height:0}
   .scene .obj > img{display:block;width:100%;height:auto}
@@ -118,8 +123,11 @@
   @keyframes parab{0%{transform:translateY(20px)}12.5%{transform:translateY(-2px)}25%{transform:translateY(-13px)}37.5%{transform:translateY(-22px)}50%{transform:translateY(-25px)}62.5%{transform:translateY(-22px)}75%{transform:translateY(-13px)}87.5%{transform:translateY(-2px)}100%{transform:translateY(20px)}}
   @keyframes ballspin{to{transform:rotate(-360deg)}}
   @keyframes balsway{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
-  .scene .obj .stunt{display:block;position:relative;transform-origin:50% 50%;animation:pirueta 7s ease-in-out infinite}
-  @keyframes pirueta{0%,12%{transform:rotate(0) translateY(0)}24%{transform:rotate(-180deg) translateY(-22px)}36%{transform:rotate(-360deg) translateY(0)}44%{transform:rotate(-360deg) translateY(0)}56%{transform:rotate(-540deg) translateY(-22px)}68%{transform:rotate(-720deg) translateY(0)}100%{transform:rotate(-720deg) translateY(0)}} /* dos loops, campana grande */
+  /* avión acrobático: vuela por JS (loops, tirabuzones, picada, escribe "Navidad") y deja humo */
+  .scene .stunt{position:absolute;left:0;top:0;z-index:2;will-change:transform;line-height:0;pointer-events:none}
+  .scene .stunt img{display:block;width:100%;height:auto}
+  .scene .smoke{position:absolute;z-index:2;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95) 0%,rgba(255,255,255,.55) 45%,rgba(255,255,255,0) 72%);animation:smoke linear forwards;pointer-events:none}
+  @keyframes smoke{0%{transform:scale(.5);opacity:.95}30%{transform:scale(1.3);opacity:.8}100%{transform:scale(2.1) translateY(-6px);opacity:0}}
   .scene .obj .part img.wing.back{z-index:0}
   @keyframes capa{0%{transform:skewY(-7deg) scaleY(.9)}50%{transform:skewY(2deg) scaleY(1.04) scaleX(1.03)}100%{transform:skewY(6deg) scaleY(1.08)}}
   .scene .obj .part img{display:block;width:100%;height:auto}
@@ -475,7 +483,7 @@ const OBJS = [
   ["dron",12, FX.rotor(12,7,30)+FX.rotor(86,7,30)],
   ["colibri",10,""], ["pegaso",20,""], ["ardilla",12,""], ["nazca",60,""], ["voyager",16,""],
   ["webb",44, FX.blink(50,4,RED)+FX.blink(8,80,GRN,.7)+FX.blink(95,80,WHT,1.3)],
-  ["iss",170, FX.blink(3,30,RED)+FX.blink(22,30,"#FFD23F",.7)+FX.blink(40,42,"#4FA3FF",1.4)+FX.blink(50,38,WHT,2.1)+FX.blink(60,42,"#FF6BD6",2.8)+FX.blink(78,30,"#FFD23F",3.5)+FX.blink(97,30,GRN,.5)],
+  ["iss",85, FX.blink(3,30,RED,0,2.5)+FX.blink(22,30,"#FFD23F",.7,2.5)+FX.blink(40,42,"#4FA3FF",1.4,2.5)+FX.blink(50,38,WHT,2.1,2.5)+FX.blink(60,42,"#FF6BD6",2.8,2.5)+FX.blink(78,30,"#FFD23F",3.5,2.5)+FX.blink(97,30,GRN,.5,2.5)],
   ["grinch",20, FX.prop(8,50,46,.22)], ["helicoptero",28, FX.rotor(47,17,70)+FX.prop(94,50,14,.2)], ["globo",40,""], ["avionpapel",12,""], ["parapente",22,""], ["wingsuit",18,""],
   ["saturn",70, FX.flame(99,34,24,180)+FX.flame(99,73,24,180)],
   ["acrobatico",18, FX.prop(5,47,30,.25)], ["ciguena",14,""],
@@ -534,13 +542,63 @@ function startScene(){
     const name = nextMon(), m = document.createElement("span"); m.className = "mon";
     const img = new Image(); img.src = `/obj/mon_${name}.png`;
     const go = ()=>{ if(!sc()) return;
-      const ar = img.naturalWidth/img.naturalHeight || 1, h = Math.round(130 + Math.random()*30), wdt = Math.min(Math.round(ar*h), 300); // alto en px; los anchos se topan en 300 y la imagen se alarga en vertical
-      const vis = 0.38 + Math.random()*0.12; // se ve solo la parte de arriba (38–50 %)
+      const ar = img.naturalWidth/img.naturalHeight || 1; let h = Math.round(130 + Math.random()*30), wdt = Math.min(Math.round(ar*h), 300); // alto en px; los anchos se topan en 300 y la imagen se alarga en vertical
+      let vis = 0.38 + Math.random()*0.12; // se ve solo la parte de arriba (38–50 %)
+      if(name === "fuji"){ wdt = 440; h = Math.round(440/ar); vis = 0.78; } // el Fuji: ancho y bajo, sin estirar, se ve el pico nevado y el cambio de color
       const dur = (9 + Math.random()*5) * (1 + Math.random()*0.5) * 4 * 1200/720 / 1.3; // 4 veces más lento que los objetos, +30 % de velocidad
       m.style.height = h + "px"; m.style.width = wdt + "px"; m.style.top = (s.clientHeight - h*vis) + "px"; m.style.animationDuration = dur + "s";
-      m.appendChild(img); m.addEventListener("animationend", ()=>m.remove()); s.appendChild(m);
+      m.appendChild(img);
+      if(name === "aconcagua") m.insertAdjacentHTML("beforeend", `<img class="flag" src="/obj/mon_aconcagua_flag.png" alt="">`); // la bandera flamea
+      if(name === "faro") m.insertAdjacentHTML("beforeend", `<i class="beam"></i><i class="lamp"></i>`);                     // el faro proyecta luz
+      m.addEventListener("animationend", ()=>m.remove()); s.appendChild(m);
       sceneTimers.push(setTimeout(monument, dur*1000*0.42 + Math.random()*6000)); };
     if(img.complete && img.naturalWidth) go(); else { img.onload = go; img.onerror = ()=>sceneTimers.push(setTimeout(monument, 8000)); } };
+  const aerobatics = (w, fx)=>{ const s = sc(); if(!s) return;
+    const W = s.clientWidth, H = s.clientHeight, P = (x,y)=>[x*W/100, y*H/100];
+    const segs = [], add = (pts, smoke, mode)=>segs.push({pts, smoke, mode});
+    const arc = (cx,cy,r,a0,a1,n)=>{ const o = []; for(let i=0;i<=n;i++){ const a = a0+(a1-a0)*i/n; o.push([cx+Math.cos(a)*r, cy+Math.sin(a)*r]); } return o; };
+    // 1) entra por la derecha, 2) loop completo, 3) tirabuzón (dos rolidos), 4) trepada y caída en picada, 5) escribe "Navidad", 6) loop de salida
+    add([P(112,40), P(84,36)], true, "fly");
+    const r = H*0.19, c = P(84,36); add(arc(c[0], c[1]-r, r, Math.PI/2, Math.PI/2 + 2*Math.PI, 40), true, "loop");        // loop
+    const cs = []; for(let i=0;i<=30;i++){ const t = i/30; cs.push([c[0]-t*W*0.26, c[1]-4-Math.sin(t*Math.PI*4)*H*0.05]); } add(cs, true, "roll"); // tirabuzón
+    const e = cs[cs.length-1];
+    add([e, [e[0]-W*0.06, e[1]-H*0.24]], true, "fly");                                        // trepada
+    add(arc(e[0]-W*0.06-W*0.045, e[1]-H*0.24, W*0.045, 0, -Math.PI/2, 10), true, "fly");       // cambia a picada
+    add([[e[0]-W*0.105, e[1]-H*0.24-W*0.045], [e[0]-W*0.105, H*0.70]], true, "dive");         // caída en picada
+    add(arc(e[0]-W*0.105-W*0.06, H*0.70, W*0.06, 0, -Math.PI/2, 10), true, "fly");             // se endereza abajo
+    const f = [e[0]-W*0.165, H*0.70-W*0.06];
+    add([f, [f[0]-W*0.06, f[1]-H*0.2]], true, "fly");                                        // sube
+    const r2 = H*0.14, g2 = [f[0]-W*0.06, f[1]-H*0.2]; add(arc(g2[0], g2[1]-r2, r2, Math.PI/2, Math.PI/2 + 2*Math.PI, 36), true, "loop"); // segundo loop
+    add([g2, [-W*0.2, g2[1]-H*0.1]], true, "roll");                                           // sale rolando
+    // longitud acumulada
+    let L = 0; segs.forEach(g=>{ g.d0 = L; for(let i=1;i<g.pts.length;i++){ const a = g.pts[i-1], b = g.pts[i]; L += Math.hypot(b[0]-a[0], b[1]-a[1]); } g.d1 = L; });
+    const v = Math.max(80, W*0.22); // px/s
+    const el = document.createElement("span"); el.className = "stunt"; el.style.width = w + "px"; el.style.fontSize = (w/100) + "px"; el.style.zIndex = 2; // siempre detrás del 747
+    el.innerHTML = `<img src="/obj/acrobatico.png" alt="">${fx}`; s.appendChild(el);
+    const posAt = d=>{ const g = segs.find(g=>d <= g.d1) || segs[segs.length-1]; let acc = g.d0;
+      for(let i=1;i<g.pts.length;i++){ const a = g.pts[i-1], b = g.pts[i], l = Math.hypot(b[0]-a[0], b[1]-a[1]);
+        if(d <= acc + l || i === g.pts.length-1){ const t = l ? Math.max(0, Math.min(1, (d-acc)/l)) : 0; return {x:a[0]+(b[0]-a[0])*t, y:a[1]+(b[1]-a[1])*t, ang:Math.atan2(b[1]-a[1], b[0]-a[0]), g, p:(d-g.d0)/(g.d1-g.d0)}; }
+        acc += l; } };
+    const t0 = performance.now(); let lastSmoke = null;
+    const step = now=>{ if(!el.isConnected || !s.isConnected || sc() !== s){ el.remove(); return; }
+      const d = (now-t0)/1000*v; if(d > L){ el.remove(); return; }
+      const q = posAt(d), dx = Math.cos(q.ang);
+      let sy2 = q.g.mode === "loop" ? 1 : (dx > 0 ? -1 : 1);                 // de frente a la derecha se da vuelta para no ir invertido (salvo en el loop)
+      if(q.g.mode === "roll") sy2 *= Math.cos(q.p*Math.PI*4);                 // tirabuzón: dos rolidos
+      const sc2 = Math.abs(sy2) < 0.12 ? 0.12*Math.sign(sy2||1) : sy2;
+      el.style.transform = `translate(${(q.x - w/2).toFixed(1)}px,${(q.y - w*0.18).toFixed(1)}px) rotate(${(q.ang*180/Math.PI + 180).toFixed(1)}deg) scaleY(${sc2.toFixed(2)})`;
+      const bx = q.x - Math.cos(q.ang)*w*0.46, by = q.y - Math.sin(q.ang)*w*0.46; // cola del avión
+      if(q.g.smoke){ const gap = q.g.mode === "write" ? 2.5 : 4; // humo continuo: una partícula cada pocos px, sin importar los fps
+        if(!lastSmoke) lastSmoke = [bx, by];
+        const dl = Math.hypot(bx-lastSmoke[0], by-lastSmoke[1]), n = Math.min(40, Math.floor(dl/gap));
+        for(let i=1;i<=n;i++){ const t = i/n, m = document.createElement("i"); m.className = q.g.mode === "write" ? "smoke w" : "smoke";
+          m.style.left = (lastSmoke[0]+(bx-lastSmoke[0])*t).toFixed(1) + "px"; m.style.top = (lastSmoke[1]+(by-lastSmoke[1])*t + (Math.random()-0.5)*1.5).toFixed(1) + "px";
+          m.style.animationDuration = (q.g.mode === "write" ? 11 + Math.random()*2 : 3.5 + Math.random()*1.5) + "s";
+          m.addEventListener("animationend", ()=>m.remove()); s.appendChild(m); }
+        if(n) lastSmoke = [bx, by]; }
+      else lastSmoke = null;
+      requestAnimationFrame(step); };
+    requestAnimationFrame(step); };
   let flyCount = 0;
   const spawn = (html, w, top, dur, front, delay=0)=>{ const s = sc(); if(!s) return null;
     const o = document.createElement("span"); o.className = "obj"; o.innerHTML = html;
@@ -570,6 +628,7 @@ function startScene(){
       }
     }else{
       const [name, base, fx] = nextObj();
+      if(name === "acrobatico"){ aerobatics(Math.round(base*1.2*(front ? 1.25 : 0.85)*0.85), fx); sceneTimers.push(setTimeout(thing, 22000 + Math.random()*6000)); return; }
       const SPACE = ["saturn","saturn2","iss","xwing","tie","enterprise","falcon","destroyer","boba","ovni","voyager","hubble","webb","sputnik"]; // naves y cohetes: siempre por arriba del avión
       const w = Math.max(12, Math.round((base < 30 ? base*1.2 : base) * (0.8 + Math.random()*0.4) * (front ? 1.25 : 0.85))); // los chicos, un 20 % más
       const img = new Image(); img.src = `/obj/${name}.png`;
@@ -577,7 +636,7 @@ function startScene(){
       const wg = WINGS[name];
       const wo = wg && wg[2] || {};
       const body = wg ? `<img src="/obj/${name}_body.png" alt="" class="${wo.back ? "front" : ""}">` + wg[0].map((p,i)=>`<img class="wing${wo.back ? " back" : ""}" src="/obj/${name}_w${i+1}.png" alt="" style="transform-origin:${p[0]}% ${p[1]}%;animation-name:${wo.anim || "flap"};animation-duration:${wg[1]}s;animation-delay:-${(Math.random()*wg[1]).toFixed(2)}s">`).join("") : `<img src="/obj/${name}.png" alt="">`;
-      const inner = name === "acrobatico" ? `<span class="stunt">${body}${fx}</span>` : name === "copa" ? COPA_HTML()
+      const inner = name === "copa" ? COPA_HTML()
         : name === "pelota" ? `<span class="kick" style="animation-duration:${dur}s"><span class="ball">${body}</span></span>` : body + fx; // acrobático: piruetas; pelota: pateada, gira y hace parábola
       const go = ()=>{ const sh = (sc() || {clientHeight:188}).clientHeight, hp = (w / (img.naturalWidth/img.naturalHeight || 2)) / sh * 100; // alto del objeto en % de la escena
         if(SPACE.includes(name)) top = 2 + Math.random()*Math.max(0, 34 - hp); // termina antes del 36 %, donde empieza el avión
