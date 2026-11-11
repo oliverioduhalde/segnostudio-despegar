@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El árbol de las fragancias – Navidad 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#FBF7F1;--ink:#1F1A14;--bronze:#8A6420;--gold:#B8862B;--muted:#6B5A42;--rule:#D9C9AE}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#120E0A;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+  .deck{height:100%;overflow:hidden;position:relative}
+  .slide{position:absolute;inset:0;display:none;background:var(--paper)}
+  .slide.active{display:block}
+  .frame{width:100%;height:100%;padding:clamp(28px,4.5vh,56px) clamp(32px,5vw,80px);display:flex;flex-direction:column;gap:clamp(10px,1.8vh,20px)}
+  .top{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--ink);font-size:clamp(9px,1.1vh,12px);letter-spacing:.18em;text-transform:uppercase;font-weight:500}
+  .top .r{color:var(--bronze)}
+  .bottom{margin-top:auto;padding-top:10px;padding-right:150px;border-top:1px solid var(--ink);display:flex;justify-content:space-between;align-items:baseline;font-size:clamp(9px,1.1vh,12px);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;margin:0;color:var(--ink);text-wrap:balance}
+  h1{font-size:clamp(40px,8vh,88px);line-height:.96;letter-spacing:-.015em}
+  h2{font-size:clamp(28px,5.2vh,58px);line-height:1}
+  h3{font-weight:600;font-size:clamp(16px,2.4vh,26px)}
+  .lead{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;color:var(--bronze);font-size:clamp(15px,2.4vh,26px);line-height:1.3;border-left:1px solid var(--gold);padding-left:16px}
+  .label{font-size:clamp(9px,1.1vh,12px);letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--bronze);margin-bottom:6px}
+  p{margin:0;font-size:clamp(12px,1.75vh,19px);line-height:1.55;text-wrap:pretty}
+  .cols{display:grid;gap:clamp(20px,3vw,48px);flex:1;min-height:0}
+  .c2{grid-template-columns:1fr 1fr}
+  .c3{grid-template-columns:repeat(3,1fr)}
+  .stack{display:flex;flex-direction:column;gap:clamp(8px,1.4vh,14px);min-height:0}
+  ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:clamp(6px,1.2vh,12px)}
+  li{display:flex;gap:12px;font-size:clamp(12px,1.7vh,18px);line-height:1.5}
+  li .n{flex:none;width:1.6em;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.15em;color:var(--gold)}
+  .pic{position:relative;overflow:hidden;cursor:zoom-in;min-height:0;background:#D9C9AE}
+  .pic img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+  .pic:hover img{transform:scale(1.03)}
+  .pic .cap{position:absolute;left:0;right:0;bottom:0;padding:8px 12px;background:linear-gradient(to top,rgba(31,26,20,.75),rgba(31,26,20,0));color:#FBF7F1;font-size:clamp(9px,1.1vh,12px);letter-spacing:.1em;text-transform:uppercase}
+  .pic .zoom{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(251,247,241,.9);display:flex;align-items:center;justify-content:center;color:var(--ink)}
+  .hero{display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(20px,3vw,48px);flex:1;min-height:0}
+  .fig{display:flex;flex-direction:column;gap:8px;min-height:0}
+  .fig .pic{flex:1}
+  .hint{font-size:clamp(9px,1.1vh,12px);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .closing{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(22px,4.5vh,52px);line-height:1.2;color:var(--ink);max-width:22ch}
+  /* nav */
+  .nav{position:fixed;bottom:26px;right:22px;display:flex;gap:8px;align-items:center;z-index:5;font-family:Inter,sans-serif}
+  .nav button{appearance:none;border:1px solid var(--gold);background:rgba(251,247,241,.92);color:var(--ink);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+  .nav button:hover{background:var(--gold);color:#fff}
+  .nav .count{font-size:11px;letter-spacing:.14em;color:var(--muted);background:rgba(251,247,241,.92);padding:6px 10px;border:1px solid var(--rule)}
+  .prog{position:fixed;left:0;bottom:0;height:3px;background:var(--gold);z-index:5;transition:width .3s}
+  /* lightbox */
+  .lb{position:fixed;inset:0;background:rgba(18,14,10,.94);display:none;align-items:center;justify-content:center;z-index:50;cursor:zoom-out;padding:4vh 4vw;flex-direction:column;gap:14px}
+  .lb.open{display:flex}
+  .lb img{max-width:100%;max-height:88vh;object-fit:contain;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .lb .lcap{color:#E6DCC8;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+  .lb .x{position:absolute;top:18px;right:22px;color:#FBF7F1;font-size:28px;line-height:1;cursor:pointer;background:none;border:none}
+  .cover{background:var(--ink);color:#F3EADB}
+  .cover .frame{justify-content:space-between}
+  .cover h1{color:#F3EADB;font-size:clamp(54px,12vh,130px)}
+  .cover .lead{color:#D6A94E;border-color:#D6A94E;font-size:clamp(18px,3vh,32px)}
+  .cover .top,.cover .bottom{border-color:#5A4A2E;color:#C9B690}
+  .cover .top .r{color:#D6A94E}
+  .cover .bg{position:absolute;inset:0;opacity:.28;background-size:cover;background-position:50% 40%}
+  .cover .frame{position:relative;z-index:1}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- 1 Portada -->
+<section class="slide cover active">
+  <div class="bg" style="background-image:url('img/espiral.jpg')"></div>
+  <div class="frame">
+    <div class="top"><span>Airport Media · Navidad 2026 · Sector partidas</span><span class="r">Propuesta de activación</span></div>
+    <div>
+      <h1>El árbol de<br>las fragancias</h1>
+      <p class="lead" style="margin-top:22px">Navidad huele a vos. Una escultura en madera de guatambú que invita a recorrer los aromas de la casa.</p>
+    </div>
+    <div class="bottom"><span>Propuesta para la perfumería · Árbol de partidas</span><span>Clic en cualquier foto para ampliarla</span></div>
+  </div>
+</section>
+
+<!-- 2 Idea madre -->
+<section class="slide">
+  <div class="frame">
+    <div class="top"><span>El árbol de las fragancias · La idea</span><span class="r">02</span></div>
+    <div class="hero">
+      <div class="fig">
+        <div class="pic" data-src="img/detalle_listones.jpg" data-cap="Plano detalle entre los listones · guatambú, luz cálida y el frasco como adorno"><img src="img/detalle_listones.jpg" alt="Plano detalle: una visitante huele una fragancia entre los listones de madera"><span class="cap">Plano detalle entre los listones</span><span class="zoom">⤢</span></div>
+      </div>
+      <div class="stack" style="justify-content:center">
+        <h2>La Navidad entra por la nariz antes que por los ojos.</h2>
+        <p>El pino, las mandarinas, el pan dulce, la casa de la abuela: lo primero que nos devuelve a diciembre es un olor. Por eso el árbol de este año no se mira: <strong>se huele</strong>.</p>
+        <p>Un árbol de 5 a 6 metros en el sector de partidas. Cada rama principal tiene su propio aroma y su propia identidad. El que pasa lo recorre, prueba, elige la suya y se la lleva.</p>
+      </div>
+    </div>
+    <div class="bottom"><span>Render de referencia · marcas y frascos ilustrativos</span><span>Airport Media · Navidad 2026</span></div>
+  </div>
+</section>
+
+<!-- 3 Cómo se vive -->
+<section class="slide">
+  <div class="frame">
+    <div class="top"><span>El árbol de las fragancias · La experiencia</span><span class="r">03</span></div>
+    <div class="cols c2">
+      <div class="stack" style="justify-content:center">
+        <h2>Cómo se vive</h2>
+        <ul>
+          <li><span class="n">I</span><span>Te acercás porque el árbol se ve, y porque huele: desde tres o cuatro metros ya se percibe algo que no pertenece a un aeropuerto.</span></li>
+          <li><span class="n">II</span><span>Cada rama tiene su propio aroma e identidad: luz, color y un nombre grabado en la madera. No dicen la marca; dicen una Navidad.</span></li>
+          <li><span class="n">III</span><span>Los adornos no son adornos: cada rama lleva, fijado a la madera, el frasco mismo de la fragancia que ofrece, para que el público la pruebe en la muñeca.</span></li>
+          <li><span class="n">IV</span><span>Escaneás el QR de la rama que te gustó y aparece un voucher de la perfumería, con la historia del aroma y el perfume real detrás.</span></li>
+          <li><span class="n">V</span><span>Si no sabés cuál es la tuya, la app te hace cinco preguntas, encuentra el perfume que estás buscando y te indica en qué rama está.</span></li>
+          <li><span class="n">VI</span><span>El árbol ofrece tarjetas: le echás tu perfume, escribís una intención, para alguien o para vos, y la colgás del árbol o te la llevás de viaje.</span></li>
+        </ul>
+      </div>
+      <div class="fig">
+        <div class="pic" data-src="img/bloques_detalle.jpg" data-cap="Estantes escalonados · luz en la cara inferior, frasco fijado, QR grabado"><img src="img/bloques_detalle.jpg" alt="Detalle de estantes escalonados de madera con frascos y QR grabado"><span class="cap">El frasco como adorno · QR grabado en el canto</span><span class="zoom">⤢</span></div>
+      </div>
+    </div>
+    <div class="bottom"><span>Render de referencia · marcas y frascos ilustrativos</span><span>Airport Media · Navidad 2026</span></div>
+  </div>
+</section>
+
+<!-- 4 Estética -->
+<section class="slide">
+  <div class="frame">
+    <div class="top"><span>El árbol de las fragancias · La estética</span><span class="r">04</span></div>
+    <div class="hero" style="grid-template-columns:1fr 1.15fr">
+      <div class="stack" style="justify-content:center">
+        <h2>Guatambú, dorados y una escultura que resalta por sí misma</h2>
+        <p>Construido esencialmente en <strong>madera de guatambú</strong>, de veta clara y pareja, que resalta la calidez del material. La paleta se mueve en la línea de los <strong>dorados</strong>: luz cálida en los cantos, grabados en tono bronce y los propios frascos, ámbar y miel, como puntos de color.</p>
+        <p>Una <strong>propuesta escultórica</strong> que resalta por sí misma en el espacio y propone en su seno una visita por las fragancias. Los perfumes son los adornos: van <strong>fijados a la madera</strong>; no se pueden extraer, pero sí se pueden usar.</p>
+      </div>
+      <div class="fig">
+        <div class="pic" data-src="img/espiral_detalle.jpg" data-cap="Cinta espiral · nombre y QR grabados en la cara frontal, luz en el canto"><img src="img/espiral_detalle.jpg" alt="Detalle de la cinta en espiral con nombre de fragancia y QR grabados en la madera"><span class="cap">Grabado láser en bronce · luz en el canto</span><span class="zoom">⤢</span></div>
+      </div>
+    </div>
+    <div class="bottom"><span>Render de referencia · marcas y frascos ilustrativos</span><span>Airport Media · Navidad 2026</span></div>
+  </div>
+</section>
+
+<!-- 5 Tres familias -->
+<section class="slide">
+  <div class="frame">
+    <div class="top"><span>El árbol de las fragancias · Estética y formas</span><span class="r">05</span></div>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end">
+      <h2>Tres familias de forma para una misma escultura</h2>
+      <p class="hint" style="max-width:34ch">Guatambú macizo, cantos con luz, grabado, frascos fijados. La estructura cambia; el lenguaje es el mismo.</p>
+    </div>
+    <div class="cols c3">
+      <div class="fig">
+        <div class="pic" data-src="img/espiral.jpg" data-cap="I · Espiral · cinta helicoidal de guatambú con luz en el canto y estrella"><img src="img/espiral.jpg" alt="Árbol en espiral de madera con frascos sobre una cinta helicoidal" style="object-position:50% 40%"><span class="cap">I · Espiral</span><span class="zoom">⤢</span></div>
+        <p style="font-size:clamp(11px,1.5vh,16px)">Una cinta continua asciende alrededor de un mástil hasta una estrella de luz. Los frascos se apoyan sobre la cinta; nombre y QR grabados al frente. La más icónica y fotogénica.</p>
+      </div>
+      <div class="fig">
+        <div class="pic" data-src="img/verticales.jpg" data-cap="II · Listones verticales · cono por acumulación, inmersivo"><img src="img/verticales.jpg" alt="Conjunto de listones verticales de madera con frascos en las puntas" style="object-position:50% 45%"><span class="cap">II · Listones verticales</span><span class="zoom">⤢</span></div>
+        <p style="font-size:clamp(11px,1.5vh,16px)">Decenas de listones de alturas escalonadas forman el cono de un pino por acumulación. Cada listón termina en un frasco iluminado. Se entra entre ellos: inmersiva, con el aroma contenido.</p>
+      </div>
+      <div class="fig">
+        <div class="pic" data-src="img/horizontales.jpg" data-cap="III · Listones horizontales · tablas cruzadas, modular y accesible"><img src="img/horizontales.jpg" alt="Árbol de tablas horizontales cruzadas de madera con frascos" style="object-position:50% 45%"><span class="cap">III · Listones horizontales</span><span class="zoom">⤢</span></div>
+        <p style="font-size:clamp(11px,1.5vh,16px)">Tronco central con tablas cruzadas de largo decreciente, al modo nórdico. Cada tabla es un estante con luz inferior. La más liviana y modular; accesible para chicos y adultos.</p>
+      </div>
+    </div>
+    <div class="bottom"><span>Renders de referencia · marcas y frascos ilustrativos</span><span>Airport Media · Navidad 2026</span></div>
+  </div>
+</section>
+
+<!-- 6 Detalle + nuevas formas -->
+<section class="slide">
+  <div class="frame">
+    <div class="top"><span>El árbol de las fragancias · El detalle y las nuevas formas</span><span class="r">06</span></div>
+    <div class="cols c2">
+      <div class="cols c2" style="gap:14px">
+        <div class="pic" data-src="img/espiral_detalle.jpg" data-cap="Cinta espiral · grabado y QR a la altura de la mano"><img src="img/espiral_detalle.jpg" alt="Detalle de la cinta en espiral"><span class="cap">Cinta espiral</span><span class="zoom">⤢</span></div>
+        <div class="pic" data-src="img/detalle_listones.jpg" data-cap="Listones verticales · el frasco se prueba en la muñeca"><img src="img/detalle_listones.jpg" alt="Detalle entre listones verticales"><span class="cap">Listones verticales</span><span class="zoom">⤢</span></div>
+      </div>
+      <div class="stack" style="justify-content:center">
+        <div><div class="label">El detalle, de cerca</div>
+        <p>En las tres familias el lenguaje es idéntico: madera clara al natural, grabado láser en bronce con el nombre del aroma y su QR, luz cálida escondida en los cantos y el frasco como única nota de color. Las variantes son el mobiliario; la experiencia es la misma.</p></div>
+        <div><div class="label" style="margin-top:14px">Nuevas formas</div>
+        <p>Las tres familias son puntos de partida, no un catálogo cerrado. El sistema admite formas nuevas a medida del espacio y de la marca: un árbol-pórtico que se atraviesa, una versión colgante, un bosque de pinos pequeños por el sector, o una pieza que combine espiral y listones. Podemos modelar dos o tres alternativas más en una semana con las medidas reales del lugar.</p></div>
+      </div>
+    </div>
+    <div class="bottom"><span>Renders de referencia · marcas y frascos ilustrativos</span><span>Airport Media · Navidad 2026</span></div>
+  </div>
+</section>
+
+<!-- 7 Marca + cierre -->
+<section class="slide">
+  <div class="frame">
+    <div class="top"><span>El árbol de las fragancias · Lo que dice de la marca</span><span class="r">07</span></div>
+    <div class="cols c2">
+      <div class="stack" style="justify-content:center">
+        <h2>La única marca que huele en el aeropuerto en diciembre.</h2>
+        <p>No vende: regala un recuerdo, que es lo que la gente se lleva de viaje. Y aprende algo que nadie sabe: a qué huele la Navidad argentina según miles de viajeros.</p>
+        <ul style="margin-top:8px">
+          <li><span class="n">—</span><span>El árbol invita, no invade: aroma de corto alcance, intensidad baja.</span></li>
+          <li><span class="n">—</span><span>Se vive como instalación, no como publicidad: la marca firma al pie.</span></li>
+          <li><span class="n">—</span><span>Cada interacción deja un dato, un voucher y una intención colgada.</span></li>
+        </ul>
+      </div>
+      <div class="stack" style="justify-content:center;align-items:flex-start;border-left:1px solid var(--rule);padding-left:clamp(20px,3vw,48px)">
+        <p class="closing">Hay regalos que no pesan en la valija. Este año, el árbol te da uno antes de subir al avión.</p>
+      </div>
+    </div>
+    <div class="bottom"><span>Airport Media · Navidad 2026 · Propuesta de activación en partidas</span><span>Gracias</span></div>
+  </div>
+</section>
+
+</div>
+
+<div class="nav">
+  <span class="count" id="count">1 / 7</span>
+  <button id="prev" aria-label="Anterior">‹</button>
+  <button id="next" aria-label="Siguiente">›</button>
+</div>
+<div class="prog" id="prog"></div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Imagen ampliada">
+  <button class="x" id="lbx" aria-label="Cerrar">×</button>
+  <img id="lbimg" alt="">
+  <div class="lcap" id="lbcap"></div>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide')),i=0,n=slides.length;
+  var count=document.getElementById('count'),prog=document.getElementById('prog');
+  function go(k){i=(k+n)%n;slides.forEach(function(s,j){s.classList.toggle('active',j===i)});count.textContent=(i+1)+' / '+n;prog.style.width=((i+1)/n*100)+'%';}
+  document.getElementById('next').onclick=function(){go(i+1)};
+  document.getElementById('prev').onclick=function(){go(i-1)};
+  var lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg'),lbcap=document.getElementById('lbcap');
+  function open(src,cap,alt){lbimg.src=src;lbimg.alt=alt||'';lbcap.textContent=cap||'';lb.classList.add('open')}
+  function close(){lb.classList.remove('open');lbimg.src=''}
+  document.querySelectorAll('.pic').forEach(function(p){p.addEventListener('click',function(){var im=p.querySelector('img');open(p.getAttribute('data-src')||im.src,p.getAttribute('data-cap'),im.alt)})});
+  lb.addEventListener('click',function(e){if(e.target!==lbimg)close()});
+  document.getElementById('lbx').onclick=close;
+  document.addEventListener('keydown',function(e){
+    if(lb.classList.contains('open')){if(e.key==='Escape')close();return}
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(i+1)}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1)}
+    if(e.key==='Home')go(0); if(e.key==='End')go(n-1);
+  });
+  var tx=null;document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
+  document.addEventListener('touchend',function(e){if(tx===null||lb.classList.contains('open'))return;var dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60)go(dx<0?i+1:i-1);tx=null});
+  go(0);
+})();
+</script>
+</body>
+</html>
