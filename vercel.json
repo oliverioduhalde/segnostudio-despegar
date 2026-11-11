@@ -1,9 +1,30 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/qr", "destination": "/" }
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "perfumes-arbol-fragancias.vercel.app"
+        }
+      ],
+      "destination": "/arbol-fragancias/index.html"
+    },
+    {
+      "source": "/qr",
+      "destination": "/"
+    }
   ],
   "headers": [
-    { "source": "/api/(.*)", "headers": [{ "key": "Cache-Control", "value": "no-store" }] }
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    }
   ]
 }
