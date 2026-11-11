@@ -81,6 +81,8 @@
   .qrbox{background:#fff;border-radius:36px;padding:34px;text-align:center}
   .qrbox svg{width:100%;height:auto;display:block}
   .qrbox div{margin-top:16px;font-size:20px;color:var(--gris)}
+  .qrlink{display:inline-block;margin-top:14px;padding:12px 22px;border-radius:24px;background:var(--violeta);color:#fff;font-size:19px;font-weight:600;text-decoration:none;white-space:nowrap}
+  .qrlink:hover{background:var(--noche)}
   /* UI */
   #ui{position:fixed;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.12);z-index:5}
   #prog{height:100%;width:0;background:var(--rojo);transition:width .4s}
@@ -195,10 +197,10 @@
           <img class="logo" src="/logo.svg" alt="despegar">
           <div class="kick" style="margin-top:120px">Ya está online</div>
           <h1 style="font-size:96px">Probalo ahora.</h1>
-          <p class="lead">segnostudio-despegar.vercel.app</p>
+          <p class="lead">Escaneá el QR o tocá el link.</p>
           <div style="margin-top:44px"><span class="pill">Ganá hasta USD 1000 en tu pasaje</span></div>
         </div>
-        <div class="qrbox" id="qrbox"><div>Escaneá con la cámara del celular</div></div>
+        <div class="qrbox" id="qrbox"><div>Escaneá con la cámara del celular</div><a class="qrlink" href="https://segnostudio-despegar.vercel.app" target="_blank" rel="noopener">segnostudio-despegar.vercel.app ↗</a></div>
       </div>
     </div>
   </section>
