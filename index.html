@@ -39,20 +39,37 @@
   .btn:disabled{opacity:.6;cursor:default}
   .mt{margin-top:10px}
   /* escena: el avión queda quieto, las nubes pasan y el cielo cambia de día a noche en degradé */
-  .scene{position:relative;height:150px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#120338 0%,#2A0A8C 55%,#5B2EE6 100%)}
-  .scene .sky{position:absolute;inset:0;transition:opacity 8s ease-in-out}
+  .scene{position:relative;isolation:isolate;height:188px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#07011C 0%,#160650 55%,#3618A6 100%)}
+  .scene .sky{position:absolute;inset:0;z-index:-1;transition:opacity 8s ease-in-out} /* sol y luna siempre detrás de todo */
   .scene .sky.day{background:linear-gradient(180deg,#3E8FD9 0%,#7CC5F2 60%,#BFE6FF 100%);opacity:0}
   .scene.day .sky.day{opacity:1}
-  .scene .starswrap{position:absolute;inset:0;transition:opacity 8s ease-in-out;pointer-events:none}
+  /* el sol baja durante el día y atardece; sol y luna se corren muy de a poco hacia atrás */
+  .scene .sun{position:absolute;left:78%;top:18%;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 45% 40%,#FFFBE6 0%,#FFE98A 55%,#FFC83D 100%);box-shadow:0 0 14px 6px rgba(255,225,120,.55),0 0 40px 18px rgba(255,210,90,.22);transform:translate(-50%,-50%);animation:sunarc 33s linear forwards}
+  @keyframes sunarc{0%{left:78%;top:18%;background:radial-gradient(circle at 45% 40%,#FFFBE6 0%,#FFE98A 55%,#FFC83D 100%)}60%{background:radial-gradient(circle at 45% 40%,#FFFBE6 0%,#FFE98A 55%,#FFC83D 100%)}100%{left:82%;top:66%;background:radial-gradient(circle at 45% 40%,#FFF3D0 0%,#FFC36A 55%,#FF8A3D 100%)}}
+  .scene .dusk{position:absolute;inset:0;background:linear-gradient(180deg,rgba(120,70,170,.25) 0%,rgba(255,140,90,.35) 55%,rgba(255,170,110,.65) 100%);opacity:0;animation:dusk 33s linear forwards}
+  @keyframes dusk{0%,50%{opacity:0}100%{opacity:1}}
+  .scene .moon{position:absolute;left:78%;top:20%;width:36px;height:36px;transform:translate(-50%,-50%);filter:drop-shadow(0 0 5px rgba(255,244,207,.7)) drop-shadow(0 0 14px rgba(255,240,200,.35));animation:moonarc 33s linear forwards}
+  @keyframes moonarc{0%{left:78%;top:20%}100%{left:82%;top:30%}}
+  /* nunca juntos: el sol se apaga del todo y recién después aparece la luna (y al revés) */
+  .scene .sun{transition:opacity 2s ease 6s} .scene:not(.day) .sun{opacity:0;transition-delay:0s}
+  .scene .moon{transition:opacity 3s ease 6s} .scene.day .moon{opacity:0;transition:opacity 1.5s ease 0s}
+  .scene .moon svg{width:100%;height:100%;display:block}
+  .scene .moon .ph{display:none}
+  .scene .moon.p1 .ph1,.scene .moon.p2 .ph2,.scene .moon.p3 .ph3{display:block}
+  @keyframes drift{from{transform:translate(-50%,-50%)}to{transform:translate(-50%,calc(-50% - 7px)) translateX(-10px)}}
+  .scene .starswrap{position:absolute;inset:0;z-index:-1;transition:opacity 8s ease-in-out;pointer-events:none}
   .scene.day .starswrap{opacity:0}
   .scene .layer{position:absolute;inset:0;background-repeat:repeat-x;background-size:400px 100%}
   .scene .stars{background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1.5px 1.5px at 90px 70px,#fff,transparent),radial-gradient(1px 1px at 160px 20px,#fff,transparent),radial-gradient(1.5px 1.5px at 230px 55px,#fff,transparent),radial-gradient(1px 1px at 300px 35px,#fff,transparent),radial-gradient(1.5px 1.5px at 350px 80px,#fff,transparent);animation:scroll 90s linear infinite,twinkle 2.4s ease-in-out infinite}
   .scene .stars.b{background-image:radial-gradient(1px 1px at 55px 15px,#fff,transparent),radial-gradient(1.5px 1.5px at 120px 45px,#fff,transparent),radial-gradient(1px 1px at 200px 95px,#fff,transparent),radial-gradient(1.5px 1.5px at 260px 25px,#fff,transparent),radial-gradient(1px 1px at 330px 60px,#fff,transparent),radial-gradient(1.5px 1.5px at 380px 15px,#fff,transparent);animation:scroll 90s linear infinite,twinkle 3.1s ease-in-out infinite 1.3s}
   @keyframes scroll{to{background-position:-400px 0}}
   @keyframes twinkle{0%,100%{opacity:.95}50%{opacity:.25}}
-  .scene .belen{position:absolute;left:68%;top:14%;width:40px;height:40px;transform:translate(-50%,-50%);animation:belen 4s ease-in-out infinite}
+  .scene .belen{position:absolute;left:22%;top:13%;width:20px;height:26px;transform:translate(-50%,-50%);animation:belen 3.2s ease-in-out infinite}
   .scene .belen svg{display:block;width:100%;height:100%;overflow:visible}
-  @keyframes belen{0%,100%{transform:translate(-50%,-50%) scale(1);filter:drop-shadow(0 0 4px rgba(255,240,180,.8))}50%{transform:translate(-50%,-50%) scale(1.12);filter:drop-shadow(0 0 9px rgba(255,240,180,1))}}
+  @keyframes belen{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1;filter:drop-shadow(0 0 4px rgba(255,240,180,.8))}35%{opacity:.75}50%{transform:translate(-50%,-50%) scale(1.1);opacity:1;filter:drop-shadow(0 0 8px rgba(255,240,180,1))}70%{opacity:.8}}
+  .scene .belen .tw{transform-box:fill-box;transform-origin:center;animation:beltw 1.6s ease-in-out infinite alternate}
+  .scene .belen .tw:nth-child(2){animation-delay:-.6s} .scene .belen .tw:nth-child(3){animation-delay:-1.1s}
+  @keyframes beltw{from{transform:scale(.6);opacity:.5}to{transform:scale(1.15);opacity:1}}
   .scene .fugaz{position:absolute;width:90px;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(255,255,255,0),#fff);transform-origin:100% 50%;transform:rotate(-20deg);opacity:0;animation:fugaz 1.3s ease-out forwards;pointer-events:none}
   @keyframes fugaz{0%{opacity:0;transform:rotate(-20deg) translateX(0)}10%{opacity:1}100%{opacity:0;transform:rotate(-20deg) translateX(-260px)}}
   .scene .plane{position:absolute;z-index:3;left:38%;top:50%;width:147px;height:auto;transform:translate(-50%,-50%);animation:fly 5s ease-in-out infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.35))}
@@ -60,12 +77,28 @@
   .scene.sm{height:110px} .scene.sm .plane{width:105px}
   @keyframes pass{to{transform:translateX(-720px)}}
   /* lluvia y nieve suaves, cada tanto */
-  .scene .weather{position:absolute;inset:-30% -10% 0 -10%;z-index:5;pointer-events:none;opacity:0;transition:opacity 4s ease;background-repeat:repeat}
+  .scene .weather{position:absolute;inset:-12% -10% 0 -10%;z-index:5;pointer-events:none;opacity:0;transition:opacity 4s ease;overflow:hidden}
   .scene .weather.on{opacity:1}
-  .scene .weather.rain{background-image:radial-gradient(1px 9px at 20px 12px,rgba(255,255,255,.55),transparent),radial-gradient(1px 8px at 64px 40px,rgba(255,255,255,.45),transparent),radial-gradient(1px 10px at 100px 70px,rgba(255,255,255,.5),transparent),radial-gradient(1px 7px at 140px 25px,rgba(255,255,255,.4),transparent);background-size:120px 80px;transform:rotate(9deg) scale(1.2);animation:rain .55s linear infinite}
-  @keyframes rain{to{background-position:0 90px}}
-  .scene .weather.snow{background-image:radial-gradient(2.5px 2.5px at 18px 20px,#fff,transparent),radial-gradient(2px 2px at 70px 60px,rgba(255,255,255,.85),transparent),radial-gradient(3px 3px at 120px 30px,#fff,transparent),radial-gradient(2px 2px at 150px 100px,rgba(255,255,255,.8),transparent),radial-gradient(2.5px 2.5px at 45px 110px,#fff,transparent),radial-gradient(2px 2px at 100px 130px,rgba(255,255,255,.8),transparent);background-size:130px 120px;animation:snow 5s linear infinite}
-  @keyframes snow{0%{background-position:0 0}50%{background-position:14px 75px}100%{background-position:0 150px}}
+  .scene .weather.rain{transform:rotate(7deg) scale(1.15)}
+  .scene .weather i{position:absolute;top:-6%;left:var(--x);opacity:var(--o);animation-timing-function:linear;animation-iteration-count:infinite;animation-duration:var(--d);animation-delay:var(--dl)}
+  .scene .weather.rain i{width:1px;height:var(--s);border-radius:1px;background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,.75));animation-name:drop}
+  .scene .weather.snow i{width:var(--s);height:var(--s);border-radius:50%;background:#fff;box-shadow:0 0 2px rgba(255,255,255,.6);animation-name:flake}
+  @keyframes drop{to{transform:translateY(120vh) translateY(140px)}}
+  @keyframes flake{0%{transform:translate(0,0)}25%{transform:translate(var(--sw),30vh) translateY(40px)}50%{transform:translate(calc(var(--sw)*-.6),60vh) translateY(80px)}75%{transform:translate(var(--sw),90vh) translateY(120px)}100%{transform:translate(0,120vh) translateY(160px)}}
+  /* monumentos históricos: pasan por abajo, 4 veces más lento, asoma solo la parte de arriba */
+  .scene .mon{position:absolute;left:100%;z-index:2;animation:passmon linear forwards;will-change:transform;line-height:0;pointer-events:none}
+  .scene .mon img{display:block;height:100%;width:100%}
+  @keyframes passmon{to{transform:translateX(-1200px)}}
+  .scene .mon .flag{position:absolute;left:63%;top:0;width:12.5%;height:auto;transform-origin:0 50%;animation:flagwave 1.1s ease-in-out infinite}
+  @keyframes flagwave{0%,100%{transform:skewY(-6deg) scaleX(1)}50%{transform:skewY(6deg) scaleX(.93)}}
+  .scene .mon .lamp{position:absolute;left:51%;top:11%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#FFF4C2;box-shadow:0 0 10px 4px rgba(255,236,160,.9)}
+  .scene .mon .beam{position:absolute;left:51%;top:11%;width:320px;height:60px;margin-top:-30px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(255,244,190,.9),rgba(255,244,190,.4) 55%,rgba(255,244,190,0));clip-path:polygon(0 47%,100% 0,100% 100%,0 53%);animation:beam 4s linear infinite;mix-blend-mode:screen}
+  @keyframes beam{to{transform:rotate(-360deg)}}
+  /* aliento de dragón: fuego o hielo, una bocanada cada ~7 s */
+  .scene .breath{position:absolute;right:0;top:0;width:var(--l);height:calc(var(--l)*.42);transform:translate(0,-50%);transform-origin:100% 50%;clip-path:polygon(100% 42%,100% 58%,55% 85%,0 100%,0 0,55% 15%);opacity:0;animation:breath 7s ease-in-out infinite;animation-delay:var(--d);pointer-events:none}
+  .scene .breath.fire{background:linear-gradient(270deg,#FFF3A0 0%,#FFB020 25%,#FF5A12 60%,rgba(220,40,10,0) 100%);filter:drop-shadow(0 0 3px rgba(255,120,0,.8))}
+  .scene .breath.ice{background:linear-gradient(270deg,#FFFFFF 0%,#BFEFFF 25%,#6FC8FF 60%,rgba(120,200,255,0) 100%);filter:drop-shadow(0 0 3px rgba(150,220,255,.9))}
+  @keyframes breath{0%,62%{opacity:0;transform:translate(0,-50%) scaleX(.2)}66%{opacity:1;transform:translate(0,-50%) scaleX(.9) scaleY(.8)}72%{opacity:1;transform:translate(0,-50%) scaleX(1.05) scaleY(1.1)}78%{opacity:1;transform:translate(0,-50%) scaleX(.95) scaleY(.9)}84%{opacity:.9;transform:translate(0,-50%) scaleX(1)}90%,100%{opacity:0;transform:translate(0,-50%) scaleX(.3)}}
   /* objetos que pasan volando (sprites del usuario) con efectos animados */
   .scene .obj{position:absolute;left:100%;animation:pass linear forwards;will-change:transform;line-height:0}
   .scene .obj > img{display:block;width:100%;height:auto}
@@ -76,7 +109,7 @@
   @keyframes flick{from{transform:rotate(var(--r,0deg)) scale(1,1)}to{transform:rotate(var(--r,0deg)) scale(1.3,.8)}}
   .fx .glow{right:0;top:calc(var(--h)*-.5);width:var(--s);height:var(--h);border-radius:50%;background:radial-gradient(ellipse at 90% 50%,#DFF9FF 0%,#4FC3FF 35%,rgba(79,195,255,0) 72%);transform-origin:100% 50%;transform:rotate(var(--r,0deg));animation:pulse .45s ease-in-out infinite alternate}
   @keyframes pulse{from{opacity:.7;transform:rotate(var(--r,0deg)) scale(.9,1)}to{opacity:1;transform:rotate(var(--r,0deg)) scale(1.15,1.05)}}
-  .fx .blink{width:max(var(--s),3px);height:max(var(--s),3px);margin:calc(max(var(--s),3px)*-.5);border-radius:50%;background:var(--c);box-shadow:0 0 calc(var(--s)*.9) var(--c);animation:blink 2.6s steps(1) infinite;animation-delay:var(--d,0s)}
+  .fx .blink{width:max(var(--s),3px);height:max(var(--s),3px);margin:calc(max(var(--s),3px)*-.5);border-radius:50%;background:var(--c);box-shadow:0 0 calc(var(--s)*.9) var(--c);animation:blink 4.2s steps(1) infinite;animation-delay:var(--d,0s)}
   @keyframes blink{0%,14%{opacity:1}15%,100%{opacity:.12}}
   .fx .prop{width:var(--s);height:var(--s);margin:calc(var(--s)*-.5);transform:scaleX(var(--k,.22))}
   .fx .prop svg{width:100%;height:100%;display:block}
@@ -86,11 +119,32 @@
   @keyframes rotor{0%{transform:scaleX(1);opacity:.9}50%{transform:scaleX(.12);opacity:.5}100%{transform:scaleX(1);opacity:.9}}
   /* Papá Noel: renos con vuelo propio, regalos que caen */
   .scene .obj .part{position:absolute;top:0;animation:hover ease-in-out infinite alternate}
+  .scene .obj .part img.wing{position:absolute;left:0;top:0;width:100%;animation:flap ease-in-out infinite alternate}
+  @keyframes flap{from{transform:scaleY(1) rotate(0)}to{transform:scaleY(.28) rotate(-4deg)}}
+  .scene .obj .part img.front{position:relative;z-index:1}
+  .scene .balloons .bal{animation:balsway 2.6s ease-in-out infinite alternate}
+  .scene .obj .kick{display:block;animation:parab linear forwards}
+  .scene .obj .ball{display:block;animation:ballspin 1.1s linear infinite}
+  @keyframes parab{0%{transform:translateY(20px)}12.5%{transform:translateY(-2px)}25%{transform:translateY(-13px)}37.5%{transform:translateY(-22px)}50%{transform:translateY(-25px)}62.5%{transform:translateY(-22px)}75%{transform:translateY(-13px)}87.5%{transform:translateY(-2px)}100%{transform:translateY(20px)}}
+  @keyframes ballspin{to{transform:rotate(-360deg)}}
+  @keyframes balsway{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+  /* avión acrobático: vuela por JS (loops, tirabuzones, picada, escribe "Navidad") y deja humo */
+  .scene .stunt{position:absolute;left:0;top:0;z-index:2;will-change:transform;line-height:0;pointer-events:none}
+  .scene .stunt img{display:block;width:100%;height:auto}
+  .scene .smoke{position:absolute;z-index:2;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95) 0%,rgba(255,255,255,.55) 45%,rgba(255,255,255,0) 72%);animation:smoke linear forwards;pointer-events:none}
+  @keyframes smoke{0%{transform:scale(.5);opacity:.95}30%{transform:scale(1.3);opacity:.8}100%{transform:scale(2.1) translateY(-6px);opacity:0}}
+  .scene .obj .part img.wing.back{z-index:0}
+  @keyframes capa{0%{transform:skewY(-7deg) scaleY(.9)}50%{transform:skewY(2deg) scaleY(1.04) scaleX(1.03)}100%{transform:skewY(6deg) scaleY(1.08)}}
   .scene .obj .part img{display:block;width:100%;height:auto}
   @keyframes hover{from{transform:translateY(-4%)}to{transform:translateY(5%)}}
-  .scene .gift{position:absolute;width:12%;animation:drop 1.8s ease-in forwards}
-  .scene .gift svg{display:block;width:100%;height:auto}
-  @keyframes drop{0%{transform:translate(0,0) rotate(0);opacity:1}80%{opacity:1}100%{transform:translate(-40%,260%) rotate(140deg);opacity:0}}
+  .scene .laser{position:absolute;z-index:4;width:14px;height:2px;border-radius:2px;background:#FF3B3B;box-shadow:0 0 4px #FF5A5A;animation:laser .55s linear forwards;pointer-events:none}
+  @keyframes laser{to{transform:translateX(-240px);opacity:.15}}
+  .scene .gift{position:absolute;z-index:4;animation:giftx 2.6s linear forwards;pointer-events:none}
+  .scene .gift > i{display:block;animation:gifty 2.6s cubic-bezier(.3,0,.8,.4) forwards}
+  .scene .gift svg{display:block;width:100%;height:auto;animation:giftspin 1.6s linear infinite}
+  @keyframes giftx{to{transform:translateX(var(--dx))}}
+  @keyframes gifty{0%{transform:translateY(0)}18%{transform:translateY(-22px)}100%{transform:translateY(240px)}}
+  @keyframes giftspin{to{transform:rotate(360deg)}}
   .scene .cloud{position:absolute;left:100%;width:110px;animation:pass linear forwards;will-change:transform}
   .scene .cloud svg{display:block;width:100%;height:auto}
   /* portada */
@@ -104,12 +158,12 @@
   .step{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.92rem;font-weight:500}
   .step b{width:26px;height:26px;flex:none;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:.85rem;font-weight:500}
   /* destinos */
-  .dests{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .dest{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 8px 12px;color:var(--ink);font:inherit;cursor:pointer;text-align:center}
+  .dests{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .dest{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 4px 8px;color:var(--ink);font:inherit;cursor:pointer;text-align:center}
   .dest:active{border-color:var(--brand);background:var(--soft)}
-  .dest .e{font-size:2.1rem;display:block}
-  .dest .n{font-weight:600;font-size:1rem;display:block;margin-top:4px}
-  .dest .c{font-size:.78rem;color:var(--muted)}
+  .dest .e{font-size:1.7rem;display:block}
+  .dest .n{font-weight:600;font-size:.84rem;line-height:1.1;display:block;margin-top:3px}
+  .dest .c{font-size:.7rem;color:var(--muted)}
   /* pregunta */
   .qhead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
   .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.5rem;flex:none;background:var(--soft)}
@@ -127,12 +181,28 @@
   @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
   .opt:disabled{cursor:default}
   .feedback{text-align:center;font-weight:600;margin-top:12px;min-height:1.3em}
-  /* ruleta */
-  .wheelwrap{position:relative;width:min(78vw,300px);aspect-ratio:1;margin:6px auto 14px}
-  .wheel{width:100%;height:100%;border-radius:50%;border:6px solid #fff;outline:1px solid var(--line);will-change:transform}
-  .wheel svg{width:100%;height:100%;display:block}
-  .pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:24px solid var(--cta);z-index:2}
-  .hub{position:absolute;inset:50% auto auto 50%;width:22%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-weight:600;color:var(--brand);font-size:.8rem;text-align:center;line-height:1}
+  /* ruleta casino navideña */
+  .wheelpanel{position:relative;background:radial-gradient(circle at 50% 30%,#2A0C6E,#0B0426 75%);border-radius:20px;padding:26px 10px 18px;margin:6px 0 14px;overflow:hidden}
+  .wheelwrap{position:relative;width:min(74vw,290px);aspect-ratio:1;margin:0 auto;filter:drop-shadow(0 14px 22px rgba(0,0,0,.55))}
+  .wheel{width:100%;height:100%;will-change:transform}
+  .wheel svg{width:100%;height:100%;display:block;overflow:visible}
+  .pointer{position:absolute;left:50%;top:-12px;transform:translateX(-50%);z-index:4;width:46px;height:56px;transform-origin:50% 14px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+  .hub{position:absolute;inset:50% auto auto 50%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:3;
+    background:radial-gradient(circle at 35% 30%,#7A3BFF,#4300D2 55%,#270570 100%);box-shadow:0 0 0 3px #FFE28A,0 0 0 6px #B8860B,0 0 22px 4px rgba(124,77,255,.9),inset 0 -6px 14px rgba(0,0,0,.45),inset 0 6px 10px rgba(255,255,255,.25)}
+  .hub img{width:76%;height:auto;filter:drop-shadow(0 0 4px rgba(255,255,255,.6))}
+  .hat{position:absolute;left:36%;top:27.5%;z-index:4;width:15%;pointer-events:none;transform:rotate(-22deg)}
+  .deco{position:absolute;z-index:5;font-size:1.7rem;pointer-events:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
+  .wheelpanel .snowbg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .wheelpanel .snowbg i{position:absolute;top:-8px;width:4px;height:4px;border-radius:50%;background:#fff;opacity:.6;animation:psnow linear infinite}
+  @keyframes psnow{to{transform:translateY(420px)}}
+  .bulb{animation:xmas 2s steps(1) infinite}
+  .b1{animation-delay:-.5s}.b2{animation-delay:-1s}.b3{animation-delay:-1.5s}
+  @keyframes xmas{0%{fill:#FF2D2D;filter:drop-shadow(0 0 4px #FF2D2D)}25%{fill:#2BFF5C;filter:drop-shadow(0 0 4px #2BFF5C)}50%{fill:#FFD23F;filter:drop-shadow(0 0 4px #FFD23F)}75%{fill:#FFFFFF;filter:drop-shadow(0 0 5px #FFFFFF)}}
+  .spinning .bulb{animation-duration:.5s}
+  .tension .bulb{animation:tension .25s steps(1) infinite}
+  @keyframes tension{0%{fill:#FF2D2D;filter:drop-shadow(0 0 6px #FF2D2D)}50%{fill:#FFFFFF;filter:drop-shadow(0 0 8px #fff)}}
+  .spinning .neon{animation:neonpulse .5s ease-in-out infinite alternate}
+  @keyframes neonpulse{from{opacity:.7}to{opacity:1}}
   /* voucher */
   .voucher{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
   .voucher .vt{background:var(--brand);color:#fff;padding:16px;text-align:center}
@@ -179,7 +249,7 @@ const DESTINOS = [
     {q:"¿En qué país está Madrid?", o:["España","Italia","Portugal","Francia"], a:0},
     {q:"¿Cuál es la plaza más famosa del centro, donde se toman las uvas en Año Nuevo?", o:["Puerta del Sol","Times Square","Plaza San Marcos","Trafalgar"], a:0},
     {q:"¿Cómo se llama el famoso museo de arte de Madrid?", o:["Museo del Prado","Louvre","MoMA","Museo Británico"], a:0}]},
-  {id:"cancun", n:"Cancún", c:"México", e:"🌴", col:"#F0384A", qs:[
+  {id:"cancun", n:"Cancún", c:"México", e:"🏝️", col:"#F0384A", qs:[
     {q:"¿En qué país está Cancún?", o:["México","Cuba","Colombia","Perú"], a:0},
     {q:"¿Qué mar baña sus playas?", o:["Mar Caribe","Mar Mediterráneo","Mar del Norte","Mar Muerto"], a:0},
     {q:"¿Qué civilización antigua dejó ruinas cerca, como Chichén Itzá?", o:["Maya","Inca","Romana","Egipcia"], a:0}]},
@@ -187,6 +257,30 @@ const DESTINOS = [
     {q:"¿Cuál es el monumento más famoso de París?", o:["La Torre Eiffel","El Coliseo","La Torre de Pisa","El Big Ben"], a:0},
     {q:"¿Qué río atraviesa París?", o:["El Sena","El Támesis","El Danubio","El Paraná"], a:0},
     {q:"¿En qué museo está la Mona Lisa?", o:["El Louvre","El Prado","El Vaticano","El Guggenheim"], a:0}]},
+  {id:"iguazu", n:"Cataratas del Iguazú", c:"Argentina", e:"🌊", col:"#0FA3B1", qs:[
+    {q:"¿En qué provincia están las Cataratas del Iguazú?", o:["Misiones","Corrientes","Chaco","Formosa"], a:0},
+    {q:"¿Cómo se llama el salto más famoso de las Cataratas?", o:["Garganta del Diablo","Salto Ángel","Salto Grande","Cola de Caballo"], a:0},
+    {q:"¿Con qué país comparte Argentina las Cataratas?", o:["Brasil","Chile","Bolivia","Perú"], a:0}]},
+  {id:"mendoza", n:"Mendoza", c:"Argentina", e:"🍷", col:"#8E3B9A", qs:[
+    {q:"¿Por qué bebida es famosa Mendoza?", o:["El vino","La sidra","El mate cocido","La cerveza"], a:0},
+    {q:"¿Cuál es la montaña más alta de América, que está en Mendoza?", o:["Aconcagua","Everest","Lanín","Cerro Catedral"], a:0},
+    {q:"¿Cómo se llama la fiesta mendocina de la uva?", o:["Fiesta de la Vendimia","Carnaval","Fiesta del Sol","Oktoberfest"], a:0}]},
+  {id:"salta", n:"Salta", c:"Argentina", e:"🚂", col:"#E0702B", qs:[
+    {q:"¿Cómo le dicen a Salta?", o:["Salta la Linda","Salta la Fría","Salta la Grande","Salta la Vieja"], a:0},
+    {q:"¿Cómo se llama el famoso tren turístico de Salta?", o:["Tren a las Nubes","Tren Bala","Tren de la Costa","Orient Express"], a:0},
+    {q:"¿Cuál de estas comidas es típica de Salta?", o:["Empanadas salteñas","Sushi","Pizza napolitana","Paella"], a:0}]},
+  {id:"ushuaia", n:"Ushuaia", c:"Argentina", e:"🐧", col:"#3D5AFE", qs:[
+    {q:"¿Cómo se conoce a Ushuaia?", o:["La ciudad del fin del mundo","La ciudad eterna","La ciudad luz","La gran manzana"], a:0},
+    {q:"¿En qué provincia está Ushuaia?", o:["Tierra del Fuego","Santa Cruz","Chubut","Neuquén"], a:0},
+    {q:"¿Qué animal se puede ver en la Isla Martillo, cerca de Ushuaia?", o:["Pingüinos","Camellos","Jirafas","Canguros"], a:0}]},
+  {id:"roma", n:"Roma", c:"Italia", e:"🏛️", col:"#C62828", qs:[
+    {q:"¿En qué país está Roma?", o:["Italia","Grecia","España","Francia"], a:0},
+    {q:"¿Cómo se llama el gran anfiteatro antiguo de Roma?", o:["El Coliseo","El Partenón","El Big Ben","La Alhambra"], a:0},
+    {q:"¿A qué fuente se tira una moneda para volver a Roma?", o:["Fontana di Trevi","Fuente de Cibeles","Fuente de las Nereidas","Fuente Mágica"], a:0}]},
+  {id:"miami", n:"Miami", c:"Estados Unidos", e:"🌴", col:"#00B8D4", qs:[
+    {q:"¿En qué estado de Estados Unidos está Miami?", o:["Florida","California","Texas","Nueva York"], a:0},
+    {q:"¿Cuál es la playa más famosa de Miami?", o:["South Beach","Copacabana","Bondi Beach","Playa Grande"], a:0},
+    {q:"¿Qué idioma, además del inglés, se habla muchísimo en Miami?", o:["Español","Alemán","Japonés","Ruso"], a:0}]},
 ];
 
 /* Ruleta: probabilidad inversa al monto. Suma = 100. */
@@ -264,6 +358,7 @@ function answer(pick){
   $("#fb").textContent = right ? "¡Correcto! 🎉" : (pick<0 ? "⏰ ¡Se acabó el tiempo!" : "Uy, esa no era 😅");
   $("#fb").style.color = right ? "var(--green)" : "var(--red)";
   buzz(right?30:[60,40,60]);
+  if(right) confetti(50); // confeti en cada respuesta correcta
   setTimeout(()=>{
     if(!right) return fail();
     state.ok++; state.qi++;
@@ -282,27 +377,44 @@ function fail(){
   $("#other").onclick = pickDest;
 }
 
+/* Ruleta de 12 gajos: los 8 premios + 50, 100, 200 y "tirá de nuevo" repetidos (el sorteo sigue siendo sobre PREMIOS). 12 colores sin repetir. */
+const WHEEL_ORDER=[0,4,2,3,1,6,0,5,4,7,2,1];
+const WHEEL_COLS=["#C8102E","#1DBF73","#5A10E8","#FFD23F","#FF2D55","#00B8D4","#FF8A00","#7C4DFF","#2BFF5C","#FFFFFF","#FF3CAC","#2979FF"];
+const WHEEL_DARK=new Set(["#FFD23F","#2BFF5C","#FFFFFF"]);
+const WHEEL_N = WHEEL_ORDER.length, WHEEL_SEG = 360/WHEEL_N;
 function wheelSVG(){
-  const n = PREMIOS.length, r = 100, seg = 360/n;
-  const pt = (deg,rad)=>{const a=(deg-90)*Math.PI/180;return [r+rad*Math.cos(a), r+rad*Math.sin(a)]};
-  let s = "";
-  PREMIOS.forEach((p,i)=>{
-    const a0=i*seg, a1=a0+seg, [x0,y0]=pt(a0,r), [x1,y1]=pt(a1,r);
-    s += `<path d="M${r},${r} L${x0},${y0} A${r},${r} 0 0 1 ${x1},${y1} Z" fill="${p.col}" stroke="#fff" stroke-width="1.5"/>`;
-    const mid=a0+seg/2, [tx,ty]=pt(mid,r*0.66);
-    const fill = p.dark ? "#1D1340" : "#fff";
-    const main = p.again ? "TIRÁ" : p.label, sub = p.again ? "DE NUEVO" : "USD";
-    s += `<g transform="translate(${tx},${ty}) rotate(${mid})"><text text-anchor="middle" fill="${fill}" font-family="Rubik" font-weight="900" font-size="${p.again?12:(p.label.length>3?15:18)}" y="0">${main}</text>
-      <text text-anchor="middle" fill="${p.again?'#FF8A6A':fill}" font-family="Rubik" font-weight="900" font-size="${p.again?8:8}" y="10">${sub}</text></g>`;
-  });
-  return `<svg viewBox="0 0 200 200">${s}</svg>`;
+  const R=100, seg=WHEEL_SEG;
+  const pt=(deg,rad)=>{const a=(deg-90)*Math.PI/180;return [R+rad*Math.cos(a), R+rad*Math.sin(a)]};
+  const SEGS=WHEEL_ORDER.map((pi,i)=>({...PREMIOS[pi], col:WHEEL_COLS[i], dark:WHEEL_DARK.has(WHEEL_COLS[i])}));
+  let defs=`<defs>${SEGS.map((x,i)=>`<radialGradient id="g${i}" cx="50%" cy="50%" r="52%"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".55" stop-color="${x.col}"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></radialGradient>`).join("")}
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4C2"/><stop offset=".45" stop-color="#E0B23A"/><stop offset=".55" stop-color="#9A7016"/><stop offset="1" stop-color="#5E4208"/></linearGradient>
+    <linearGradient id="gold2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF4C2"/><stop offset=".5" stop-color="#D4A12B"/><stop offset="1" stop-color="#6E4D0C"/></linearGradient>
+    <radialGradient id="gloss" cx="50%" cy="22%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <filter id="neon" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+  let body=""; SEGS.forEach((x,i)=>{ const a0=i*seg,a1=a0+seg,[x0,y0]=pt(a0,R),[x1,y1]=pt(a1,R),mid=a0+seg/2,[tx,ty]=pt(mid,R*.72);
+    body+=`<path d="M${R},${R} L${x0},${y0} A${R},${R} 0 0 1 ${x1},${y1} Z" fill="url(#g${i})"/>`;
+    body+=`<path class="neon" d="M${R},${R} L${x0},${y0}" stroke="${x.col==="#FFFFFF"?"#FFD23F":x.col}" stroke-width="1.8" filter="url(#neon)" opacity=".95"/>`;
+    const fill=x.dark?"#1D1340":"#fff", sub=x.dark?"#4300D2":"#FFE28A";
+    body+=`<g transform="translate(${tx},${ty}) rotate(${mid})"><text text-anchor="middle" fill="${fill}" font-family="Rubik" font-weight="900" font-size="${x.again?10:(x.label.length>3?14.5:19)}" y="2" style="paint-order:stroke;stroke:rgba(0,0,0,.4);stroke-width:2px">${x.again?"TIRÁ":x.label}</text><text text-anchor="middle" fill="${sub}" font-family="Rubik" font-weight="900" font-size="6.5" y="11">${x.again?"DE NUEVO":"USD"}</text></g>`; });
+  const rim=`<circle cx="100" cy="100" r="100" fill="url(#gloss)" pointer-events="none"/>
+    <circle cx="100" cy="100" r="104" fill="none" stroke="url(#gold)" stroke-width="13"/>
+    <circle cx="100" cy="100" r="97.5" fill="none" stroke="url(#gold2)" stroke-width="2"/>
+    <circle cx="100" cy="100" r="110.5" fill="none" stroke="#4B3407" stroke-width="1.2"/>
+    ${Array.from({length:24},(_,k)=>{const [x,y]=pt(k*15,104);return `<circle class="bulb b${k%4}" cx="${x}" cy="${y}" r="2.8"/><circle cx="${x}" cy="${y}" r="3.6" fill="none" stroke="#5E4208" stroke-width=".6"/>`}).join("")}
+    ${Array.from({length:12},(_,k)=>{const [x,y]=pt(k*30,97.5);return `<circle cx="${x}" cy="${y}" r="1.6" fill="#FFF4C2" stroke="#8E6A14" stroke-width=".5"/>`}).join("")}`;
+  return `<svg viewBox="-12 -12 224 224">${defs}${body}${rim}</svg>`;
 }
+const POINTER_SVG=`<svg viewBox="0 0 50 60"><defs><linearGradient id="ruby" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF5A6A"/><stop offset=".5" stop-color="#C8102E"/><stop offset="1" stop-color="#6E0012"/></linearGradient><pattern id="cane" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)"><rect width="8" height="8" fill="#fff"/><rect width="4" height="8" fill="#E61A06"/></pattern></defs><path d="M25 58 L5 16 Q25 -2 45 16 Z" fill="url(#cane)" stroke="#FFE28A" stroke-width="3"/><circle cx="25" cy="14" r="7" fill="url(#ruby)" stroke="#FFE28A" stroke-width="2"/><ellipse cx="22" cy="11" rx="2.5" ry="3" fill="#fff" opacity=".5"/></svg>`;
+const HAT_SVG=`<svg class="hat" viewBox="0 0 60 50"><path d="M6 44 Q14 10 40 6 Q50 4 56 12 L22 40 Z" fill="#E61A06"/><path d="M4 46 L24 40 Q30 42 28 48 Q18 52 4 46Z" fill="#fff"/><circle cx="56" cy="11" r="6" fill="#fff"/></svg>`;
+const panelSnow=()=>Array.from({length:30},()=>`<i style="left:${(Math.random()*100).toFixed(1)}%;animation-duration:${(7+Math.random()*9).toFixed(1)}s;animation-delay:${(-Math.random()*16).toFixed(1)}s;opacity:${(.25+Math.random()*.5).toFixed(2)}"></i>`).join("");
 
 function wheel(again){
   $("#pill").textContent = `${state.dest.e} ${state.dest.n}`;
   render(`<div class="center"><h1>${again?"¡Tirá de nuevo!":"¡3 de 3!"}</h1>
     <p class="lead">Girá la ruleta y ganá un voucher para tu pasaje a ${state.dest.n}.</p></div>
-    <div class="wheelwrap"><div class="pointer"></div><div class="wheel" id="wheel" style="transform:rotate(${state.rot}deg)">${wheelSVG()}</div><div class="hub">GIRÁ</div></div>
+    <div class="wheelpanel" id="wheelpanel"><div class="snowbg">${panelSnow()}</div>
+      <div class="wheelwrap"><span class="deco" style="left:-12px;top:-8px">🎄</span><span class="deco" style="right:-12px;top:-8px">🎄</span><span class="deco" style="left:-14px;bottom:6px;font-size:1.4rem">🎁</span><span class="deco" style="right:-14px;bottom:6px;font-size:1.4rem">🔔</span>
+        <div class="pointer" id="pointer">${POINTER_SVG}</div><div class="wheel" id="wheel" style="transform:rotate(${state.rot}deg)">${wheelSVG()}</div><div class="hub"><img src="/logo.svg" alt="despegar"></div>${HAT_SVG}</div></div>
     <button class="btn" id="spin">Girar la ruleta</button>`);
   $("#spin").onclick = spin;
   view.querySelector(".hub").onclick = spin;
@@ -336,31 +448,27 @@ async function spin(){
   });
 }
 
-/* La ruleta frena con inercia: amaga con el premio vecino más alto y se balancea hasta quedar en el sorteado. */
+/* La ruleta frena con tensión: gira largo, se pasa casi un gajo, retrocede despacio y se asienta en el premio. El puntero se dobla en cada pin y suena un clic. */
+let wheelAC = null;
+function wheelClick(){ try{ wheelAC = wheelAC || new (window.AudioContext||window.webkitAudioContext)(); const o=wheelAC.createOscillator(), g=wheelAC.createGain(); o.type="square"; o.frequency.value=1800; g.gain.setValueAtTime(.2,wheelAC.currentTime); g.gain.exponentialRampToValueAtTime(.001,wheelAC.currentTime+.03); o.connect(g); g.connect(wheelAC.destination); o.start(); o.stop(wheelAC.currentTime+.03);}catch(e){} }
 function animateWheel(i, done){
-  const n = PREMIOS.length, seg = 360/n;
-  const prev = (i-1+n)%n, next = (i+1)%n;
-  const val = k => PREMIOS[k].again ? 250 : PREMIOS[k].v;
-  const teaseNext = val(next) > val(prev);                 // vecino con el que amaga
-  const b = teaseNext ? (i+1)*seg : i*seg;                 // ángulo del borde con ese vecino
-  const sgn = teaseNext ? 1 : -1;                          // hacia dónde queda el vecino
-  const a = [ b + sgn*seg*0.38, b - sgn*seg*0.55, b + sgn*seg*0.16, b - sgn*seg*0.42, b + sgn*seg*0.04, b - sgn*seg*(0.25+Math.random()*0.35) ];
-  const durs = [4300, 900, 800, 700, 650, 900];
-  const base = state.rot - (state.rot % 360);
-  const rot1 = base + 360*7 + ((((360 - a[0]) % 360) + 360) % 360);
-  const rots = a.map(x => rot1 - (x - a[0]));
-  const el = $("#wheel"), start = state.rot;
-  const easeOut = t => 1 - Math.pow(1-t, 3), easeIO = t => t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
-  let k = 0, t0 = performance.now(), from = start;
-  function frame(now){
-    const t = Math.min(1, (now - t0)/durs[k]);
-    const e = k===0 ? easeOut(t) : easeIO(t);
-    const r = from + (rots[k]-from)*e;
-    el.style.transform = `rotate(${r}deg)`;
-    if(t < 1) return requestAnimationFrame(frame);
-    from = rots[k]; k++; t0 = now; buzz(12);
-    if(k < rots.length) return requestAnimationFrame(frame);
-    state.rot = rots[rots.length-1]; setTimeout(done, 250);
+  const seg = WHEEL_SEG, cands = WHEEL_ORDER.map((p,k)=>p===i?k:-1).filter(k=>k>=0), idx = cands[Math.floor(Math.random()*cands.length)]; // gajo del premio sorteado
+  const el = $("#wheel"), ptr = $("#pointer"), panel = $("#wheelpanel"), start = state.rot;
+  const final = start + 360*5 + ((360 - (idx*seg + seg/2) - (start%360) + 720)%360) + (Math.random()-.5)*seg*.5;
+  const over = seg*(0.9+Math.random()*0.5);
+  const T1=5200, T2=2300, T3=900; let lastPeg = Math.floor(start/seg); const t0 = performance.now();
+  panel.classList.add("spinning");
+  const setRot = r=>{ el.style.transform = `rotate(${r}deg)`;
+    const peg = Math.floor(r/seg); if(peg !== lastPeg){ wheelClick(); buzz(8); lastPeg = peg; }
+    const frac = ((r%seg)+seg)%seg/seg, bend = -22*Math.max(0, 1-frac*4); if(ptr) ptr.style.transform = `translateX(-50%) rotate(${bend}deg)`; };
+  function frame(now){ const t = now-t0; let r;
+    if(t < T1){ const k=t/T1, e=1-Math.pow(1-k,3.2); r = start+(final+over-start)*e; }
+    else if(t < T1+T2){ const k=(t-T1)/T2, e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; r = final+over-(over*1.18)*e; panel.classList.add("tension"); panel.classList.remove("spinning"); }
+    else if(t < T1+T2+T3){ const k=(t-T1-T2)/T3, e=1-Math.pow(1-k,2); r = final-over*.18+(over*.18)*e; }
+    else r = final;
+    setRot(r);
+    if(t < T1+T2+T3+100) return requestAnimationFrame(frame);
+    panel.classList.remove("tension","spinning"); state.rot = final; setTimeout(done, 250);
   }
   requestAnimationFrame(frame);
 }
@@ -391,7 +499,7 @@ function voucher(v, returning){
 
 /* ---------- Escena: el avión vuela hacia la derecha; el cielo y lo que pasa se mueven en contra ---------- */
 function scene(cls=""){
-  return `<div class="scene ${cls}${sceneDay?" day":""}" id="scene"><div class="sky day"></div><div class="starswrap"><div class="layer stars"></div><div class="layer stars b"></div><span class="belen"><svg viewBox="-20 -20 40 40"><path d="M0 -19L3 -3L19 0L3 3L0 19L-3 3L-19 0L-3 -3Z" fill="#FFF3C4"/><path d="M0 -9L1.5 -1.5L9 0L1.5 1.5L0 9L-1.5 1.5L-9 0L-1.5 -1.5Z" fill="#fff"/></svg></span></div><img class="plane" src="/plane.png" alt="" width="760" height="224"><div class="weather" id="weather"></div></div>`;
+  return `<div class="scene ${cls}${sceneDay?" day":""}" id="scene"><div class="sky day"><span class="sun" id="sun"></span><div class="dusk" id="dusk"></div></div><div class="starswrap"><span class="moon p2" id="moon"><svg viewBox="-20 -20 40 40"><defs><radialGradient id="mg" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#FFFBEA"/><stop offset="1" stop-color="#F3E3A8"/></radialGradient></defs><g class="ph ph2"><circle r="14" fill="url(#mg)"/><circle r="3.2" cx="-4.5" cy="-3" fill="#E3D194" opacity=".55"/><circle r="2.2" cx="5" cy="4.5" fill="#E3D194" opacity=".55"/><circle r="1.5" cx="3" cy="-7" fill="#E3D194" opacity=".5"/><circle r="1.2" cx="-6" cy="6" fill="#E3D194" opacity=".5"/></g><g class="ph ph1"><path d="M0 -14A14 14 0 0 0 0 14A7.5 14 0 0 1 0 -14Z" fill="url(#mg)"/></g><g class="ph ph3"><path d="M0 -14A14 14 0 0 1 0 14A7.5 14 0 0 0 0 -14Z" fill="url(#mg)"/></g></svg></span><div class="layer stars"></div><div class="layer stars b"></div><span class="belen"><svg viewBox="-20 -20 40 52"><defs><radialGradient id="bg1"><stop offset="0" stop-color="#FFF6D0" stop-opacity=".9"/><stop offset="1" stop-color="#FFF6D0" stop-opacity="0"/></radialGradient><linearGradient id="bt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF3C4" stop-opacity=".9"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></linearGradient></defs><circle r="13" fill="url(#bg1)"/><circle r="9" fill="none" stroke="#FFF3C4" stroke-opacity=".35" stroke-width=".8"/><path d="M-1.6 4L0 30L1.6 4Z" fill="url(#bt)"/><path d="M0 -18L2.4 -2.4L12 0L2.4 2.4L0 12L-2.4 2.4L-12 0L-2.4 -2.4Z" fill="#FFE9A3"/><path d="M0 -18L2.4 -2.4L12 0L2.4 2.4L0 12L-2.4 2.4L-12 0L-2.4 -2.4Z" fill="#FFF3C4"/><path d="M-7.5 -7.5L-1.4 -1.4L0 0L-1.4 1.4L-7.5 7.5L-1.4 1.4L0 0L1.4 -1.4Z M7.5 -7.5L1.4 -1.4L0 0L1.4 1.4L7.5 7.5L1.4 1.4L0 0L-1.4 1.4Z" fill="#FFF3C4" fill-opacity=".85"/><path d="M0 -8L1 -1L8 0L1 1L0 8L-1 1L-8 0L-1 -1Z" fill="#fff"/><g fill="#FFF3C4"><path class="tw" d="M-14 -11L-13.3 -9.3L-11.6 -8.6L-13.3 -7.9L-14 -6.2L-14.7 -7.9L-16.4 -8.6L-14.7 -9.3Z"/><path class="tw" d="M13 -13L13.6 -11.6L15 -11L13.6 -10.4L13 -9L12.4 -10.4L11 -11L12.4 -11.6Z"/><path class="tw" d="M12 9L12.5 10.2L13.7 10.7L12.5 11.2L12 12.4L11.5 11.2L10.3 10.7L11.5 10.2Z"/></g></svg></span></div><img class="plane" src="/plane.png" alt="" width="760" height="224"><div class="weather" id="weather"></div></div>`;
 }
 // Nubes con varios lóbulos, sombra suave abajo y brillo arriba
 const CLOUDS = [
@@ -411,33 +519,52 @@ let sceneTimers = [];
 const FX = {
   flame:(x,y,s,r=0)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="flame" style="--s:${s}em;--r:${r}deg"><svg viewBox="0 0 100 50"><path d="M100 8Q58 -2 6 25Q58 52 100 42Z" fill="#FF7A1A"/><path d="M100 17Q70 10 32 25Q70 40 100 33Z" fill="#FFD23F"/></svg></span></i>`,
   glow:(x,y,s,h,r=0)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="glow" style="--s:${s}em;--h:${h}em;--r:${r}deg"></span></i>`,
+  breath:(x,y,len,kind,d=0)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="breath ${kind}" style="--l:${len}em;--d:${d}s"></span></i>`, // fuego / hielo que sale de la boca cada tanto
   blink:(x,y,c,d=0,s=4)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="blink" style="--s:${s}em;--c:${c};--d:${d}s"></span></i>`,
   prop:(x,y,s,k=.22)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="prop" style="--s:${s}em;--k:${k}"><svg viewBox="-50 -50 100 100"><circle r="48" fill="rgba(140,140,150,.22)"/><g class="spin"><rect x="-5" y="-48" width="10" height="96" rx="5" fill="#3F3F47"/><rect x="-48" y="-5" width="96" height="10" rx="5" fill="#3F3F47"/></g></svg></span></i>`,
   rotor:(x,y,s)=>`<i class="fx" style="left:${x}%;top:${y}%"><span class="rotor" style="--s:${s}em"></span></i>`
 };
 const RED="#FF3B3B", GRN="#3BFF7A", WHT="#FFFFFF";
+// la Copa del Mundo colgada de tres globos argentinos: 78, 86 y 22
+const BAL = (cx,cy,fill,txt,tc,d)=>`<g class="bal" style="animation-delay:${d}s;transform-origin:${cx}px ${cy+34}px"><path d="M${cx} ${cy+33}L${cx-4} ${cy+39}L${cx+4} ${cy+39}Z" fill="${fill}" stroke="#4a6a90" stroke-width="1"/><ellipse cx="${cx}" cy="${cy}" rx="27" ry="33" fill="${fill}" stroke="#4a6a90" stroke-width="1.5"/><ellipse cx="${cx-9}" cy="${cy-12}" rx="7" ry="10" fill="#fff" fill-opacity=".45"/><text x="${cx}" y="${cy+9}" text-anchor="middle" font-family="Rubik,Arial,sans-serif" font-weight="800" font-size="26" fill="${tc}">${txt}</text></g>`;
+const COPA_HTML = ()=>`<svg class="balloons" viewBox="0 0 200 150" style="display:block;width:100%;overflow:visible"><g fill="none" stroke="#5b7fa8" stroke-width="1.6"><path d="M48 84Q70 120 100 150"/><path d="M100 70Q100 110 100 150"/><path d="M152 84Q130 120 100 150"/></g>${BAL(48,45,"#74ACDF","78","#fff",0)}${BAL(100,36,"#FFFFFF","86","#2F6FB2",-0.9)}${BAL(152,45,"#74ACDF","22","#fff",-1.7)}</svg><img src="/obj/copa.png" alt="" style="position:absolute;left:34%;top:100%;width:32%">`;
+// alas que aletean: [pivotes en % por ala, duración del aleteo en s]
+const WINGS = {
+  gansos:[[[44,34],[28,53],[15,56],[72,49],[42,81],[67,83],[92,85]], .42],
+  ciguena:[[[62,48]], .75], pterodactilo:[[[48,58],[57,54]], 1.1], pegaso:[[[60,49]], .85], colibri:[[[56,47]], .07],
+  superman:[[[52,36]], .55, {back:true, anim:"capa"}], fenix:[[[36,52]], .5], dragon:[[[33,52]], .95], hielo:[[[36,55]], .95] // la capa flamea por detrás del cuerpo
+};
 const OBJS = [
-  ["xwing",28, FX.flame(12,30,18)+FX.flame(12,64,18)],
-  ["tie",20,""], ["enterprise",190, FX.glow(97,10,10,8,180)+FX.glow(37,88,10,8,180)], ["falcon",74, FX.glow(97,55,12,40,180)], ["discovery",150,""],
-  ["hubble",30, FX.blink(12,62,RED)+FX.blink(86,38,GRN,.5)+FX.blink(50,18,WHT,1)],
-  ["gansos",30,""], ["boba",18, FX.flame(50,82,20,-90)], ["superman",18,""], ["et",18,""], ["frisbee",12,""], ["pelota",12,""],
-  ["dron",12, FX.rotor(10,18,26)+FX.rotor(90,18,26)+FX.rotor(38,6,22)+FX.rotor(62,6,22)],
+  ["plusultra",46, FX.prop(16,17,26,.28)], ["spirit",30, FX.prop(7,50,42,.2)],
+  ["xwing",34, FX.flame(72,37,13,180)+FX.flame(72,62,13,180)],
+  ["tie",20,""], ["enterprise",70, FX.glow(99,11,10,7,180)+FX.glow(99,43,10,7,180)], ["falcon",50,""],
+  ["hubble",34, FX.blink(62,6,RED)+FX.blink(44,93,GRN,.5)+FX.blink(50,40,WHT,1)],
+  ["gansos",30,""], ["boba",18, FX.flame(98,52,22,180)], ["superman",18,""], ["et",18,""], ["pelota",12,""],
+  ["dron",12, FX.rotor(12,7,30)+FX.rotor(86,7,30)],
   ["colibri",10,""], ["pegaso",20,""], ["ardilla",12,""], ["nazca",60,""], ["voyager",16,""],
-  ["webb",44, FX.blink(72,18,RED)+FX.blink(22,72,GRN,.7)],
-  ["iss",170, FX.blink(4,46,RED)+FX.blink(96,46,GRN,.5)+FX.blink(50,32,WHT,1)],
-  ["grinch",20, FX.prop(4,50,30,.25)], ["helicoptero",28, FX.rotor(47,17,70)+FX.prop(94,50,14,.2)], ["globo",40,""], ["avionpapel",12,""], ["parapente",22,""], ["wingsuit",18,""],
-  ["saturn",30, FX.flame(50,99,40,-90)],
-  ["acrobatico",18, FX.prop(5,47,30,.25)], ["ciguena",14,""], ["plusultra",46, FX.prop(16,20,22,.3)], ["spirit",30, FX.prop(6,50,28,.25)],
+  ["webb",44, FX.blink(50,4,RED)+FX.blink(8,80,GRN,.7)+FX.blink(95,80,WHT,1.3)],
+  ["iss",85, FX.blink(3,30,RED,0,2.5)+FX.blink(22,30,"#FFD23F",.7,2.5)+FX.blink(40,42,"#4FA3FF",1.4,2.5)+FX.blink(50,38,WHT,2.1,2.5)+FX.blink(60,42,"#FF6BD6",2.8,2.5)+FX.blink(78,30,"#FFD23F",3.5,2.5)+FX.blink(97,30,GRN,.5,2.5)],
+  ["grinch",20, FX.prop(8,50,46,.22)], ["helicoptero",28, FX.rotor(47,17,70)+FX.prop(94,50,14,.2)], ["globo",40,""], ["avionpapel",12,""], ["parapente",22,""], ["wingsuit",18,""],
+  ["saturn",70, FX.flame(99,34,24,180)+FX.flame(99,73,24,180)],
+  ["acrobatico",18, FX.prop(5,47,30,.25)], ["fenix",52,""], ["dragon",54, FX.breath(3,43,60,"fire")], ["hielo",54, FX.breath(2,47,60,"ice",2.5)], ["ciguena",14,""],
   ["aladelta",22,""], ["wright",26, FX.prop(44,52,22,.25)],
-  ["sputnik",12, FX.blink(44,42,RED)+FX.blink(56,52,WHT,.6)], ["pterodactilo",22,""],
-  ["globo2",40,""], ["planeador",32,""], ["falcon2",74, FX.glow(92,52,12,40,180)],
-  ["destroyer",240, FX.glow(97,62,12,26,180)+FX.glow(96,54,8,10,180)+FX.glow(96,72,8,10,180)],
+  ["sputnik",32, FX.blink(99,2,RED)+FX.blink(99,29,RED,1.1)+FX.blink(99,72,RED,2.2)+FX.blink(92,97,RED,3.3)+FX.blink(9,50,WHT,.8)], ["pterodactilo",44,""],
+  ["planeador",32,""],
+  ["destroyer",80, FX.glow(98,63,12,22,180)+FX.glow(97,53,8,8,180)+FX.glow(97,73,8,8,180)],
   ["wright2",26, FX.prop(60,50,22,.25)], ["delorean",16, FX.flame(98,84,30,180)+FX.flame(96,92,20,180)],
-  ["parapente2",22,""], ["saturn2",200, FX.flame(100,50,26,180)],
-  ["ovni",42, FX.blink(24,62,RED)+FX.blink(50,68,WHT,.45)+FX.blink(76,62,GRN,.9)+FX.glow(50,78,30,12,-90)],
-  ["copa",12,""]
+  ["parapente2",22,""], ["saturn2",200, FX.flame(99,43,20,180)+FX.flame(99,57,20,180)],
+  ["ovni",42, FX.blink(24,62,RED)+FX.blink(50,68,WHT,.45)+FX.blink(76,62,GRN,.9)],
+  ["copa",40,""]
 ];
-const GIFT = `<svg viewBox="0 0 40 40"><rect x="4" y="14" width="32" height="24" rx="3" fill="#E61A06"/><rect x="2" y="10" width="36" height="8" rx="2" fill="#FF4D3D"/><rect x="17" y="10" width="6" height="28" fill="#FFD23F"/><path d="M20 10C12 2 6 6 12 10M20 10C28 2 34 6 28 10" stroke="#FFD23F" stroke-width="3" fill="none"/></svg>`;
+// Regalos distintos: caja con moño, caja alta, caja redonda, caja a rayas, bolsa, caja con lazo cruzado
+const GIFTS = [
+  `<svg viewBox="0 0 40 40"><rect x="4" y="14" width="32" height="24" rx="3" fill="#E61A06"/><rect x="2" y="10" width="36" height="8" rx="2" fill="#FF4D3D"/><rect x="17" y="10" width="6" height="28" fill="#FFD23F"/><path d="M20 10C12 2 6 6 12 10M20 10C28 2 34 6 28 10" stroke="#FFD23F" stroke-width="3" fill="none"/></svg>`,
+  `<svg viewBox="0 0 40 40"><rect x="9" y="8" width="22" height="30" rx="3" fill="#4300D2"/><rect x="7" y="6" width="26" height="7" rx="2" fill="#7C4DFF"/><rect x="18" y="6" width="4" height="32" fill="#fff"/><path d="M20 6C14 0 10 3 15 6M20 6C26 0 30 3 25 6" stroke="#fff" stroke-width="2.5" fill="none"/></svg>`,
+  `<svg viewBox="0 0 40 40"><ellipse cx="20" cy="30" rx="15" ry="8" fill="#028574"/><rect x="5" y="16" width="30" height="14" fill="#028574"/><ellipse cx="20" cy="16" rx="15" ry="7" fill="#03A88F"/><path d="M5 23h30" stroke="#FFD23F" stroke-width="3"/><circle cx="20" cy="16" r="3" fill="#FFD23F"/></svg>`,
+  `<svg viewBox="0 0 40 40"><rect x="3" y="12" width="34" height="26" rx="3" fill="#fff"/><path d="M3 18h34M3 25h34M3 32h34" stroke="#E61A06" stroke-width="3.5"/><rect x="2" y="9" width="36" height="6" rx="2" fill="#E61A06"/><rect x="17" y="9" width="6" height="29" fill="#028574"/></svg>`,
+  `<svg viewBox="0 0 40 40"><path d="M10 14Q6 34 10 38H30Q34 34 30 14Q20 8 10 14Z" fill="#B5651D"/><path d="M12 14Q20 18 28 14L30 8Q20 2 10 8Z" fill="#8B4513"/><path d="M10 14Q20 18 30 14" stroke="#FFD23F" stroke-width="2.5" fill="none"/></svg>`,
+  `<svg viewBox="0 0 40 40"><rect x="5" y="12" width="30" height="26" rx="4" fill="#FFB000"/><path d="M5 12L35 38M35 12L5 38" stroke="#E61A06" stroke-width="3"/><rect x="3" y="9" width="34" height="6" rx="2" fill="#FFC838"/><circle cx="20" cy="11" r="4" fill="#E61A06"/></svg>`
+];
 function santaHTML(){
   // 3 renos y trineo, cada uno con su propio vaivén
   const parts = [["santa_r1",0,21.78],["santa_r2",21.78,19.93],["santa_r3",41.71,20.39],["santa_sleigh",62.09,37.91]];
@@ -445,8 +572,9 @@ function santaHTML(){
 }
 let sceneDay = Math.random() < 0.5;
 function stopScene(){ sceneTimers.forEach(clearTimeout); sceneTimers = []; }
-function bag(arr){ let b = []; return ()=>{ if(!b.length) b = arr.slice().sort(()=>Math.random()-0.5); return b.pop(); }; }
-const nextObj = bag(OBJS.filter(o=>o[0]!=="grinch"));
+// round robin: siempre el mismo orden, uno tras otro
+function bag(arr){ const a = arr.slice(); for(let k = a.length-1; k > 0; k--){ const j = Math.floor(Math.random()*(k+1)); [a[k],a[j]] = [a[j],a[k]]; } let i = 0; return ()=>a[i++ % a.length]; } // round robin, en orden barajado al cargar
+const nextObj = bag(OBJS.filter(o=>o[0]!=="grinch" && o[0]!=="xwing")); // el X-Wing solo aparece persiguiendo al TIE
 function startScene(){
   stopScene();
   if(!sceneDay && Math.random() < 0.5) sceneTimers.push(setTimeout(()=>{ const s = sc(); if(s && !sceneDay){ const f = document.createElement("i"); f.className = "fugaz"; f.style.left = (30 + Math.random()*60) + "%"; f.style.top = (8 + Math.random()*30) + "%"; f.addEventListener("animationend", ()=>f.remove()); s.querySelector(".starswrap").appendChild(f); } }, 5000 + Math.random()*15000));
@@ -457,17 +585,80 @@ function startScene(){
     c.style.top = (6 + Math.random()*55) + "%";
     const front = Math.random() < 0.2; // 1 de cada 5 pasa por delante del avión, muy transparente
     if(front){
-      c.style.width = Math.round(110 + Math.random()*70) + "px"; c.style.animationDuration = (9 + Math.random()*4) + "s";
+      c.style.width = Math.round(110 + Math.random()*70) + "px"; c.style.animationDuration = ((9 + Math.random()*4) * (1 + Math.random()*0.5)) + "s";
       c.style.zIndex = 4; c.style.opacity = (0.14+Math.random()*0.1).toFixed(2);
     }else{
       // 3 capas de fondo: lejana (chica, lenta), media y cercana (grande, más rápida), todas al 50 %
       const L = [{w:[40,70],d:[22,30],z:0},{w:[70,110],d:[15,21],z:1},{w:[110,160],d:[11,15],z:2}][Math.floor(Math.random()*3)];
       c.style.width = Math.round(L.w[0] + Math.random()*(L.w[1]-L.w[0])) + "px";
-      c.style.animationDuration = (L.d[0] + Math.random()*(L.d[1]-L.d[0])) + "s";
+      c.style.animationDuration = ((L.d[0] + Math.random()*(L.d[1]-L.d[0])) * (1 + Math.random()*0.5)) + "s";
       c.style.zIndex = L.z; c.style.opacity = "0.5";
     }
     c.addEventListener("animationend", ()=>c.remove()); s.appendChild(c);
     sceneTimers.push(setTimeout(cloud, 5000 + Math.random()*7000)); };
+  const MONS = ["aconcagua","bigben","catedral","coliseo","cristo","eiffel","empire","esfinge","estadio","faro","fuji","moai","muralla","obelisco","pagoda","petronas","piramides","pisa","puente","sagrada","sanmarcos","stonehenge","tajmahal"];
+  const nextMon = bag(MONS);
+  const monument = ()=>{ const s = sc(); if(!s) return;
+    const name = nextMon(), m = document.createElement("span"); m.className = "mon";
+    const img = new Image(); img.src = `/obj/mon_${name}.png`;
+    const go = ()=>{ if(!sc()) return;
+      const ar = img.naturalWidth/img.naturalHeight || 1; let h = Math.round(130 + Math.random()*30), wdt = Math.min(Math.round(ar*h), 300); // alto en px; los anchos se topan en 300 y la imagen se alarga en vertical
+      let vis = 0.38 + Math.random()*0.12; // se ve solo la parte de arriba (38–50 %)
+      if(name === "fuji"){ wdt = 440; h = Math.round(440/ar); vis = 0.78; } // el Fuji: ancho y bajo, sin estirar, se ve el pico nevado y el cambio de color
+      const dur = (9 + Math.random()*5) * (1 + Math.random()*0.5) * 4 * 1200/720 / 1.3; // 4 veces más lento que los objetos, +30 % de velocidad
+      m.style.height = h + "px"; m.style.width = wdt + "px"; m.style.top = (s.clientHeight - h*vis) + "px"; m.style.animationDuration = dur + "s";
+      m.appendChild(img);
+      if(name === "aconcagua") m.insertAdjacentHTML("beforeend", `<img class="flag" src="/obj/mon_aconcagua_flag.png" alt="">`); // la bandera flamea
+      if(name === "faro") m.insertAdjacentHTML("beforeend", `<i class="beam"></i><i class="lamp"></i>`);                     // el faro proyecta luz
+      m.addEventListener("animationend", ()=>m.remove()); s.appendChild(m);
+      sceneTimers.push(setTimeout(monument, dur*1000*0.42 + Math.random()*6000)); };
+    if(img.complete && img.naturalWidth) go(); else { img.onload = go; img.onerror = ()=>sceneTimers.push(setTimeout(monument, 8000)); } };
+  const aerobatics = (w, fx)=>{ const s = sc(); if(!s) return;
+    const W = s.clientWidth, H = s.clientHeight, P = (x,y)=>[x*W/100, y*H/100];
+    const segs = [], add = (pts, smoke, mode)=>segs.push({pts, smoke, mode});
+    const arc = (cx,cy,r,a0,a1,n)=>{ const o = []; for(let i=0;i<=n;i++){ const a = a0+(a1-a0)*i/n; o.push([cx+Math.cos(a)*r, cy+Math.sin(a)*r]); } return o; };
+    // 1) entra por la derecha, 2) loop completo, 3) tirabuzón (dos rolidos), 4) trepada y caída en picada, 5) escribe "Navidad", 6) loop de salida
+    add([P(112,40), P(84,36)], true, "fly");
+    const r = H*0.19, c = P(84,36); add(arc(c[0], c[1]-r, r, Math.PI/2, Math.PI/2 + 2*Math.PI, 40), true, "loop");        // loop
+    const cs = []; for(let i=0;i<=30;i++){ const t = i/30; cs.push([c[0]-t*W*0.26, c[1]-4-Math.sin(t*Math.PI*4)*H*0.05]); } add(cs, true, "roll"); // tirabuzón
+    const e = cs[cs.length-1];
+    add([e, [e[0]-W*0.06, e[1]-H*0.24]], true, "fly");                                        // trepada
+    add(arc(e[0]-W*0.06-W*0.045, e[1]-H*0.24, W*0.045, 0, -Math.PI/2, 10), true, "fly");       // cambia a picada
+    add([[e[0]-W*0.105, e[1]-H*0.24-W*0.045], [e[0]-W*0.105, H*0.70]], true, "dive");         // caída en picada
+    add(arc(e[0]-W*0.105-W*0.06, H*0.70, W*0.06, 0, -Math.PI/2, 10), true, "fly");             // se endereza abajo
+    const f = [e[0]-W*0.165, H*0.70-W*0.06];
+    add([f, [f[0]-W*0.06, f[1]-H*0.2]], true, "fly");                                        // sube
+    const r2 = H*0.14, g2 = [f[0]-W*0.06, f[1]-H*0.2]; add(arc(g2[0], g2[1]-r2, r2, Math.PI/2, Math.PI/2 + 2*Math.PI, 36), true, "loop"); // segundo loop
+    add([g2, [-W*0.2, g2[1]-H*0.1]], true, "roll");                                           // sale rolando
+    // longitud acumulada
+    let L = 0; segs.forEach(g=>{ g.d0 = L; for(let i=1;i<g.pts.length;i++){ const a = g.pts[i-1], b = g.pts[i]; L += Math.hypot(b[0]-a[0], b[1]-a[1]); } g.d1 = L; });
+    const v = Math.max(80, W*0.22); // px/s
+    const el = document.createElement("span"); el.className = "stunt"; el.style.width = w + "px"; el.style.fontSize = (w/100) + "px"; el.style.zIndex = 2; // siempre detrás del 747
+    el.innerHTML = `<img src="/obj/acrobatico.png" alt="">${fx}`; s.appendChild(el);
+    const posAt = d=>{ const g = segs.find(g=>d <= g.d1) || segs[segs.length-1]; let acc = g.d0;
+      for(let i=1;i<g.pts.length;i++){ const a = g.pts[i-1], b = g.pts[i], l = Math.hypot(b[0]-a[0], b[1]-a[1]);
+        if(d <= acc + l || i === g.pts.length-1){ const t = l ? Math.max(0, Math.min(1, (d-acc)/l)) : 0; return {x:a[0]+(b[0]-a[0])*t, y:a[1]+(b[1]-a[1])*t, ang:Math.atan2(b[1]-a[1], b[0]-a[0]), g, p:(d-g.d0)/(g.d1-g.d0)}; }
+        acc += l; } };
+    const t0 = performance.now(); let lastSmoke = null;
+    const step = now=>{ if(!el.isConnected || !s.isConnected || sc() !== s){ el.remove(); return; }
+      const d = (now-t0)/1000*v; if(d > L){ el.remove(); return; }
+      const q = posAt(d), dx = Math.cos(q.ang);
+      let sy2 = q.g.mode === "loop" ? 1 : (dx > 0 ? -1 : 1);                 // de frente a la derecha se da vuelta para no ir invertido (salvo en el loop)
+      if(q.g.mode === "roll") sy2 *= Math.cos(q.p*Math.PI*4);                 // tirabuzón: dos rolidos
+      const sc2 = Math.abs(sy2) < 0.12 ? 0.12*Math.sign(sy2||1) : sy2;
+      el.style.transform = `translate(${(q.x - w/2).toFixed(1)}px,${(q.y - w*0.18).toFixed(1)}px) rotate(${(q.ang*180/Math.PI + 180).toFixed(1)}deg) scaleY(${sc2.toFixed(2)})`;
+      const bx = q.x - Math.cos(q.ang)*w*0.46, by = q.y - Math.sin(q.ang)*w*0.46; // cola del avión
+      if(q.g.smoke){ const gap = q.g.mode === "write" ? 2.5 : 4; // humo continuo: una partícula cada pocos px, sin importar los fps
+        if(!lastSmoke) lastSmoke = [bx, by];
+        const dl = Math.hypot(bx-lastSmoke[0], by-lastSmoke[1]), n = Math.min(40, Math.floor(dl/gap));
+        for(let i=1;i<=n;i++){ const t = i/n, m = document.createElement("i"); m.className = q.g.mode === "write" ? "smoke w" : "smoke";
+          m.style.left = (lastSmoke[0]+(bx-lastSmoke[0])*t).toFixed(1) + "px"; m.style.top = (lastSmoke[1]+(by-lastSmoke[1])*t + (Math.random()-0.5)*1.5).toFixed(1) + "px";
+          m.style.animationDuration = (q.g.mode === "write" ? 11 + Math.random()*2 : 3.5 + Math.random()*1.5) + "s";
+          m.addEventListener("animationend", ()=>m.remove()); s.appendChild(m); }
+        if(n) lastSmoke = [bx, by]; }
+      else lastSmoke = null;
+      requestAnimationFrame(step); };
+    requestAnimationFrame(step); };
   let flyCount = 0;
   const spawn = (html, w, top, dur, front, delay=0)=>{ const s = sc(); if(!s) return null;
     const o = document.createElement("span"); o.className = "obj"; o.innerHTML = html;
@@ -476,50 +667,92 @@ function startScene(){
     o.addEventListener("animationend", e=>{ if(e.target === o) o.remove(); }); s.appendChild(o); return o; };
   const thing = ()=>{ const s = sc(); if(!s) return;
     flyCount++;
-    const front = Math.random() < 0.5, dur = 9 + Math.random()*5, top = 4 + Math.random()*50;
+    const front = Math.random() < 0.5, dur = (9 + Math.random()*5) * (1 + Math.random()*0.5); let top = 4 + Math.random()*40;
     if(flyCount % 5 === 0){
-      // Papá Noel: renos con vuelo propio, regalos cada tanto y, la mitad de las veces, el Grinch persiguiéndolo
+      // Papá Noel: renos con vuelo propio, regalos cada tanto y, el 80 % de las veces, el Grinch persiguiéndolo
       const w = 64 * (0.9 + Math.random()*0.3) * (front ? 1.25 : 0.85);
       const santa = spawn(santaHTML(), w, Math.min(top, 30), dur, front);
-      // 3 regalos por pasada, al 25 %, 50 % y 75 % del recorrido
-      [0.25, 0.5, 0.75].forEach(f=>sceneTimers.push(setTimeout(()=>{ if(!santa || !santa.isConnected) return;
-        const g = document.createElement("i"); g.className = "gift"; g.innerHTML = GIFT; g.style.left = (72 + Math.random()*20) + "%"; g.style.top = "55%";
-        g.addEventListener("animationend", e=>{ e.stopPropagation(); g.remove(); }); santa.appendChild(g); }, dur*1000*f)));
-      if(Math.random() < 0.5){
+      // dos ráfagas de 3 regalos por pasada
+      const gf1 = 0.26 + Math.random()*0.1, gf2 = 0.58 + Math.random()*0.1;
+      [gf1, gf1 + 0.18/dur, gf1 + 0.36/dur, gf2, gf2 + 0.18/dur, gf2 + 0.36/dur].forEach((f,gi0)=>sceneTimers.push(setTimeout(()=>{ const gi = gi0 % 3; const s = sc(); if(!s || !santa || !santa.isConnected) return;
+        // el regalo sale del trineo, sigue el avance horizontal y cae con gravedad hasta salir por abajo
+        const sr = santa.getBoundingClientRect(), r = s.getBoundingClientRect();
+        const g = document.createElement("i"); g.className = "gift"; g.innerHTML = `<i>${GIFTS[Math.floor(Math.random()*GIFTS.length)]}</i>`;
+        g.style.left = (sr.left - r.left + sr.width*0.8) + "px"; g.style.top = (sr.top - r.top + sr.height*0.55) + "px"; g.style.width = Math.max(8, Math.round(w*0.13)) + "px";
+        g.style.setProperty("--dx", (-720/dur*2.6*(0.8 + gi*0.12)).toFixed(0) + "px");
+        g.addEventListener("animationend", e=>{ if(e.target === g) g.remove(); }); s.appendChild(g); }, dur*1000*f)));
+      if(Math.random() < 0.8){
         // el Grinch aparece por la derecha, bastante atrás, con su propio vaivén
         const g = OBJS.find(o=>o[0]==="grinch");
-        spawn(`<span class="part" style="left:0;width:100%;animation-duration:1.1s"><img src="/obj/grinch.png" alt="">${g[2]}</span>`, w*0.4, Math.min(top, 30) + 6, dur, front, 2.6);
+        spawn(`<span class="part" style="left:0;width:100%;animation-duration:1.1s"><img src="/obj/grinch.png" alt="">${g[2]}</span>`, w*0.4, Math.min(top, 30) + 6, dur*0.86, front, 4.2); // sale más atrás y, al ir más rápido, se va acercando
       }
     }else{
       const [name, base, fx] = nextObj();
-      const w = Math.max(10, Math.round(base * (0.8 + Math.random()*0.4) * (front ? 1.25 : 0.85)));
+      if(name === "acrobatico"){ aerobatics(Math.round(base*1.2*(front ? 1.25 : 0.85)*0.85), fx); sceneTimers.push(setTimeout(thing, 22000 + Math.random()*6000)); return; }
+      const SPACE = ["saturn","saturn2","iss","xwing","tie","enterprise","falcon","destroyer","boba","ovni","voyager","hubble","webb","sputnik"]; // naves y cohetes: siempre por arriba del avión
+      const w = Math.max(12, Math.round((base < 30 ? base*1.2 : base) * (0.8 + Math.random()*0.4) * (front ? 1.25 : 0.85))); // los chicos, un 20 % más
       const img = new Image(); img.src = `/obj/${name}.png`;
-      const go = ()=>spawn(`<img src="/obj/${name}.png" alt="">${fx}`, w, top, dur, front);
+      // todo tiene un vaivén sutil, nada pasa recto
+      const wg = WINGS[name];
+      const wo = wg && wg[2] || {};
+      const body = wg ? `<img src="/obj/${name}_body.png" alt="" class="${wo.back ? "front" : ""}">` + wg[0].map((p,i)=>`<img class="wing${wo.back ? " back" : ""}" src="/obj/${name}_w${i+1}.png" alt="" style="transform-origin:${p[0]}% ${p[1]}%;animation-name:${wo.anim || "flap"};animation-duration:${wg[1]}s;animation-delay:-${(Math.random()*wg[1]).toFixed(2)}s">`).join("") : `<img src="/obj/${name}.png" alt="">`;
+      const inner = name === "copa" ? COPA_HTML()
+        : name === "pelota" ? `<span class="kick" style="animation-duration:${dur}s"><span class="ball">${body}</span></span>` : body + fx; // acrobático: piruetas; pelota: pateada, gira y hace parábola
+      const go = ()=>{ const sh = (sc() || {clientHeight:188}).clientHeight, hp = (w / (img.naturalWidth/img.naturalHeight || 2)) / sh * 100; // alto del objeto en % de la escena
+        if(SPACE.includes(name)) top = 2 + Math.random()*Math.max(0, 34 - hp); // termina antes del 36 %, donde empieza el avión
+        top = Math.min(top, 75 - hp); // nada vuela por debajo de los 3/4 de la escena
+        spawn(`<span class="part" style="left:0;width:100%;animation-duration:${(1.6+Math.random()*1.8).toFixed(2)}s">${inner}</span>`, w, top, dur, front);
+        if(name === "tie"){
+          // el X-Wing lo persigue: sale más atrás, un poco más rápido, y dispara láseres
+          const xw = OBJS.find(o=>o[0]==="xwing"), wx = Math.round(xw[1]*1.2*(front ? 1.25 : 0.85));
+          const x = spawn(`<span class="part" style="left:0;width:100%;animation-duration:1.4s"><img src="/obj/xwing.png" alt="">${xw[2]}</span>`, wx, top + 4, dur*0.92, front, 3.2); // más distancia
+          const fire = ()=>{ const s = sc(); if(!s || !x || !x.isConnected) return;
+            const xr = (x.querySelector("img") || x).getBoundingClientRect(), r = s.getBoundingClientRect();
+            if(xr.right < r.left) return;
+            // una ráfaga: los 4 cañones de las alas disparan sucesivamente
+            const tips = [[0.17,0.10],[0.65,0.06],[0.18,0.86],[0.66,0.92]];
+            tips.forEach((t,k)=>sceneTimers.push(setTimeout(()=>{ if(!x.isConnected) return; const xi = x.querySelector("img"), xr2 = (xi || x).getBoundingClientRect();
+              const l = document.createElement("i"); l.className = "laser";
+              l.style.left = (xr2.left - r.left + xr2.width*t[0] - 12) + "px"; l.style.top = (xr2.top - r.top + xr2.height*t[1]) + "px";
+              l.addEventListener("animationend", ()=>l.remove()); s.appendChild(l); }, k*230)));
+            sceneTimers.push(setTimeout(fire, 2800 + Math.random()*1700)); };
+          sceneTimers.push(setTimeout(fire, 2600));
+        } };
       if(img.complete) go(); else { img.onload = go; img.onerror = ()=>{}; }
     }
-    sceneTimers.push(setTimeout(thing, 10000 + Math.random()*5000)); };
+    sceneTimers.push(setTimeout(thing, 12000 + Math.random()*6000)); };
   const shooting = ()=>{ const s = sc(); if(!s || sceneDay) return;
     const f = document.createElement("i"); f.className = "fugaz"; f.style.left = (30 + Math.random()*60) + "%"; f.style.top = (8 + Math.random()*30) + "%";
     f.addEventListener("animationend", ()=>f.remove()); s.querySelector(".starswrap").appendChild(f); };
   const dayNight = ()=>{ const s = sc(); if(!s) return;
     sceneDay = !sceneDay; s.classList.toggle("day", sceneDay);
+    // reinicia el recorrido del sol (y el atardecer) o de la luna para este ciclo
+    (sceneDay ? ["#sun","#dusk"] : ["#moon"]).forEach(q=>{ const el = $(q); if(!el) return; el.style.animation = "none"; void el.offsetHeight; el.style.animation = ""; });
+    if(!sceneDay){ const m = $("#moon"); if(m) m.className = "moon p" + (1 + Math.floor(Math.random()*3)); } // luna: creciente, llena o menguante (nunca nueva)
     if(!sceneDay && Math.random() < 0.5) sceneTimers.push(setTimeout(shooting, 6000 + Math.random()*20000)); // la mitad de las noches, una estrella fugaz
     sceneTimers.push(setTimeout(dayNight, 33000)); };
   const weather = ()=>{ const s = sc(), w = $("#weather"); if(!s || !w) return;
     const kind = Math.random() < 0.5 ? "rain" : "snow";
+    // cada gota y cada copo con su propia velocidad, tamaño, retraso y vaivén
+    const n = kind === "rain" ? 110 : 60, R = Math.random;
+    w.innerHTML = Array.from({length:n}, ()=>{
+      const d = kind === "rain" ? (0.85 + R()*1.2) : (14 + R()*24);
+      const sz = kind === "rain" ? (6 + R()*10) + "px" : (1.5 + R()*2.5) + "px";
+      return `<i style="--x:${(R()*100).toFixed(1)}%;--d:${d.toFixed(2)}s;--dl:${(-R()*d).toFixed(2)}s;--s:${sz};--o:${(0.35 + R()*0.6).toFixed(2)};--sw:${(8 + R()*22).toFixed(0)}px"></i>`; }).join("");
     w.className = "weather " + kind + " on";
-    sceneTimers.push(setTimeout(()=>{ w.classList.remove("on"); }, 12000 + Math.random()*8000));
+    sceneTimers.push(setTimeout(()=>{ w.classList.remove("on"); sceneTimers.push(setTimeout(()=>{ if(!w.classList.contains("on")) w.innerHTML = ""; }, 4500)); }, 12000 + Math.random()*8000));
     sceneTimers.push(setTimeout(weather, 45000 + Math.random()*45000)); };
-  sceneTimers.push(setTimeout(cloud, 300), setTimeout(thing, 4000), setTimeout(dayNight, 33000), setTimeout(weather, 20000 + Math.random()*30000));
+  sceneTimers.push(setTimeout(cloud, 300), setTimeout(thing, 4000), setTimeout(monument, 1500), setTimeout(dayNight, 33000), setTimeout(weather, 20000 + Math.random()*30000));
 }
 
-function confetti(){
-  const c = $("#confetti"), cols=["#4300D2","#7C4DFF","#028574","#E61A06","#270570","#fff"];
-  for(let k=0;k<90;k++){const i=document.createElement("i");
+function confetti(n=90){
+  const c = $("#confetti"), cols=["#4300D2","#7C4DFF","#028574","#E61A06","#270570","#FFD23F","#fff"];
+  c.innerHTML="";
+  for(let k=0;k<n;k++){const i=document.createElement("i");
     i.style.left=Math.random()*100+"vw"; i.style.background=cols[k%cols.length];
     i.style.animationDuration=(2+Math.random()*2)+"s"; i.style.animationDelay=Math.random()*.6+"s";
     c.appendChild(i);}
-  setTimeout(()=>c.innerHTML="",5000);
+  setTimeout(()=>{ if(c.children.length===n) c.innerHTML=""; },5000);
 }
 
 /* ---------- Modo seguro (/qr): pase de un solo uso + una jugada por celular ---------- */
