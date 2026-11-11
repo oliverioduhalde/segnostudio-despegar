@@ -1,0 +1,4 @@
+applause.mp3 y cheer.mp3 derivan de extras/source/gallery/sounds/applause.wav
+del proyecto LibreOffice (https://github.com/LibreOffice/core), licencia
+Mozilla Public License 2.0 (https://www.mozilla.org/MPL/2.0/).
+cheer.mp3 mezcla ese aplauso con ruido rosa generado (ffmpeg) como murmullo de público.

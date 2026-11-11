@@ -181,28 +181,29 @@
   @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
   .opt:disabled{cursor:default}
   .feedback{text-align:center;font-weight:600;margin-top:12px;min-height:1.3em}
-  /* ruleta casino navideña */
-  .wheelpanel{position:relative;background:radial-gradient(circle at 50% 30%,#2A0C6E,#0B0426 75%);border-radius:20px;padding:26px 10px 18px;margin:6px 0 14px;overflow:hidden}
-  .wheelwrap{position:relative;width:min(74vw,290px);aspect-ratio:1;margin:0 auto;filter:drop-shadow(0 14px 22px rgba(0,0,0,.55))}
-  .wheel{width:100%;height:100%;will-change:transform}
-  .wheel svg{width:100%;height:100%;display:block;overflow:visible}
-  .pointer{position:absolute;left:50%;top:-12px;transform:translateX(-50%);z-index:4;width:46px;height:56px;transform-origin:50% 14px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
-  .hub{position:absolute;inset:50% auto auto 50%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:3;
-    background:radial-gradient(circle at 35% 30%,#7A3BFF,#4300D2 55%,#270570 100%);box-shadow:0 0 0 3px #FFE28A,0 0 0 6px #B8860B,0 0 22px 4px rgba(124,77,255,.9),inset 0 -6px 14px rgba(0,0,0,.45),inset 0 6px 10px rgba(255,255,255,.25)}
-  .hub img{width:76%;height:auto;filter:drop-shadow(0 0 4px rgba(255,255,255,.6))}
-  .hat{position:absolute;left:36%;top:27.5%;z-index:4;width:15%;pointer-events:none;transform:rotate(-22deg)}
-  .deco{position:absolute;z-index:5;font-size:1.7rem;pointer-events:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
+  /* ruleta armada con el kit gráfico (obj/kit_*.png): base, estrella, moños, puntero y centro fijos; el disco gira */
+  .wheelpanel{position:relative;background:radial-gradient(circle at 50% 30%,#2A0C6E,#0B0426 75%);border-radius:20px;padding:8px 10px 4px;margin:6px 0 14px;overflow:hidden}
+  .wheelwrap{--w:min(70vw,264px);position:relative;width:var(--w);aspect-ratio:1;margin:calc(var(--w)*.3) auto calc(var(--w)*.27)}
+  .kit{position:absolute;display:block;pointer-events:none;user-select:none;-webkit-user-drag:none}
+  .kit img{width:100%;height:auto;display:block;-webkit-user-drag:none}
+  .kdisc{position:absolute;inset:0;will-change:transform;filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))}
+  .kdisc img{width:100%;height:100%;display:block}
+  .kcenter{left:50%;top:50%;width:34%;transform:translate(-50%,-50%);z-index:3;pointer-events:auto;cursor:pointer}
+  .kpointer{left:50%;top:-18%;width:16%;transform:translateX(-50%);transform-origin:50% 24%;z-index:4;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+  .kstar{left:50%;top:-31%;width:21%;transform:translateX(-50%);z-index:2;animation:starglow 2s ease-in-out infinite alternate}
+  @keyframes starglow{from{filter:drop-shadow(0 0 8px rgba(255,220,120,.8))}to{filter:drop-shadow(0 0 18px rgba(255,230,140,1)) brightness(1.15)}}
+  .kbow{width:22%;top:7%;z-index:5;filter:drop-shadow(0 3px 5px rgba(0,0,0,.5))}.kbow.l{left:-9%}.kbow.r{right:-9%;transform:scaleX(-1)}
+  .kbase{left:50%;bottom:-25%;width:130%;transform:translateX(-50%);z-index:6;filter:drop-shadow(0 8px 14px rgba(0,0,0,.5))}
+  .bulbs{position:absolute;inset:0;pointer-events:none}
+  .bulbs i{position:absolute;border-radius:50%;transform:translate(-50%,-50%);animation:bulb 1.6s steps(1) infinite;mix-blend-mode:screen}
+  .bulbs i:nth-child(4n+1){animation-delay:-.4s}.bulbs i:nth-child(4n+2){animation-delay:-.8s}.bulbs i:nth-child(4n+3){animation-delay:-1.2s}
+  @keyframes bulb{0%{background:#FF3B3B;box-shadow:0 0 6px 2px #FF3B3B}25%{background:#4BFF7A;box-shadow:0 0 6px 2px #4BFF7A}50%{background:#FFE066;box-shadow:0 0 6px 2px #FFE066}75%{background:#fff;box-shadow:0 0 7px 2px #fff}}
+  .spinning .bulbs i{animation-duration:.4s}
+  .tension .bulbs i{animation:bulbt .2s steps(1) infinite}
+  @keyframes bulbt{0%{background:#FF3B3B;box-shadow:0 0 8px 3px #FF3B3B}50%{background:#fff;box-shadow:0 0 10px 3px #fff}}
   .wheelpanel .snowbg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
   .wheelpanel .snowbg i{position:absolute;top:-8px;width:4px;height:4px;border-radius:50%;background:#fff;opacity:.6;animation:psnow linear infinite}
-  @keyframes psnow{to{transform:translateY(420px)}}
-  .bulb{animation:xmas 2s steps(1) infinite}
-  .b1{animation-delay:-.5s}.b2{animation-delay:-1s}.b3{animation-delay:-1.5s}
-  @keyframes xmas{0%{fill:#FF2D2D;filter:drop-shadow(0 0 4px #FF2D2D)}25%{fill:#2BFF5C;filter:drop-shadow(0 0 4px #2BFF5C)}50%{fill:#FFD23F;filter:drop-shadow(0 0 4px #FFD23F)}75%{fill:#FFFFFF;filter:drop-shadow(0 0 5px #FFFFFF)}}
-  .spinning .bulb{animation-duration:.5s}
-  .tension .bulb{animation:tension .25s steps(1) infinite}
-  @keyframes tension{0%{fill:#FF2D2D;filter:drop-shadow(0 0 6px #FF2D2D)}50%{fill:#FFFFFF;filter:drop-shadow(0 0 8px #fff)}}
-  .spinning .neon{animation:neonpulse .5s ease-in-out infinite alternate}
-  @keyframes neonpulse{from{opacity:.7}to{opacity:1}}
+  @keyframes psnow{to{transform:translateY(520px)}}
   /* voucher */
   .voucher{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
   .voucher .vt{background:var(--brand);color:#fff;padding:16px;text-align:center}
@@ -284,15 +285,13 @@ const DESTINOS = [
 ];
 
 /* Ruleta: probabilidad inversa al monto. Suma = 100. */
-const PREMIOS = [
-  {v:50,   label:"50",   p:400,  col:"#7C4DFF"},
-  {v:200,  label:"200",  p:25,   col:"#028574"},
-  {v:0,    label:"OTRA", p:60,   col:"#323439", again:true},
-  {v:500,  label:"500",  p:4,    col:"#4300D2"},
-  {v:100,  label:"100",  p:100,  col:"#00A58E"},
-  {v:400,  label:"400",  p:6.25, col:"#270570"},
-  {v:1000, label:"1000", p:1,    col:"#E61A06"},
-  {v:300,  label:"300",  p:11.1, col:"#DDE1E8", dark:true},
+const PREMIOS = [ // mismo orden que los sectores del disco del kit
+  {v:50,   label:"50",   p:400},
+  {v:100,  label:"100",  p:100},
+  {v:200,  label:"200",  p:25},
+  {v:250,  label:"250",  p:12},
+  {v:500,  label:"500",  p:4},
+  {v:1000, label:"1000", p:1},
 ];
 const SECONDS = 20;
 
@@ -331,7 +330,7 @@ function pickDest(){
   });
 }
 
-function question(){
+function question(){ preloadSnd();
   const d = state.dest, q = state.qs[state.qi];
   const opts = shuffle(q.o.map((t,i)=>({t,i})));
   $("#pill").textContent = `${d.e} ${d.n}`;
@@ -358,7 +357,7 @@ function answer(pick){
   $("#fb").textContent = right ? "¡Correcto! 🎉" : (pick<0 ? "⏰ ¡Se acabó el tiempo!" : "Uy, esa no era 😅");
   $("#fb").style.color = right ? "var(--green)" : "var(--red)";
   buzz(right?30:[60,40,60]);
-  if(right) confetti(50); // confeti en cada respuesta correcta
+  if(right){ confetti(50); ding(); playSnd("applause", .6, 1.7); } // confeti + campanita + aplausos en cada respuesta correcta
   setTimeout(()=>{
     if(!right) return fail();
     state.ok++; state.qi++;
@@ -377,35 +376,13 @@ function fail(){
   $("#other").onclick = pickDest;
 }
 
-/* Ruleta de 12 gajos: los 8 premios + 50, 100, 200 y "tirá de nuevo" repetidos (el sorteo sigue siendo sobre PREMIOS). 12 colores sin repetir. */
-const WHEEL_ORDER=[0,4,2,3,1,6,0,5,4,7,2,1];
-const WHEEL_COLS=["#C8102E","#1DBF73","#5A10E8","#FFD23F","#FF2D55","#00B8D4","#FF8A00","#7C4DFF","#2BFF5C","#FFFFFF","#FF3CAC","#2979FF"];
-const WHEEL_DARK=new Set(["#FFD23F","#2BFF5C","#FFFFFF"]);
+/* Ruleta del kit gráfico: 12 sectores en el orden del disco (desde arriba, en sentido horario). El sorteo sigue siendo sobre PREMIOS. */
+const WHEEL_ORDER=[0,1,2,3,4,5,0,1,2,3,4,5];
 const WHEEL_N = WHEEL_ORDER.length, WHEEL_SEG = 360/WHEEL_N;
-function wheelSVG(){
-  const R=100, seg=WHEEL_SEG;
-  const pt=(deg,rad)=>{const a=(deg-90)*Math.PI/180;return [R+rad*Math.cos(a), R+rad*Math.sin(a)]};
-  const SEGS=WHEEL_ORDER.map((pi,i)=>({...PREMIOS[pi], col:WHEEL_COLS[i], dark:WHEEL_DARK.has(WHEEL_COLS[i])}));
-  let defs=`<defs>${SEGS.map((x,i)=>`<radialGradient id="g${i}" cx="50%" cy="50%" r="52%"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".55" stop-color="${x.col}"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></radialGradient>`).join("")}
-    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4C2"/><stop offset=".45" stop-color="#E0B23A"/><stop offset=".55" stop-color="#9A7016"/><stop offset="1" stop-color="#5E4208"/></linearGradient>
-    <linearGradient id="gold2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF4C2"/><stop offset=".5" stop-color="#D4A12B"/><stop offset="1" stop-color="#6E4D0C"/></linearGradient>
-    <radialGradient id="gloss" cx="50%" cy="22%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></radialGradient>
-    <filter id="neon" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
-  let body=""; SEGS.forEach((x,i)=>{ const a0=i*seg,a1=a0+seg,[x0,y0]=pt(a0,R),[x1,y1]=pt(a1,R),mid=a0+seg/2,[tx,ty]=pt(mid,R*.72);
-    body+=`<path d="M${R},${R} L${x0},${y0} A${R},${R} 0 0 1 ${x1},${y1} Z" fill="url(#g${i})"/>`;
-    body+=`<path class="neon" d="M${R},${R} L${x0},${y0}" stroke="${x.col==="#FFFFFF"?"#FFD23F":x.col}" stroke-width="1.8" filter="url(#neon)" opacity=".95"/>`;
-    const fill=x.dark?"#1D1340":"#fff", sub=x.dark?"#4300D2":"#FFE28A";
-    body+=`<g transform="translate(${tx},${ty}) rotate(${mid})"><text text-anchor="middle" fill="${fill}" font-family="Rubik" font-weight="900" font-size="${x.again?10:(x.label.length>3?14.5:19)}" y="2" style="paint-order:stroke;stroke:rgba(0,0,0,.4);stroke-width:2px">${x.again?"TIRÁ":x.label}</text><text text-anchor="middle" fill="${sub}" font-family="Rubik" font-weight="900" font-size="6.5" y="11">${x.again?"DE NUEVO":"USD"}</text></g>`; });
-  const rim=`<circle cx="100" cy="100" r="100" fill="url(#gloss)" pointer-events="none"/>
-    <circle cx="100" cy="100" r="104" fill="none" stroke="url(#gold)" stroke-width="13"/>
-    <circle cx="100" cy="100" r="97.5" fill="none" stroke="url(#gold2)" stroke-width="2"/>
-    <circle cx="100" cy="100" r="110.5" fill="none" stroke="#4B3407" stroke-width="1.2"/>
-    ${Array.from({length:24},(_,k)=>{const [x,y]=pt(k*15,104);return `<circle class="bulb b${k%4}" cx="${x}" cy="${y}" r="2.8"/><circle cx="${x}" cy="${y}" r="3.6" fill="none" stroke="#5E4208" stroke-width=".6"/>`}).join("")}
-    ${Array.from({length:12},(_,k)=>{const [x,y]=pt(k*30,97.5);return `<circle cx="${x}" cy="${y}" r="1.6" fill="#FFF4C2" stroke="#8E6A14" stroke-width=".5"/>`}).join("")}`;
-  return `<svg viewBox="-12 -12 224 224">${defs}${body}${rim}</svg>`;
-}
-const POINTER_SVG=`<svg viewBox="0 0 50 60"><defs><linearGradient id="ruby" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF5A6A"/><stop offset=".5" stop-color="#C8102E"/><stop offset="1" stop-color="#6E0012"/></linearGradient><pattern id="cane" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)"><rect width="8" height="8" fill="#fff"/><rect width="4" height="8" fill="#E61A06"/></pattern></defs><path d="M25 58 L5 16 Q25 -2 45 16 Z" fill="url(#cane)" stroke="#FFE28A" stroke-width="3"/><circle cx="25" cy="14" r="7" fill="url(#ruby)" stroke="#FFE28A" stroke-width="2"/><ellipse cx="22" cy="11" rx="2.5" ry="3" fill="#fff" opacity=".5"/></svg>`;
-const HAT_SVG=`<svg class="hat" viewBox="0 0 60 50"><path d="M6 44 Q14 10 40 6 Q50 4 56 12 L22 40 Z" fill="#E61A06"/><path d="M4 46 L24 40 Q30 42 28 48 Q18 52 4 46Z" fill="#fff"/><circle cx="56" cy="11" r="6" fill="#fff"/></svg>`;
+/* lamparitas de cada pieza (x%, y%, ancho%, alto%) para animarlas con colores navideños */
+const KIT_BULBS = {"disc":[[65.5,5.1,3.4,3.4],[76.6,10.6,3.4,3.4],[86.4,19.5,3.4,3.4],[94.3,33.0,3.4,3.4],[97.4,47.5,3.4,3.4],[96.3,60.7,3.4,3.4],[91.5,73.0,3.4,3.4],[85.8,81.2,3.4,3.4],[76.6,89.4,3.4,3.4],[65.5,94.9,3.4,3.4],[55.8,97.1,3.4,3.4],[43.4,97.0,3.4,3.4],[33.8,94.6,3.4,3.4],[21.4,87.9,3.4,3.4],[11.1,77.2,3.4,3.4],[5.1,65.5,3.4,3.4],[2.5,51.7,3.4,3.4],[3.7,39.3,3.4,3.4],[8.5,27.0,3.4,3.4],[15.8,17.0,3.4,3.4],[24.8,9.7,3.4,3.4],[35.3,4.8,3.4,3.4],[45.0,2.8,3.4,3.4]],"center":[[52.6,3.1,1.6,1.6],[50.1,5.1,3.1,3.1],[38.5,6.3,3.4,3.4],[65.3,6.0,1.7,1.7],[62.4,7.1,2.3,2.3],[51.1,8.7,2.2,2.2],[26.9,11.6,2.5,2.5],[39.4,10.9,2.3,2.3],[62.8,10.9,2.5,2.5],[75.5,12.1,3.1,3.1],[72.6,15.5,2.1,2.1],[17.9,20.3,1.9,1.9],[84.2,20.8,2.2,2.2],[81.2,22.8,1.4,1.4],[92.2,30.7,1.4,1.4],[14.4,69.0,1.7,1.7],[78.5,78.2,1.5,1.5],[22.9,79.4,2.1,2.1],[69.5,84.9,2.0,2.0],[33.7,86.4,2.6,2.6],[32.5,87.7,1.3,1.3],[58.2,89.4,2.9,2.9],[45.1,90.2,2.9,2.9],[44.1,95.6,1.3,1.3],[47.0,96.2,1.3,1.3]],"base":[[18.5,91.7,0.8,1.7],[14.9,91.5,0.6,1.3],[84.7,91.5,0.7,1.5],[24.2,92.2,1.1,2.3],[35.1,92.8,1.5,3.2],[27.8,92.6,0.8,1.7],[67.7,92.6,0.6,1.3],[42.4,92.9,1.0,2.1],[53.4,92.9,0.9,1.9],[61.0,92.9,0.7,1.5],[64.0,92.9,0.8,1.7],[10.3,97.4,0.6,1.3]]};
+const bulbs = k => `<div class="bulbs">${KIT_BULBS[k].map(([x,y,w,h])=>`<i style="left:${x}%;top:${y}%;width:${w}%;height:${h}%"></i>`).join("")}</div>`;
+const kitPiece = (k,cls) => `<div class="kit ${cls}"><img src="/obj/kit_${k}.png" alt="">${bulbs(k)}</div>`;
 const panelSnow=()=>Array.from({length:30},()=>`<i style="left:${(Math.random()*100).toFixed(1)}%;animation-duration:${(7+Math.random()*9).toFixed(1)}s;animation-delay:${(-Math.random()*16).toFixed(1)}s;opacity:${(.25+Math.random()*.5).toFixed(2)}"></i>`).join("");
 
 function wheel(again){
@@ -413,11 +390,18 @@ function wheel(again){
   render(`<div class="center"><h1>${again?"¡Tirá de nuevo!":"¡3 de 3!"}</h1>
     <p class="lead">Girá la ruleta y ganá un voucher para tu pasaje a ${state.dest.n}.</p></div>
     <div class="wheelpanel" id="wheelpanel"><div class="snowbg">${panelSnow()}</div>
-      <div class="wheelwrap"><span class="deco" style="left:-12px;top:-8px">🎄</span><span class="deco" style="right:-12px;top:-8px">🎄</span><span class="deco" style="left:-14px;bottom:6px;font-size:1.4rem">🎁</span><span class="deco" style="right:-14px;bottom:6px;font-size:1.4rem">🔔</span>
-        <div class="pointer" id="pointer">${POINTER_SVG}</div><div class="wheel" id="wheel" style="transform:rotate(${state.rot}deg)">${wheelSVG()}</div><div class="hub"><img src="/logo.svg" alt="despegar"></div>${HAT_SVG}</div></div>
+      <div class="wheelwrap">
+        <img class="kit kstar" src="/obj/kit_star.png" alt="">
+        <img class="kit kbow l" src="/obj/kit_bow.png" alt=""><img class="kit kbow r" src="/obj/kit_bow.png" alt="">
+        <div class="kdisc" id="wheel" style="transform:rotate(${state.rot}deg)"><img src="/obj/kit_disc.png" alt="">${bulbs("disc")}</div>
+        ${kitPiece("center","kcenter")}
+        <img class="kit kpointer" id="pointer" src="/obj/kit_pointer.png" alt="">
+        ${kitPiece("base","kbase")}
+      </div></div>
     <button class="btn" id="spin">Girar la ruleta</button>`);
+  preloadSnd();
   $("#spin").onclick = spin;
-  view.querySelector(".hub").onclick = spin;
+  view.querySelector(".kcenter").onclick = spin;
 }
 
 function pickPrize(){
@@ -443,21 +427,30 @@ async function spin(){
     const v = serverVoucher ? {...serverVoucher, emoji:state.dest.e}
       : {amount:p.v, dest:state.dest.n, emoji:state.dest.e, code:makeCode(p.v), date:new Date().toISOString()};
     if(SECURE){ try{sessionStorage.removeItem("dq-sid"); localStorage.setItem("dq-won", JSON.stringify(v))}catch(e){} }
-    confetti(); buzz([80,50,120]);
+    confetti(); buzz([80,50,120]); fanfare(); playSnd("cheer", 1);
     voucher(v);
   });
 }
 
 /* La ruleta frena con tensión: gira largo, se pasa casi un gajo, retrocede despacio y se asienta en el premio. El puntero se dobla en cada pin y suena un clic. */
 let wheelAC = null;
-function wheelClick(){ try{ wheelAC = wheelAC || new (window.AudioContext||window.webkitAudioContext)(); const o=wheelAC.createOscillator(), g=wheelAC.createGain(); o.type="square"; o.frequency.value=1800; g.gain.setValueAtTime(.2,wheelAC.currentTime); g.gain.exponentialRampToValueAtTime(.001,wheelAC.currentTime+.03); o.connect(g); g.connect(wheelAC.destination); o.start(); o.stop(wheelAC.currentTime+.03);}catch(e){} }
+const AC = ()=>{ try{ wheelAC = wheelAC || new (window.AudioContext||window.webkitAudioContext)(); if(wheelAC.state==="suspended") wheelAC.resume(); return wheelAC; }catch(e){ return null; } };
+function wheelClick(){ const ac=AC(); if(!ac) return; try{ const o=ac.createOscillator(), g=ac.createGain(); o.type="square"; o.frequency.value=1800; g.gain.setValueAtTime(.2,ac.currentTime); g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.03); o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime+.03);}catch(e){} }
+/* sonidos grabados (snd/*.mp3, ver snd/LICENSE.txt) + efectos sintetizados */
+const SND = {};
+function sndBuf(name){ const ac=AC(); if(!ac) return Promise.reject(); return SND[name] = SND[name] || fetch(`/snd/${name}.mp3`).then(r=>r.arrayBuffer()).then(b=>ac.decodeAudioData(b)); }
+function preloadSnd(){ try{ ["applause","cheer"].forEach(n=>sndBuf(n).catch(()=>{ delete SND[n]; })); }catch(e){} }
+function playSnd(name, vol=1, dur=0){ const ac=AC(); if(!ac) return; sndBuf(name).then(buf=>{ const src=ac.createBufferSource(), g=ac.createGain(); src.buffer=buf; g.gain.value=vol; src.connect(g); g.connect(ac.destination); const t=ac.currentTime; src.start(t); if(dur){ g.gain.setValueAtTime(vol,t+dur-.5); g.gain.linearRampToValueAtTime(0,t+dur); src.stop(t+dur); } }).catch(()=>{}); }
+function ding(){ const ac=AC(); if(!ac) return; [[880,0],[1174.7,.11],[1760,.22]].forEach(([f,d])=>{ const o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime+d; o.type="sine"; o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.22,t+.02); g.gain.exponentialRampToValueAtTime(.001,t+.7); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+.75); }); }
+function fanfare(){ const ac=AC(); if(!ac) return; [[523.25,0,.18],[659.25,.18,.18],[783.99,.36,.18],[1046.5,.54,.9]].forEach(([f,d,len])=>{ const o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime+d; o.type="triangle"; o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.28,t+.03); g.gain.setValueAtTime(.28,t+len-.08); g.gain.exponentialRampToValueAtTime(.001,t+len+.3); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+len+.35); }); }
+function whoosh(dur){ const ac=AC(); if(!ac) return; const n=Math.floor(ac.sampleRate*dur), buf=ac.createBuffer(1,n,ac.sampleRate), d=buf.getChannelData(0); for(let i=0;i<n;i++) d[i]=Math.random()*2-1; const src=ac.createBufferSource(); src.buffer=buf; const f=ac.createBiquadFilter(); f.type="bandpass"; f.Q.value=1.2; const g=ac.createGain(), t=ac.currentTime; f.frequency.setValueAtTime(1200,t); f.frequency.exponentialRampToValueAtTime(180,t+dur); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.16,t+.25); g.gain.linearRampToValueAtTime(.03,t+dur*.8); g.gain.linearRampToValueAtTime(0,t+dur); src.connect(f); f.connect(g); g.connect(ac.destination); src.start(t); src.stop(t+dur); }
 function animateWheel(i, done){
   const seg = WHEEL_SEG, cands = WHEEL_ORDER.map((p,k)=>p===i?k:-1).filter(k=>k>=0), idx = cands[Math.floor(Math.random()*cands.length)]; // gajo del premio sorteado
   const el = $("#wheel"), ptr = $("#pointer"), panel = $("#wheelpanel"), start = state.rot;
-  const final = start + 360*5 + ((360 - (idx*seg + seg/2) - (start%360) + 720)%360) + (Math.random()-.5)*seg*.5;
+  const final = start + 360*5 + ((360 - idx*seg - (start%360) + 720)%360) + (Math.random()-.5)*seg*.5; // el sector k del disco está centrado en k*30°
   const over = seg*(0.9+Math.random()*0.5);
   const T1=5200, T2=2300, T3=900; let lastPeg = Math.floor(start/seg); const t0 = performance.now();
-  panel.classList.add("spinning");
+  panel.classList.add("spinning"); whoosh(T1/1000);
   const setRot = r=>{ el.style.transform = `rotate(${r}deg)`;
     const peg = Math.floor(r/seg); if(peg !== lastPeg){ wheelClick(); buzz(8); lastPeg = peg; }
     const frac = ((r%seg)+seg)%seg/seg, bend = -22*Math.max(0, 1-frac*4); if(ptr) ptr.style.transform = `translateX(-50%) rotate(${bend}deg)`; };
