@@ -189,7 +189,7 @@
   .kdisc{position:absolute;inset:0;will-change:transform;filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))}
   .kdisc img{width:100%;height:100%;display:block}
   .kcenter{left:50%;top:50%;width:34%;transform:translate(-50%,-50%);z-index:3;pointer-events:auto;cursor:pointer}
-  .kpointer{left:50%;top:-18%;width:16%;transform:translateX(-50%);transform-origin:50% 24%;z-index:4;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+  .kpointer{left:50%;top:-13%;width:11%;transform:translateX(-50%);transform-origin:50% 22%;will-change:transform;z-index:4;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
   .kstar{left:50%;top:-31%;width:21%;transform:translateX(-50%);z-index:2;animation:starglow 2s ease-in-out infinite alternate}
   @keyframes starglow{from{filter:drop-shadow(0 0 8px rgba(255,220,120,.8))}to{filter:drop-shadow(0 0 18px rgba(255,230,140,1)) brightness(1.15)}}
   .kbow{width:22%;top:7%;z-index:5;filter:drop-shadow(0 3px 5px rgba(0,0,0,.5))}.kbow.l{left:-9%}.kbow.r{right:-9%;transform:scaleX(-1)}
@@ -451,15 +451,19 @@ function animateWheel(i, done){
   const over = seg*(0.9+Math.random()*0.5);
   const T1=5200, T2=2300, T3=900; let lastPeg = Math.floor(start/seg); const t0 = performance.now();
   panel.classList.add("spinning"); whoosh(T1/1000);
-  const setRot = r=>{ el.style.transform = `rotate(${r}deg)`;
-    const peg = Math.floor(r/seg); if(peg !== lastPeg){ wheelClick(); buzz(8); lastPeg = peg; }
-    const frac = ((r%seg)+seg)%seg/seg, bend = -22*Math.max(0, 1-frac*4); if(ptr) ptr.style.transform = `translateX(-50%) rotate(${bend}deg)`; };
+  /* el puntero es un resorte amortiguado: cada pin lo empuja según la velocidad y vuelve solo, sin saltos */
+  let pA = 0, pV = 0, lastR = start, lastT = t0;
+  const setRot = (r, now)=>{ el.style.transform = `rotate(${r}deg)`;
+    const dt = Math.min(0.05, Math.max(0.001, (now-lastT)/1000)), speed = (r-lastR)/dt; lastT = now; lastR = r;
+    const peg = Math.floor(r/seg); if(peg !== lastPeg){ wheelClick(); buzz(8); const dir = Math.sign(peg-lastPeg)||1; lastPeg = peg; pV -= dir*Math.min(900, 120 + Math.abs(speed)*1.1); }
+    const acc = -1400*pA - 22*pV; pV += acc*dt; pA += pV*dt; pA = Math.max(-34, Math.min(34, pA));
+    if(ptr) ptr.style.transform = `translateX(-50%) rotate(${pA.toFixed(2)}deg)`; };
   function frame(now){ const t = now-t0; let r;
     if(t < T1){ const k=t/T1, e=1-Math.pow(1-k,3.2); r = start+(final+over-start)*e; }
     else if(t < T1+T2){ const k=(t-T1)/T2, e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; r = final+over-(over*1.18)*e; panel.classList.add("tension"); panel.classList.remove("spinning"); }
     else if(t < T1+T2+T3){ const k=(t-T1-T2)/T3, e=1-Math.pow(1-k,2); r = final-over*.18+(over*.18)*e; }
     else r = final;
-    setRot(r);
+    setRot(r, now);
     if(t < T1+T2+T3+100) return requestAnimationFrame(frame);
     panel.classList.remove("tension","spinning"); state.rot = final; setTimeout(done, 250);
   }
