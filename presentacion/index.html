@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Dónde pasarías Navidad? · Presentación</title>
+<meta name="description" content="Promo navideña para Despegar: QR, trivia de destino y ruleta de vouchers. Segno Studio.">
+<link rel="icon" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--violeta:#4300D2;--noche:#270570;--rojo:#E61A06;--teal:#028574;--texto:#323439;--gris:#72777F;--borde:#DDE1E8;--fondo:#F2F4F5;--oro:#FFD24A}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#0D0226;overflow:hidden;font-family:Rubik,Arial,sans-serif;color:var(--texto)}
+  #stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:0 0}
+  .slide{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .5s ease;overflow:hidden;background:var(--fondo)}
+  .slide.on{opacity:1;pointer-events:auto}
+  .pad{position:absolute;inset:0;padding:72px 96px}
+  .logo{height:30px;display:block}
+  .bar{position:absolute;left:0;right:0;top:0;height:76px;background:var(--noche);display:flex;align-items:center;justify-content:space-between;padding:0 96px;color:#fff;font-size:15px;letter-spacing:.14em;text-transform:uppercase}
+  .bar span{opacity:.7}
+  h1,h2{margin:0;font-weight:700;letter-spacing:-.02em;line-height:1.02}
+  h1{font-size:104px}
+  h2{font-size:64px;color:var(--noche)}
+  .kick{font-size:18px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--violeta);margin-bottom:18px}
+  p.lead{font-size:30px;line-height:1.35;color:var(--gris);margin:22px 0 0;max-width:1100px}
+  .dark{background:linear-gradient(180deg,#12033A 0%,#270570 60%,#4A12D8 100%);color:#fff}
+  .dark h2{color:#fff}.dark .kick{color:var(--oro)}.dark p.lead{color:#CFC4FF}
+  .stars{position:absolute;inset:0;pointer-events:none}
+  .stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;animation:tw 3s infinite ease-in-out}
+  @keyframes tw{50%{opacity:.2}}
+  .pill{display:inline-block;background:var(--rojo);color:#fff;font-weight:500;padding:14px 30px;border-radius:30px;font-size:24px}
+  /* portada */
+  .cover-plane{position:absolute;left:800px;top:500px;width:760px;animation:fly 6s ease-in-out infinite}
+  @keyframes fly{50%{transform:translateY(-14px)}}
+  .cloud{position:absolute;background:#fff;border-radius:999px;opacity:.10;filter:blur(18px);animation:drift linear infinite}
+  @keyframes drift{from{transform:translateX(0)}to{transform:translateX(-2200px)}}
+  /* chips */
+  .chips{display:flex;gap:28px;margin-top:64px}
+  .chip{flex:1;background:#fff;border:1px solid var(--borde);border-radius:24px;padding:34px 36px}
+  .chip b{display:block;font-size:88px;color:var(--violeta);font-weight:700;line-height:1}
+  .chip span{display:block;font-size:24px;color:var(--gris);margin-top:10px}
+  /* pasos */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:34px;margin-top:44px}
+  .step .ph{height:520px;border-radius:30px;background:#fff;border:8px solid #1b1530;overflow:hidden}
+  .step .ph img{width:100%;display:block}
+  .step .t{display:flex;align-items:center;gap:14px;margin-top:20px;font-size:24px;font-weight:600;color:var(--noche)}
+  .step .n{flex:none;width:40px;height:40px;border-radius:50%;background:var(--violeta);color:#fff;display:grid;place-items:center;font-size:20px}
+  /* escena */
+  .scene-grid{display:grid;grid-template-columns:420px 1fr;gap:72px;align-items:center;height:100%}
+  .ph-big{height:660px;border-radius:44px;border:12px solid #1b1530;overflow:hidden;background:#fff}
+  .ph-big img{width:100%;display:block}
+  ul.facts{list-style:none;padding:0;margin:40px 0 0;display:flex;flex-direction:column;gap:22px}
+  ul.facts li{font-size:28px;line-height:1.3;padding-left:44px;position:relative}
+  ul.facts li:before{content:"";position:absolute;left:0;top:10px;width:18px;height:18px;border-radius:50%;background:var(--oro)}
+  .sprites{display:flex;gap:26px;align-items:flex-end;margin-top:46px}
+  .sprites img{height:110px;filter:drop-shadow(0 0 18px rgba(255,210,74,.25))}
+  /* aeropuerto */
+  .air{position:absolute;inset:0;width:100%;height:100%}
+  .air-cap{position:absolute;left:96px;top:72px;max-width:620px}
+  .air-cap h2{font-size:58px}
+  /* premios */
+  .prize-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;margin-top:40px}
+  .odds{display:flex;flex-direction:column;gap:12px}
+  .odd{display:grid;grid-template-columns:120px 1fr 120px;align-items:center;gap:18px;font-size:22px}
+  .odd .v{font-weight:700;color:var(--noche)}
+  .odd .track{height:22px;background:#E6E9EF;border-radius:11px;overflow:hidden}
+  .odd .track i{display:block;height:100%;border-radius:11px;background:var(--violeta);min-width:6px}
+  .odd .p{text-align:right;color:var(--gris)}
+  .odd.top .track i{background:var(--rojo)}
+  .card{background:#fff;border:1px solid var(--borde);border-radius:24px;padding:30px 34px;margin-bottom:22px}
+  .card h3{margin:0 0 8px;font-size:28px;color:var(--noche)}
+  .card p{margin:0;font-size:22px;line-height:1.4;color:var(--gris)}
+  /* cierre */
+  .end{display:grid;grid-template-columns:1fr 460px;gap:80px;align-items:center;height:100%}
+  .qrbox{background:#fff;border-radius:36px;padding:34px;text-align:center}
+  .qrbox svg{width:100%;height:auto;display:block}
+  .qrbox div{margin-top:16px;font-size:20px;color:var(--gris)}
+  /* UI */
+  #ui{position:fixed;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.12);z-index:5}
+  #prog{height:100%;width:0;background:var(--rojo);transition:width .4s}
+  #count{position:fixed;right:18px;bottom:14px;color:#fff;opacity:.55;font-size:13px;letter-spacing:.1em;z-index:5;mix-blend-mode:difference}
+  .nav{position:fixed;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:26px;cursor:pointer;z-index:5;opacity:.0;transition:opacity .3s}
+  body:hover .nav{opacity:1}
+  #prev{left:14px}#next{right:14px}
+  @media (hover:none){.nav{opacity:.6}}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1. Portada -->
+  <section class="slide dark on">
+    <div class="stars" data-n="90"></div>
+    <div class="cloud" style="width:420px;height:90px;left:1500px;top:640px;animation-duration:38s"></div>
+    <div class="cloud" style="width:300px;height:70px;left:1900px;top:300px;animation-duration:52s"></div>
+    <img class="cover-plane" src="/plane.png" alt="Boeing 747 de Despegar">
+    <div class="pad">
+      <img class="logo" src="/logo.svg" alt="despegar">
+      <div style="margin-top:150px" class="kick">Promo Navidad · Segno Studio</div>
+      <h1>¿Dónde pasarías<br>Navidad?</h1>
+      <p class="lead" style="max-width:640px">Escaneás un QR, respondés 3 preguntas y girás la ruleta por un voucher para tu pasaje.</p>
+    </div>
+  </section>
+
+  <!-- 2. La idea -->
+  <section class="slide">
+    <div class="pad" style="display:flex;flex-direction:column;justify-content:center">
+      <div class="kick">La idea</div>
+      <h2>Un juego de un minuto<br>que termina en un pasaje.</h2>
+      <p class="lead">Una trivia navideña desde el celular, sin descargar nada, con la estética de Despegar. Cada jugada es una conversación sobre el próximo viaje.</p>
+      <div class="chips">
+        <div class="chip"><b>12</b><span>destinos para soñar</span></div>
+        <div class="chip"><b>3</b><span>preguntas fáciles</span></div>
+        <div class="chip"><b>USD 1000</b><span>premio mayor en la ruleta</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Cómo se juega -->
+  <section class="slide">
+    <div class="pad">
+      <div class="kick">Cómo se juega</div>
+      <h2>Del QR al voucher en 4 pasos.</h2>
+      <div class="steps">
+        <div class="step"><div class="ph"><img src="/presentacion/img/s1-home.jpg" alt="Portada del juego"></div><div class="t"><span class="n">1</span>Escaneá el QR</div></div>
+        <div class="step"><div class="ph"><img src="/presentacion/img/s2-destinos.jpg" alt="Elegí tu destino"></div><div class="t"><span class="n">2</span>Elegí tu destino</div></div>
+        <div class="step"><div class="ph"><img src="/presentacion/img/s3-pregunta.jpg" alt="Pregunta"></div><div class="t"><span class="n">3</span>Acertá 3 preguntas</div></div>
+        <div class="step"><div class="ph"><img src="/presentacion/img/s4-ruleta.jpg" alt="Ruleta"></div><div class="t"><span class="n">4</span>Girá y ganá</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. La escena -->
+  <section class="slide dark">
+    <div class="stars" data-n="70"></div>
+    <div class="pad">
+      <div class="scene-grid">
+        <div class="ph-big"><img src="/presentacion/img/s1-home.jpg" alt="Escena animada"></div>
+        <div>
+          <div class="kick">La experiencia</div>
+          <h2>Un cielo que nunca<br>se repite.</h2>
+          <ul class="facts">
+            <li>Un 747 de Despegar vuela entre nubes, del día a la noche cada 33 segundos.</li>
+            <li>Abajo pasan 23 monumentos del mundo; arriba, naves, aves y dragones.</li>
+            <li>Papá Noel tira regalos… y a veces lo persigue el Grinch.</li>
+          </ul>
+          <div class="sprites">
+            <img src="/obj/santa_sleigh.png" alt=""><img src="/obj/grinch.png" alt=""><img src="/obj/fenix.png" alt=""><img src="/obj/mon_obelisco.png" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. En el aeropuerto -->
+  <section class="slide dark">
+    <img class="air" src="/presentacion/img/aeropuerto.svg" alt="Escalera de embarque decorada con el QR del juego">
+    <div class="air-cap">
+      <div class="kick">En el aeropuerto</div>
+      <h2>La escalera de embarque, vestida de Navidad.</h2>
+    </div>
+  </section>
+
+  <!-- 6. Premios y control -->
+  <section class="slide">
+    <div class="pad">
+      <div class="kick">Premios y control</div>
+      <h2>Siempre parece que sale el grande.</h2>
+      <div class="prize-grid">
+        <div class="odds" id="odds"></div>
+        <div>
+          <div class="card"><h3>Ruleta con suspenso</h3><p>Amaga hacia los premios altos y frena con inercia. El sorteo lo hace el servidor.</p></div>
+          <div class="card"><h3>Un premio por celular</h3><p>QR que cambia cada 20 segundos y sirve una sola vez. Si volvés, ves el mismo voucher.</p></div>
+          <div class="card"><h3>Vouchers verificables</h3><p>Cada código queda registrado para que Despegar lo valide al canjearlo.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Cierre -->
+  <section class="slide dark">
+    <div class="stars" data-n="90"></div>
+    <div class="pad">
+      <div class="end">
+        <div>
+          <img class="logo" src="/logo.svg" alt="despegar">
+          <div class="kick" style="margin-top:120px">Ya está online</div>
+          <h1 style="font-size:96px">Probalo ahora.</h1>
+          <p class="lead">segnostudio-despegar.vercel.app</p>
+          <div style="margin-top:44px"><span class="pill">Ganá hasta USD 1000 en tu pasaje</span></div>
+        </div>
+        <div class="qrbox" id="qrbox"><div>Escaneá con la cámara del celular</div></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<div id="ui"><div id="prog"></div></div>
+<div id="count"></div>
+<button class="nav" id="prev" aria-label="Anterior">‹</button>
+<button class="nav" id="next" aria-label="Siguiente">›</button>
+
+<script>
+(function(){
+  // Estrellas
+  document.querySelectorAll('.stars').forEach(function(s){
+    var n=+s.dataset.n||60, h='';
+    for(var k=0;k<n;k++){var z=Math.random()<.2?3:2;h+='<i style="left:'+(Math.random()*100)+'%;top:'+(Math.random()*70)+'%;width:'+z+'px;height:'+z+'px;animation-delay:'+(Math.random()*3).toFixed(1)+'s;opacity:'+(.4+Math.random()*.6).toFixed(2)+'"></i>'}
+    s.innerHTML=h;
+  });
+  // Probabilidades (mismas que el juego)
+  var P=[[50,400],[100,100],['Otra tirada',60],[200,25],[300,11.1],[400,6.25],[500,4],[1000,1]];
+  var tot=P.reduce(function(a,b){return a+b[1]},0), mx=P[0][1], h='';
+  P.forEach(function(r){var pc=r[1]/tot*100;var lab=typeof r[0]==='number'?'USD '+r[0]:r[0];
+    var ps=pc>=1?pc.toFixed(1).replace('.',',')+' %':'1 en '+Math.round(tot/r[1]);
+    h+='<div class="odd'+(r[0]===1000?' top':'')+'"><span class="v">'+lab+'</span><span class="track"><i style="width:'+(r[1]/mx*100)+'%"></i></span><span class="p">'+ps+'</span></div>'});
+  document.getElementById('odds').innerHTML=h;
+  // QR del cierre (mismo destino que el afiche)
+  var QRN=29, QRD='M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM12 0h1v1h-1zM16 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM22 0h1v1h-1zM23 0h1v1h-1zM24 0h1v1h-1zM25 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM10 1h1v1h-1zM12 1h1v1h-1zM14 1h1v1h-1zM22 1h1v1h-1zM28 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM14 2h1v1h-1zM15 2h1v1h-1zM18 2h1v1h-1zM19 2h1v1h-1zM20 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM25 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM11 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM17 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM25 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM15 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM19 4h1v1h-1zM22 4h1v1h-1zM24 4h1v1h-1zM25 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM10 5h1v1h-1zM13 5h1v1h-1zM16 5h1v1h-1zM19 5h1v1h-1zM22 5h1v1h-1zM28 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM25 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM14 7h1v1h-1zM16 7h1v1h-1zM17 7h1v1h-1zM0 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM16 8h1v1h-1zM17 8h1v1h-1zM18 8h1v1h-1zM19 8h1v1h-1zM22 8h1v1h-1zM25 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM8 9h1v1h-1zM10 9h1v1h-1zM12 9h1v1h-1zM14 9h1v1h-1zM16 9h1v1h-1zM18 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM21 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM24 9h1v1h-1zM28 9h1v1h-1zM2 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM17 10h1v1h-1zM18 10h1v1h-1zM21 10h1v1h-1zM22 10h1v1h-1zM23 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM27 10h1v1h-1zM1 11h1v1h-1zM4 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM13 11h1v1h-1zM18 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM21 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM28 11h1v1h-1zM1 12h1v1h-1zM2 12h1v1h-1zM4 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM15 12h1v1h-1zM17 12h1v1h-1zM19 12h1v1h-1zM25 12h1v1h-1zM26 12h1v1h-1zM3 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1zM14 13h1v1h-1zM15 13h1v1h-1zM16 13h1v1h-1zM17 13h1v1h-1zM19 13h1v1h-1zM20 13h1v1h-1zM21 13h1v1h-1zM22 13h1v1h-1zM26 13h1v1h-1zM27 13h1v1h-1zM28 13h1v1h-1zM0 14h1v1h-1zM2 14h1v1h-1zM4 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM8 14h1v1h-1zM11 14h1v1h-1zM13 14h1v1h-1zM17 14h1v1h-1zM18 14h1v1h-1zM19 14h1v1h-1zM20 14h1v1h-1zM22 14h1v1h-1zM23 14h1v1h-1zM24 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM1 15h1v1h-1zM2 15h1v1h-1zM4 15h1v1h-1zM7 15h1v1h-1zM8 15h1v1h-1zM12 15h1v1h-1zM19 15h1v1h-1zM20 15h1v1h-1zM22 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM27 15h1v1h-1zM3 16h1v1h-1zM4 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM10 16h1v1h-1zM11 16h1v1h-1zM12 16h1v1h-1zM14 16h1v1h-1zM18 16h1v1h-1zM19 16h1v1h-1zM20 16h1v1h-1zM21 16h1v1h-1zM23 16h1v1h-1zM24 16h1v1h-1zM25 16h1v1h-1zM27 16h1v1h-1zM1 17h1v1h-1zM3 17h1v1h-1zM5 17h1v1h-1zM7 17h1v1h-1zM9 17h1v1h-1zM10 17h1v1h-1zM15 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM23 17h1v1h-1zM25 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM0 18h1v1h-1zM2 18h1v1h-1zM6 18h1v1h-1zM9 18h1v1h-1zM10 18h1v1h-1zM11 18h1v1h-1zM12 18h1v1h-1zM13 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM18 18h1v1h-1zM20 18h1v1h-1zM23 18h1v1h-1zM24 18h1v1h-1zM26 18h1v1h-1zM3 19h1v1h-1zM7 19h1v1h-1zM8 19h1v1h-1zM11 19h1v1h-1zM13 19h1v1h-1zM14 19h1v1h-1zM15 19h1v1h-1zM17 19h1v1h-1zM18 19h1v1h-1zM20 19h1v1h-1zM26 19h1v1h-1zM1 20h1v1h-1zM2 20h1v1h-1zM6 20h1v1h-1zM7 20h1v1h-1zM8 20h1v1h-1zM10 20h1v1h-1zM11 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM17 20h1v1h-1zM18 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM25 20h1v1h-1zM26 20h1v1h-1zM8 21h1v1h-1zM9 21h1v1h-1zM16 21h1v1h-1zM20 21h1v1h-1zM24 21h1v1h-1zM25 21h1v1h-1zM26 21h1v1h-1zM27 21h1v1h-1zM28 21h1v1h-1zM0 22h1v1h-1zM1 22h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM4 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM11 22h1v1h-1zM12 22h1v1h-1zM14 22h1v1h-1zM16 22h1v1h-1zM19 22h1v1h-1zM20 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM25 22h1v1h-1zM27 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM8 23h1v1h-1zM9 23h1v1h-1zM12 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM20 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM27 23h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM15 24h1v1h-1zM17 24h1v1h-1zM18 24h1v1h-1zM20 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM26 24h1v1h-1zM0 25h1v1h-1zM2 25h1v1h-1zM3 25h1v1h-1zM4 25h1v1h-1zM6 25h1v1h-1zM8 25h1v1h-1zM10 25h1v1h-1zM12 25h1v1h-1zM13 25h1v1h-1zM15 25h1v1h-1zM16 25h1v1h-1zM20 25h1v1h-1zM21 25h1v1h-1zM23 25h1v1h-1zM24 25h1v1h-1zM25 25h1v1h-1zM28 25h1v1h-1zM0 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM6 26h1v1h-1zM8 26h1v1h-1zM9 26h1v1h-1zM12 26h1v1h-1zM13 26h1v1h-1zM14 26h1v1h-1zM16 26h1v1h-1zM17 26h1v1h-1zM18 26h1v1h-1zM21 26h1v1h-1zM23 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM12 27h1v1h-1zM14 27h1v1h-1zM16 27h1v1h-1zM18 27h1v1h-1zM20 27h1v1h-1zM23 27h1v1h-1zM25 27h1v1h-1zM27 27h1v1h-1zM0 28h1v1h-1zM1 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM11 28h1v1h-1zM12 28h1v1h-1zM14 28h1v1h-1zM16 28h1v1h-1zM18 28h1v1h-1zM19 28h1v1h-1zM20 28h1v1h-1zM21 28h1v1h-1zM23 28h1v1h-1zM25 28h1v1h-1zM27 28h1v1h-1z';
+  document.getElementById('qrbox').insertAdjacentHTML('afterbegin','<svg viewBox="-2 -2 '+(QRN+4)+' '+(QRN+4)+'" shape-rendering="crispEdges"><path d="'+QRD+'" fill="#270570"/></svg>');
+
+  // Escalado 16:9
+  var st=document.getElementById('stage');
+  function fit(){var s=Math.min(innerWidth/1600,innerHeight/900);st.style.transform='scale('+s+') translate(-50%,-50%)';}
+  addEventListener('resize',fit);fit();
+
+  // Navegación
+  var slides=[].slice.call(document.querySelectorAll('.slide')),n=slides.length,i=0;
+  var prog=document.getElementById('prog'),count=document.getElementById('count');
+  function go(k){i=Math.max(0,Math.min(n-1,k));slides.forEach(function(s,j){s.classList.toggle('on',j===i)});
+    prog.style.width=((i+1)/n*100)+'%';count.textContent=(i+1)+' / '+n;try{history.replaceState(null,'','#'+(i+1))}catch(e){}}
+  document.getElementById('prev').onclick=function(e){e.stopPropagation();go(i-1)};
+  document.getElementById('next').onclick=function(e){e.stopPropagation();go(i+1)};
+  addEventListener('keydown',function(e){
+    if(['ArrowRight','PageDown',' ','Enter'].indexOf(e.key)>-1){e.preventDefault();go(i+1)}
+    if(['ArrowLeft','PageUp','Backspace'].indexOf(e.key)>-1){e.preventDefault();go(i-1)}
+    if(e.key==='Home')go(0); if(e.key==='End')go(n-1);
+    if(e.key==='f'){(document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()).catch(function(){})}
+  });
+  document.addEventListener('click',function(e){ if(e.target.closest('a,button'))return; go(e.clientX<innerWidth/3?i-1:i+1)});
+  var tx=null;
+  addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
+  addEventListener('touchend',function(e){if(tx===null)return;var d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>40)go(d<0?i+1:i-1);tx=null});
+  go((parseInt(location.hash.slice(1),10)||1)-1);
+})();
+</script>
+</body>
+</html>
