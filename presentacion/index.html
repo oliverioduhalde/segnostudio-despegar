@@ -37,7 +37,7 @@
   /* chips */
   .chips{display:flex;gap:28px;margin-top:64px}
   .chip{flex:1;background:#fff;border:1px solid var(--borde);border-radius:24px;padding:34px 36px}
-  .chip b{display:block;font-size:88px;color:var(--violeta);font-weight:700;line-height:1}
+  .chip b{display:block;white-space:nowrap;font-size:80px;color:var(--violeta);font-weight:700;line-height:1}
   .chip span{display:block;font-size:24px;color:var(--gris);margin-top:10px}
   /* pasos */
   .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:34px;margin-top:44px}
@@ -56,8 +56,14 @@
   .sprites img{height:110px;filter:drop-shadow(0 0 18px rgba(255,210,74,.25))}
   /* aeropuerto */
   .air{position:absolute;inset:0;width:100%;height:100%}
-  .air-cap{position:absolute;left:96px;top:72px;max-width:620px}
-  .air-cap h2{font-size:58px}
+  .air{object-fit:cover}
+  .air-cap{position:absolute;left:0;top:0;width:560px;padding:48px 48px 36px 72px;background:linear-gradient(180deg,rgba(18,3,58,.94),rgba(39,5,112,.88));border-bottom-right-radius:36px}
+  .air-cap h2{font-size:44px}
+  .air-cap p{margin:14px 0 0;font-size:21px;line-height:1.4;color:#CFC4FF}
+  .wheel-grid{display:grid;grid-template-columns:600px 1fr;gap:72px;align-items:center;height:100%}
+  .wheel-img{width:100%;border-radius:36px;display:block}
+  .dark .odd .v{color:#fff}.dark .odd .track{background:rgba(255,255,255,.14)}.dark .odd .p{color:#CFC4FF}.dark .odd .track i{background:var(--oro)}.dark .odd.top .track i{background:var(--rojo)}
+  .dark .odds{margin-top:34px;gap:10px}
   /* premios */
   .prize-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;margin-top:40px}
   .odds{display:flex;flex-direction:column;gap:12px}
@@ -98,7 +104,7 @@
       <img class="logo" src="/logo.svg" alt="despegar">
       <div style="margin-top:150px" class="kick">Promo Navidad · Segno Studio</div>
       <h1>¿Dónde pasarías<br>Navidad?</h1>
-      <p class="lead" style="max-width:640px">Escaneás un QR, respondés 3 preguntas y girás la ruleta por un voucher para tu pasaje.</p>
+      <p class="lead" style="max-width:640px">Cruzás el portal, escaneás el QR, respondés 3 preguntas y girás la ruleta navideña por un voucher para tu pasaje.</p>
     </div>
   </section>
 
@@ -107,7 +113,7 @@
     <div class="pad" style="display:flex;flex-direction:column;justify-content:center">
       <div class="kick">La idea</div>
       <h2>Un juego de un minuto<br>que termina en un pasaje.</h2>
-      <p class="lead">Una trivia navideña desde el celular, sin descargar nada, con la estética de Despegar. Cada jugada es una conversación sobre el próximo viaje.</p>
+      <p class="lead">Un portal navideño en el aeropuerto, un QR y una trivia desde el celular, sin descargar nada. Cada jugada es una conversación sobre el próximo viaje.</p>
       <div class="chips">
         <div class="chip"><b>12</b><span>destinos para soñar</span></div>
         <div class="chip"><b>3</b><span>preguntas fáciles</span></div>
@@ -116,7 +122,16 @@
     </div>
   </section>
 
-  <!-- 3. Cómo se juega -->
+  <!-- 3. En el aeropuerto -->
+  <section class="slide dark">
+    <img class="air" src="/presentacion/img/aeropuerto-portal.jpg" alt="Portal Despegar en el aeropuerto con escaleras mecánicas y QR">
+    <div class="air-cap">
+      <div class="kick">En el aeropuerto</div>
+      <h2>Un portal violeta antes de embarcar.</h2>
+      <p>Escaleras vestidas de Despegar y dos QR gigantes: “Escaneá y elegí tu destino”.</p>
+    </div>
+  </section>
+  <!-- 4. Cómo se juega -->
   <section class="slide">
     <div class="pad">
       <div class="kick">Cómo se juega</div>
@@ -130,7 +145,7 @@
     </div>
   </section>
 
-  <!-- 4. La escena -->
+  <!-- 5. La escena -->
   <section class="slide dark">
     <div class="stars" data-n="70"></div>
     <div class="pad">
@@ -152,31 +167,25 @@
     </div>
   </section>
 
-  <!-- 5. En el aeropuerto -->
+  <!-- 6. La ruleta -->
   <section class="slide dark">
-    <img class="air" src="/presentacion/img/aeropuerto.svg" alt="Escalera de embarque decorada con el QR del juego">
-    <div class="air-cap">
-      <div class="kick">En el aeropuerto</div>
-      <h2>La escalera de embarque, vestida de Navidad.</h2>
-    </div>
-  </section>
-
-  <!-- 6. Premios y control -->
-  <section class="slide">
+    <div class="stars" data-n="70"></div>
     <div class="pad">
-      <div class="kick">Premios y control</div>
-      <h2>Siempre parece que sale el grande.</h2>
-      <div class="prize-grid">
-        <div class="odds" id="odds"></div>
+      <div class="wheel-grid">
+        <img class="wheel-img" src="/presentacion/img/ruleta.jpg" alt="Ruleta navideña de Despegar">
         <div>
-          <div class="card"><h3>Ruleta con suspenso</h3><p>Amaga hacia los premios altos y frena con inercia. El sorteo lo hace el servidor.</p></div>
-          <div class="card"><h3>Un premio por celular</h3><p>QR que cambia cada 20 segundos y sirve una sola vez. Si volvés, ves el mismo voucher.</p></div>
-          <div class="card"><h3>Vouchers verificables</h3><p>Cada código queda registrado para que Despegar lo valide al canjearlo.</p></div>
+          <div class="kick">La ruleta</div>
+          <h2>Un casino de Navidad<br>en la palma de la mano.</h2>
+          <ul class="facts">
+            <li>Base dorada y violeta, luces que titilan, moño y estrella.</li>
+            <li>Amaga hacia el premio grande, frena con resorte y suena la ovación.</li>
+            <li>Un premio por celular, con código que Despegar valida al canjear.</li>
+          </ul>
+          <div class="odds" id="odds"></div>
         </div>
       </div>
     </div>
   </section>
-
   <!-- 7. Cierre -->
   <section class="slide dark">
     <div class="stars" data-n="90"></div>
@@ -209,7 +218,7 @@
     s.innerHTML=h;
   });
   // Probabilidades (mismas que el juego)
-  var P=[[50,400],[100,100],['Otra tirada',60],[200,25],[300,11.1],[400,6.25],[500,4],[1000,1]];
+  var P=[[50,400],[100,100],[200,25],[250,12],[500,4],[1000,1]];
   var tot=P.reduce(function(a,b){return a+b[1]},0), mx=P[0][1], h='';
   P.forEach(function(r){var pc=r[1]/tot*100;var lab=typeof r[0]==='number'?'USD '+r[0]:r[0];
     var ps=pc>=1?pc.toFixed(1).replace('.',',')+' %':'1 en '+Math.round(tot/r[1]);
